@@ -1,0 +1,118 @@
+import React from 'react';
+import { FaTachometerAlt, FaMoneyCheckAlt, FaChartLine, FaExchangeAlt, FaWallet, FaHeadset, FaCog } from 'react-icons/fa';
+import { Link, NavLink } from 'react-router-dom';
+
+import { LuLayoutDashboard } from "react-icons/lu";
+import { IoWalletOutline, IoSettingsOutline } from "react-icons/io5";
+import { HiOutlineCash } from "react-icons/hi";
+import { BsDatabaseUp } from "react-icons/bs";
+import { AiOutlineTransaction } from "react-icons/ai";
+import { FaHeadphonesAlt } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
+
+import { ReactComponent as Dashboard } from '@/assets/icons/dashboard.svg';
+import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
+import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
+import { ReactComponent as Transaction } from '@/assets/icons/transaction.svg';
+import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
+import { ReactComponent as Support } from '@/assets/icons/support.svg';
+import { ReactComponent as Setting } from '@/assets/icons/setting.svg';
+import { ReactComponent as Logout } from '@/assets/icons/sign-out.svg';
+
+import logo from '@/assets/images/logo.png';
+
+const Sidebar = () => {
+    return (
+        <div className="w-8 md:w-[272px] h-screen bg-white fixed left-0 top-0 z-10">
+            <div className="flex items-center gap-3 px-6 h-20">
+                <img className="w-8" alt="logo" src={logo} />
+                <h1 className="text-2xl font-medium text-primary">FirstLane</h1>
+            </div>
+            <nav className="px-4 space-y-2 text-xs">
+                <NavLink to="/dashboard" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <LuLayoutDashboard className='w-5 h-5' /> */}
+                    <Dashboard className="icon" />
+                    <span className='hidden md:inline'>Dashboard</span>
+                </NavLink>
+                <NavLink to="/loans" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <HiOutlineCash className='w-5 h-5' /> */}
+                    <Loan className="icon" />
+                    <span className='hidden md:inline'>Loans</span>
+                </NavLink>
+                <NavLink to="/investment" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <BsDatabaseUp className='w-5 h-5' /> */}
+                    <Investment className="icon" />
+                    <span className='hidden md:inline'>Investment</span>
+                </NavLink>
+                <NavLink to="/fx" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <AiOutlineTransaction className='w-5 h-5' /> */}
+                    <Transaction className="icon" />
+                    <span className='hidden md:inline'>FX Transactions</span>
+                </NavLink>
+                <NavLink to="/wallets" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <IoWalletOutline className='w-5 h-5' /> */}
+                    <Wallet className="icon" />
+                    <span className='hidden md:inline'>Wallets</span>
+                </NavLink>
+                <NavLink to="/support" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <FaHeadphonesAlt className='w-4 h-4' /> */}
+                    <Support className="icon" />
+                    <span className='hidden md:inline'>Support</span>
+                </NavLink>
+                <NavLink to="/settings" className={({ isActive, isPending }) =>
+                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                >
+                    {/* <IoSettingsOutline className='w-5 h-5' /> */}
+                    <Setting className="icon" />
+                    <span className='hidden md:inline'>Settings</span>
+                </NavLink>
+            </nav>
+            <div className="absolute bottom-4 left-4 w-11/12">
+                <div className="w-[240px] bg-gradient-to-br from-[#0B1E3A] to-[#142F57] text-white mb-6 mr-4 p-6 rounded-xl">
+                    <h2 className="text-xs font-medium mb-2">Existing user?</h2>
+                    <p className="text-xs text-[#D0D5DD] font-light mb-4">
+                        Are you an existing user who has investments with Firstlane? Click button to reflect your investment digitally here.
+                    </p>
+                    <button className="text-xs font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer">
+                        Sync investment
+                    </button>
+                </div>
+
+                <div className='flex items-center justify-between'>
+                    <div className="w-10/12 flex items-center gap-3">
+                        <div className='relative w-[40px] h-[40px] bg-gray-300 rounded-full'>
+                            <img
+                                src=""
+                                alt=""
+                                className="w-full h-full rounded-full"
+                            />
+                            <span className='absolute bottom-1 right-0 w-3 h-3 bg-green-500 border border-white rounded-full'></span>
+                        </div>
+                        <div className="w-8/12 text-xs">
+                            <p className="font-medium">Alison Eyo</p>
+                            <p className="text-secondary truncate">alison.e@rayna.ui</p>
+                        </div>
+                    </div>
+                    <p className='w-2/12 cursor-pointer'>
+                        {/* <MdLogout className='w-4 h-4' /> */}
+                        <Logout className="" />
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Sidebar;
