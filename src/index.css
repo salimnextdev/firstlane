@@ -1,0 +1,85 @@
+/* src/index.css */
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-Light.ttf') format('truetype');
+  font-weight: 200;
+  font-style: light;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-Regular.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-Medium.ttf') format('truetype');
+  font-weight: 400;
+  font-style: bold;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-SemiBold.ttf') format('truetype');
+  font-weight: 500;
+  font-style: medium;
+}
+
+:root {
+  --firstlane-primary: #3E4095;
+  --firstlane-primary-hover: #3a3b92;
+  --firstlane-secondary: #05B1F3;
+  --firstlane-secondary-hover: #06adef;
+  --firstlane-tertiary: #D8D9EA;
+  --firstlane-gray: #667185; /* #667085 */
+  --firstlane-success: #099137;
+  --firstlane-success-bg: #099137;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  font-family: 'Instrument Sans', sans-serif;
+  line-height: 1.5;
+  font-weight: 300;
+
+  /* color-scheme: light dark; */
+  color: #101928;
+  /* background-color: #FFFFFF; */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-primary {
+  background-color: var(--firstlane-primary);
+  color: #ffffff;
+}
+.bg-primary:hover {
+  background-color: var(--firstlane-primary-hover);
+  color: #ffffff;
+}
+.bg-secondary {
+  background-color: var(--firstlane-secondary);
+  color: #ffffff;
+}
+.text-primary {
+  color: var(--firstlane-primary);
+}
+.text-primary:hover {
+  color: var(--firstlane-primary-hover);
+}
+.text-secondary {
+  color: var(--firstlane-gray);
+}
+
+.text-xs {
+  font-size: 14px;
+}
+.text-sm {
+  font-size: 16px;
+}
