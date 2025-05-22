@@ -34,7 +34,7 @@ const KYCVerification = () => {
                 {step === 1 && <KYCStep1 nextStep={nextStep} />}
                 {step === 2 && <KYCStep2 prevStep={prevStep} nextStep={nextStep} />}
                 {step === 3 && <KYCStep3 prevStep={prevStep} nextStep={nextStep} />}
-                {step === 4 && <KYCStep4 prevStep={prevStep} nextStep={nextStep} />}
+                {step === 4 && <KYCStep4 prevStep={prevStep} />}
 
             </div>
         </div>
