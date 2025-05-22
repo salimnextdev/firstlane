@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTachometerAlt, FaMoneyCheckAlt, FaChartLine, FaExchangeAlt, FaWallet, FaHeadset, FaCog } from 'react-icons/fa';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -18,12 +18,23 @@ import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
 import { ReactComponent as Support } from '@/assets/icons/support.svg';
 import { ReactComponent as Setting } from '@/assets/icons/setting.svg';
 import { ReactComponent as Logout } from '@/assets/icons/sign-out.svg';
-
 import logo from '@/assets/images/logo.png';
 
+import CouponModal from '@/modules/investments/components/couponModal';
+
 const Sidebar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <div className="w-8 md:w-[272px] h-screen bg-white fixed left-0 top-0 z-10">
+            <CouponModal
+                title='Sync investment'
+                description="Enter your given coupon code to sync your investment on Firstlane digital application.
+                This would make it easy for your to continue experiencing great financial services from Firstlane's digital application."
+                isOpen={isOpen}
+                onClose={setIsOpen}
+            />
+
             <div className="flex items-center gap-3 px-6 h-20">
                 <img className="w-8" alt="logo" src={logo} />
                 <h1 className="text-2xl font-medium text-primary">FirstLane</h1>
@@ -50,7 +61,7 @@ const Sidebar = () => {
                     <Investment className="icon" />
                     <span className='hidden md:inline'>Investment</span>
                 </NavLink>
-                <NavLink to="/fx" className={({ isActive, isPending }) =>
+                <NavLink to="/fx-transactions" className={({ isActive, isPending }) =>
                     `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
                 >
                     {/* <AiOutlineTransaction className='w-5 h-5' /> */}
@@ -85,7 +96,10 @@ const Sidebar = () => {
                     <p className="text-xs text-[#D0D5DD] font-light mb-4">
                         Are you an existing user who has investments with Firstlane? Click button to reflect your investment digitally here.
                     </p>
-                    <button className="text-xs font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer">
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className="text-xs font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer"
+                    >
                         Sync investment
                     </button>
                 </div>
