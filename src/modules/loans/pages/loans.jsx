@@ -35,12 +35,12 @@ const Loans = () => {
             <div className='flex items-center justify-between'>
                 <div>
                     <h2 className="text-2xl font-semibold">Loans</h2>
-                    <p className="text-xs text-gray-500 my-1">Track and manage your loans safely 💰</p>
+                    <p className="text-sm text-gray-500 my-1">Track and manage your loans safely 💰</p>
                 </div>
                 <div className='w-1/4 flex items-center gap-3'>
                     <button
                         onClick={() => navigate('/loans/applications')}
-                        className='w-full h-9 bg-[#D8D9EA] text-primary text-xs rounded-md cursor-pointer'
+                        className='w-full h-9 bg-[#D8D9EA] text-primary text-sm rounded-md cursor-pointer'
                     >
                         Loan applications
                     </button>
@@ -48,7 +48,7 @@ const Loans = () => {
                     <SelectInput
                         label=""
                         name="filter"
-                        className='w-full !h-9 text-xs m-0 px-2 cursor-pointer'
+                        className='w-full !h-9 text-sm m-0 px-2 cursor-pointer'
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
                         options={[
@@ -100,7 +100,7 @@ const Loans = () => {
                 <h2 className="text-lg text-[#475367] font-medium">Loan Types</h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-2'>
                     {data.map((item, index) => (
-                        <div key={index} className='p-5 space-y-3 bg-[#F9FAFB] text-xs border border-[#E4E7EC] rounded-xl'>
+                        <div key={index} className='p-5 space-y-3 bg-[#F9FAFB] text-sm border border-[#E4E7EC] rounded-xl'>
                             <p className='text-xl font-medium'>{item.title}</p>
                             <p className='text-secondary'>
                                 {item.description}
@@ -108,7 +108,7 @@ const Loans = () => {
 
                             <Link
                                 to={item.link}
-                                className="inline-flex items-center justify-center gap-3 px-4 h-10 bg-secondary text-xs rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                className="inline-flex items-center justify-center gap-3 px-4 h-10 bg-secondary text-sm rounded-md cursor-pointer hover:bg-primary/90 transition">
                                 Apply for loan
                             </Link>
                         </div>

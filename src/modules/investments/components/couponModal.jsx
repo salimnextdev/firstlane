@@ -45,7 +45,7 @@ const CouponModal = ({
                     </div>
                     <DialogHeader className="text-center">
                         <DialogTitle className="text-2xl">{title}</DialogTitle>
-                        <DialogDescription className="text-secondary">{description}</DialogDescription>
+                        <DialogDescription className="text-base text-secondary">{description}</DialogDescription>
                     </DialogHeader>
 
                     <form method="post">
@@ -59,7 +59,7 @@ const CouponModal = ({
                     <div className="w-full flex justify-center gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-xs my-3 px-8 py-3 cursor-pointer rounded-md"
+                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm my-3 px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -68,7 +68,7 @@ const CouponModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            className="w-1/2 h-11 bg-primary text-white text-xs my-3 px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-1/2 h-11 bg-primary text-white text-sm my-3 px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
