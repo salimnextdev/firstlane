@@ -69,12 +69,12 @@ const FundOptionsModal = ({
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className='space-y-4 text-xs text-secondar'>
+                    <div className='space-y-4 text-sm text-secondar'>
                         <div className='flex items-center gap-3'>
                             <p><Bank /></p>
                             <div className='space-y-1'>
                                 <p className='text-base font-medium'>Bank Transfer</p>
-                                <p className='text-xs text-secondary'>You make payment to our account from your general bank account</p>
+                                <p className='text-sm text-secondary'>You make payment to our account from your general bank account</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
@@ -87,7 +87,7 @@ const FundOptionsModal = ({
                             <p><Payment /></p>
                             <div className='space-y-1'>
                                 <p className='text-base font-medium'>Bank Payment</p>
-                                <p className='text-xs text-secondary'>You make payment to our account from your general bank account</p>
+                                <p className='text-sm text-secondary'>You make payment to our account from your general bank account</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
@@ -100,7 +100,7 @@ const FundOptionsModal = ({
                             <Coupon />
                             <div className='space-y-1'>
                                 <p className='text-base font-medium'>Coupon Code</p>
-                                <p className='text-xs text-secondary'>Your coupon carries the same value as your investment amount</p>
+                                <p className='text-sm text-secondary'>Your coupon carries the same value as your investment amount</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
@@ -114,13 +114,13 @@ const FundOptionsModal = ({
                     <div className="w-full flex justify-center gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-xs px-8 py-3 cursor-pointer rounded-md"
+                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
                         <button
                             onClick={handleModal}
-                            className="w-1/2 h-11 bg-primary text-white text-xs px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>

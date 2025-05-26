@@ -35,7 +35,7 @@ const FundAccountModal = ({
                         </div>
                     </div>
 
-                    <div className='space-y-4 text-xs text-secondar'>
+                    <div className='space-y-4 text-sm text-secondar'>
                         <div className='flex items-center justify-between'>
                             <div className='space-y-1'>
                                 <p>Account number</p>
