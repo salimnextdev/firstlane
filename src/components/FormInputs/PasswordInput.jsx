@@ -13,7 +13,7 @@ const PasswordInput = ({
 
     return (
         <div className="relative">
-            <label htmlFor={name} className="block text-xs font-medium">
+            <label htmlFor={name} className="block text-sm font-medium">
                 {label}
             </label>
             <input

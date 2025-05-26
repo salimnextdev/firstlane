@@ -25,7 +25,7 @@ const FileInput = ({
             {label && (
                 <label
                     htmlFor={name}
-                    className="block text-xs font-medium mb-1"
+                    className="block text-sm font-medium mb-1"
                 >
                     {label}
                 </label>

@@ -21,7 +21,7 @@ const TableDropdown = ({ options = [], value, onSelect }) => {
                     <DropdownMenuItem
                         key={option.value}
                         onSelect={() => onSelect(option.value)}
-                        className="text-xs cursor-pointer"
+                        className="text-sm cursor-pointer"
                     >
                         {option.label}
                     </DropdownMenuItem>

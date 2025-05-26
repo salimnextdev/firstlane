@@ -18,7 +18,7 @@ const SelectInput = ({
 }) => {
     return (
         <div className="w-full">
-            <label htmlFor={name} className="block text-xs font-medium">
+            <label htmlFor={name} className="block text-sm font-medium">
                 {label}
             </label>
             <Select

@@ -13,7 +13,7 @@ const FilterDropdown = ({ options = [], value, onSelect }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 h-[40px] rounded-lg border border-[#E4E7EC] bg-white px-4 text-xs font-medium text-gray-800 cursor-pointer">
+        <button className="flex items-center gap-2 h-[40px] rounded-lg border border-[#E4E7EC] bg-white px-4 text-sm font-medium text-gray-800 cursor-pointer">
           <Filter />
           <span>{selectedLabel || "Filter"}</span>
         </button>
