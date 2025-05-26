@@ -80,7 +80,7 @@ const ViewInvestment = () => {
         <div className="relative space-y-4">
             <div>
                 <h2 className="text-2xl font-semibold">Investment</h2>
-                <p className="text-xs text-gray-500 my-1">Track and manage your investments safely 💰</p>
+                <p className="text-sm text-gray-500 my-1">Track and manage your investments safely 💰</p>
             </div>
 
             {/* Tab View */}
@@ -88,13 +88,13 @@ const ViewInvestment = () => {
                 <TabsList className='w-4/12 !hidden lg:!grid grid-cols-2 gap-5 mb-4'>
                     <TabsTrigger
                         value="active_investment"
-                        className={`h-10 text-xs font-light ${currentTab === 'active_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
+                        className={`h-10 text-sm font-light ${currentTab === 'active_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
                     >
                         Active investment
                     </TabsTrigger>
                     <TabsTrigger
                         value="past_investment"
-                        className={`h-10 text-xs font-light ${currentTab === 'past_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
+                        className={`h-10 text-sm font-light ${currentTab === 'past_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
                     >
                         Past investment
                     </TabsTrigger>
