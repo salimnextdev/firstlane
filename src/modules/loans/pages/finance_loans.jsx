@@ -48,10 +48,10 @@ const FinanceLoans = () => {
                         value={formData.loan_reason}
                         onChange={handleChange}
                         options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
+                            { label: "Equipment financing", value: "Equipment financing" },
+                            { label: "Working capital", value: "Working capital" },
+                            { label: "Business expansion", value: "Business expansion" },
+                            { label: "Invoice financing", value: "Invoice financing" },
                         ]}
                         placeholder="Select purpose"
                     />
@@ -65,10 +65,10 @@ const FinanceLoans = () => {
                         value={formData.duration}
                         onChange={handleChange}
                         options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
+                            { label: "3 months", value: "3 months" },
+                            { label: "6 months", value: "6 months" },
+                            { label: "9 months", value: "9 months" },
+                            { label: "12 months", value: "12 months" },
                         ]}
                         placeholder="Select tenure"
                     />
@@ -79,10 +79,10 @@ const FinanceLoans = () => {
                         value={formData.interval}
                         onChange={handleChange}
                         options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
+                            { label: "Weekly", value: "Weekly" },
+                            { label: "Monthly", value: "Monthly" },
+                            { label: "Quarterly", value: "Quarterly" },
+                            { label: "Yearly", value: "Yearly" },
                         ]}
                         placeholder="Select repayment"
                     />
