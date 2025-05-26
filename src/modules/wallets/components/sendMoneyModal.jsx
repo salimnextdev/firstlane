@@ -17,7 +17,8 @@ import SendOTPModal from '@/modules/wallets/components/SendOTPModal';
 const SendMoneyModal = ({
     isOpen,
     onClose,
-    title = "",
+    type,
+    title = "Send Money",
     buttonCLoseText = "Cancel",
     buttonSuccessText = "Send Money"
 }) => {
@@ -29,11 +30,12 @@ const SendMoneyModal = ({
             <SendOTPModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
+                type={type}
             />
             <DialogContent className="z-50 p-6 px-8 bg-white border border-[#E4E7EC] rounded-xl max-w-md mx-auto">
                 <div className="space-y-5">
                     <DialogHeader className="text-left">
-                        <DialogTitle className="text-2xl">Send Money</DialogTitle>
+                        <DialogTitle className="text-2xl">{title}</DialogTitle>
                     </DialogHeader>
 
                     <form method="post" className='space-y-4'>

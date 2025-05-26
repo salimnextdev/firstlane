@@ -16,6 +16,7 @@ import OTPInput from '@/components/FormInputs/OTPInput';
 const SendOTPModal = ({
     isOpen,
     onClose,
+    type,
     title = "Send Money",
     email = "adam.jude@mail.com",
     buttonCLoseText = "Cancel",
@@ -55,6 +56,9 @@ const SendOTPModal = ({
             <SuccessModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
+                type={type}
+                amount={100000}
+                name={type === "send" ? "Ayoola Sani" : ""}
             />
             <DialogContent className="z-50 p-6 px-8 bg-white border border-[#E4E7EC] rounded-xl max-w-md mx-auto">
                 <div className="space-y-5">

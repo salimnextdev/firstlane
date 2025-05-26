@@ -14,16 +14,17 @@ import {
 const SuccessModal = ({
     isOpen,
     onClose,
-    title="Transfer successful",
-    amount = 100000,
-    name = "Ayoola Sani",
+    type,
+    title = "Transfer successful",
+    amount,
+    name,
     buttonCLoseText = "View reciept",
-    buttonSuccessText = "Return to Wallets"
+    buttonSuccessText = `Return to ${type === 'send' ? 'Wallets' : 'Investment'}`
 }) => {
     const navigate = useNavigate();
     const GotoInv = () => {
         onClose();
-        navigate('/wallets')
+        navigate(type === 'send' ? '/wallets' : '/investment')
     };
 
     return (
@@ -47,7 +48,7 @@ const SuccessModal = ({
                                     maximumFractionDigits: 2
                                 })}
                             </span> to &nbsp;
-                            <span className='font-medium'>{name}</span>.
+                            {name ? <span className='font-medium'>{name}</span> : "your account"}.
                         </AlertDialogDescription>
                         <div className='w-full flex justify-center gap-5'>
                             <AlertDialogCancel
@@ -57,7 +58,7 @@ const SuccessModal = ({
                                 {buttonCLoseText}
                             </AlertDialogCancel>
                             <AlertDialogCancel
-                                onClick={onClose}
+                                onClick={GotoInv}
                                 className='w-1/2 h-11 bg-primary text-xs my-3 px-8 py-3 rounded-xl cursor-pointer'
                             >
                                 {buttonSuccessText}
