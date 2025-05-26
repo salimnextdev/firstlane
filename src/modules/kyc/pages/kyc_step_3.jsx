@@ -28,7 +28,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                         <SelectInput
                             label="Title"
                             name="title"
-                            className='w-full text-xs'
+                            className='w-full text-sm'
                             value={formData.title}
                             onChange={handleChange}
                             options={[
@@ -43,7 +43,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <TextInput
                         label="First Name"
                         name="firstname"
-                        className='w-full text-xs'
+                        className='w-full text-sm'
                         value={formData.firstname}
                         onChange={handleChange}
                         placeholder="Adam"
@@ -51,7 +51,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <TextInput
                         label="Last Name"
                         name="lastname"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.lastname}
                         onChange={handleChange}
                         placeholder="Jude"
@@ -62,7 +62,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <SelectInput
                         label="Relationship to Next of Kin"
                         name="relationship"
-                        className='w-full text-xs'
+                        className='w-full text-sm'
                         value={formData.relationship}
                         onChange={handleChange}
                         options={[
@@ -76,7 +76,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <SelectInput
                         label="Gender"
                         name="gender"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.gender}
                         onChange={handleChange}
                         options={[
@@ -90,7 +90,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <TextInput
                         label="Phone Number"
                         name="phone"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="08000000000"
@@ -100,7 +100,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                 <TextInput
                     label="Residential address"
                     name="address"
-                    className='text-xs'
+                    className='text-sm'
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
@@ -109,13 +109,13 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                 <div className='space-x-3'>
                     <button
                         onClick={prevStep}
-                        className='h-9 px-3 rounded-md border border-gray-200 text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md border border-gray-200 text-sm cursor-pointer'
                     >
                         Previous
                     </button>
                     <button
                         onClick={nextStep}
-                        className='h-9 px-3 rounded-md bg-primary text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
                         Save and continue
                     </button>

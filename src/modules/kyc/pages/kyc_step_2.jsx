@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
+import FileInput from '@/components/FormInputs/FileInput';
 
 const KYCStep2 = ({ prevStep, nextStep }) => {
 
@@ -26,7 +27,7 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                     <SelectInput
                         label="ID Type"
                         name="id_type"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.id_type}
                         onChange={handleChange}
                         options={[
@@ -40,7 +41,7 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                     <TextInput
                         label="ID Number"
                         name="id_number"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.id_number}
                         onChange={handleChange}
                         placeholder="1234567890"
@@ -60,25 +61,32 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                     />
                 </div>
 
+                <div className='w-full flex items-center gap-3'>
                 <TextInput
                     label="Bank Verification Number"
                     name="bvn"
-                    className='text-xs'
+                    className='text-sm'
                     value={formData.bvn}
                     onChange={handleChange}
                     placeholder="0123456789"
                 />
+                <FileInput
+                    label='Upload document'
+                    name='document'
+                    onFileChange={handleChange}
+                />
+                </div>
 
                 <div className='space-x-3'>
                     <button
                         onClick={prevStep}
-                        className='h-9 px-3 rounded-md border border-gray-200 text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md border border-gray-200 text-sm cursor-pointer'
                     >
                         Previous
                     </button>
                     <button
                         onClick={nextStep}
-                        className='h-9 px-3 rounded-md bg-primary text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
                         Save and continue
                     </button>

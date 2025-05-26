@@ -28,7 +28,7 @@ const KYCStep4 = ({ prevStep, nextStep }) => {
                         <path d="M10 10.8333L10 7.49998" stroke="#1B1B1B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
-                <p className="text-xs text-[#667085] text-wrap leading-relaxed">
+                <p className="text-sm text-[#667085] text-wrap leading-relaxed">
                     We would be requesting for your statements of account for the last 6 months
                 </p>
             </div>
@@ -70,13 +70,13 @@ const KYCStep4 = ({ prevStep, nextStep }) => {
                 <div className='space-x-3'>
                     <button
                         onClick={prevStep}
-                        className='h-9 px-3 rounded-md border border-gray-200 text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md border border-gray-200 text-sm cursor-pointer'
                     >
                         Previous
                     </button>
                     <button
                         onClick={nextStep}
-                        className='h-9 px-3 rounded-md bg-primary text-xs cursor-pointer'
+                        className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
                         Submit for verification
                     </button>

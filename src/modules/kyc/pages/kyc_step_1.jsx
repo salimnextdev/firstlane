@@ -26,7 +26,7 @@ const KYCStep1 = ({ nextStep }) => {
                         <SelectInput
                             label="Title"
                             name="title"
-                            className='w-full text-xs'
+                            className='w-full text-sm'
                             value={formData.title}
                             onChange={handleChange}
                             options={[
@@ -41,7 +41,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <TextInput
                         label="First Name"
                         name="firstname"
-                        className='w-full text-xs'
+                        className='w-full text-sm'
                         value={formData.firstname}
                         onChange={handleChange}
                         placeholder="Adam"
@@ -49,7 +49,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <TextInput
                         label="Last Name"
                         name="lastname"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.lastname}
                         onChange={handleChange}
                         placeholder="Jude"
@@ -61,7 +61,7 @@ const KYCStep1 = ({ nextStep }) => {
                         label="Email Address"
                         name="email"
                         type='email'
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="adam.jude@mail.com"
@@ -69,7 +69,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <TextInput
                         label="Phone"
                         name="phone"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="08000000000"
@@ -85,7 +85,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <SelectInput
                         label="Gender"
                         name="gender"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.gender}
                         onChange={handleChange}
                         options={[
@@ -100,7 +100,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <SelectInput
                         label="Marital Status"
                         name="marital_status"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.marital_status}
                         onChange={handleChange}
                         options={[
@@ -116,7 +116,7 @@ const KYCStep1 = ({ nextStep }) => {
                 <TextInput
                     label="Residential address"
                     name="address"
-                    className='text-xs'
+                    className='text-sm'
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
@@ -126,7 +126,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <SelectInput
                         label="Nationality"
                         name="nationality"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.nationality}
                         onChange={handleChange}
                         options={[
@@ -141,7 +141,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <SelectInput
                         label="State"
                         name="state"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.state}
                         onChange={handleChange}
                         options={[
@@ -156,7 +156,7 @@ const KYCStep1 = ({ nextStep }) => {
                     <SelectInput
                         label="LGA"
                         name="lga"
-                        className='text-xs'
+                        className='text-sm'
                         value={formData.lga}
                         onChange={handleChange}
                         options={[
@@ -171,7 +171,7 @@ const KYCStep1 = ({ nextStep }) => {
 
                 <button
                     onClick={nextStep}
-                    className='h-9 px-3 rounded-md bg-primary text-xs cursor-pointer'
+                    className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
                 >
                     Save and continue
                 </button>
