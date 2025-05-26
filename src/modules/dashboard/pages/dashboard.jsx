@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
 import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
 import { ReactComponent as Divider } from '@/assets/icons/divider.svg';
+import SelectInput from '@/components/FormInputs/SelectInput';
 
 const transactions = [
     {
@@ -71,14 +72,16 @@ const transactions = [
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const [filter, setFilter] = useState('');
+
     return (
         <div className="relative space-y-6">
             <div className='flex flex-col lg:flex-row items-center justify-between'>
                 <div>
                     <h2 className="text-[28px] font-semibold">Welcome back, Olivia</h2>
-                    <p className="text-xs text-gray-500 my-1">Track, manage and invest your finance properly 💰</p>
+                    <p className="text-sm text-gray-500 my-1">Track, manage and invest your finance properly 💰</p>
                 </div>
-                <div className='flex items-center gap-3 text-xs font-medium'>
+                <div className='flex items-center gap-3 text-sm font-medium'>
                     <button className='w-28 h-8 rounded-md border border-[#E4E7EC] cursor-pointer'>
                         Apply for Loan
                     </button>
@@ -96,7 +99,7 @@ const Dashboard = () => {
                     </div>
                     <div className='w-11/12 leading-relaxed'>
                         <p className="text-sm font-medium">KYC Verification Required</p>
-                        <p className="text-xs text-[#667085] text-wrap leading-relaxed">
+                        <p className="text-sm text-[#667085] text-wrap leading-relaxed">
                             We need to verify your documents and details to enjoy the features on FirstLane like finance investments, loans and FX transactions.
                             After successful verification, you would not have to upload any document again.
 
@@ -104,7 +107,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <div className='md:w-3/12 lg:w-3/12 flex md:justify-end'>
-                    <button onClick={() => navigate('/kyc-verification')} className="h-8 px-4 text-xs font-medium bg-white border border-gray-200 rounded-lg cursor-pointer">
+                    <button onClick={() => navigate('/kyc-verification')} className="h-8 px-4 text-sm font-medium bg-white border border-gray-200 rounded-lg cursor-pointer">
                         Verify Now
                     </button>
                 </div>
@@ -128,7 +131,7 @@ const Dashboard = () => {
                             <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
                         </div>
 
-                        <div className='flex items-center gap-1 text-xs text-red-500'>
+                        <div className='flex items-center gap-1 text-sm text-red-500'>
                             <IoMdArrowDown className='w-4 h-4' />
                             <span>10%</span>
                             <span className='text-[#667085]'>vs last month</span>
@@ -150,7 +153,7 @@ const Dashboard = () => {
                             <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
                         </div>
 
-                        <div className='flex items-center gap-1 text-xs text-green-500'>
+                        <div className='flex items-center gap-1 text-sm text-green-500'>
                             <IoMdArrowUp className='w-4 h-4' />
                             <span>10%</span>
                             <span className='text-[#667085]'>vs last month</span>
@@ -172,7 +175,7 @@ const Dashboard = () => {
                             <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
                         </div>
 
-                        <div className='flex items-center gap-1 text-xs text-green-500'>
+                        <div className='flex items-center gap-1 text-sm text-green-500'>
                             <IoMdArrowUp className='w-4 h-4' />
                             <span>10%</span>
                             <span className='text-[#667085]'>vs last month</span>
@@ -190,8 +193,8 @@ const Dashboard = () => {
             <div className="w-full rounded-lg border border-gray-200 bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="text-[20px] font-medium text-[#475367]">Transactions</h2>
-                        <div className="flex items-center space-x-2">
+                        <h2 className="w-full text-[20px] font-medium text-[#475367]">Transactions</h2>
+                        <div className="w-5/12 flex items-center justify-between space-x-2">
                             <div className="relative w-full">
                                 <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
                                 <input
@@ -200,13 +203,20 @@ const Dashboard = () => {
                                     className="w-full h-[40px] pl-10 pr-4 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
                                 />
                             </div>
-                            {/* <Button
-                                variant="outline"
-                                className="flex items-center gap-2 h-9 px-4 border border-gray-200 rounded-lg"
-                            >
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Filter
-                            </Button> */}
+                            <SelectInput
+                                label=""
+                                name="filter"
+                                className='w-6/12 !h-10 float-end text-sm m-0 px-2 cursor-pointer'
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                options={[
+                                    { label: "Mr", value: "Mr" },
+                                    { label: "Mrs", value: "Mrs" },
+                                    { label: "Sir", value: "Sir" },
+                                    { label: "Miss", value: "Miss" },
+                                ]}
+                                placeholder="Filter"
+                            />
                         </div>
                     </div>
 
@@ -217,15 +227,15 @@ const Dashboard = () => {
                                     <TableHead className="w-12 p-4">
                                         <Checkbox />
                                     </TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Name</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Amount</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Payment type</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Date & time</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Status</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Name</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Amount</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Payment type</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Date & time</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Status</TableHead>
                                     <TableHead className="w-12"></TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody className='text-xs text-secondary'>
+                            <TableBody className='text-sm text-secondary'>
                                 {transactions.map((transaction) => (
                                     <TableRow key={transaction.id} className="border-b border-gray-100">
                                         <TableCell className="p-4">
@@ -233,7 +243,7 @@ const Dashboard = () => {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center overflow-hidden">
+                                                <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
                                                     <img src="/api/placeholder/40/40" alt="User avatar" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div>
@@ -244,13 +254,13 @@ const Dashboard = () => {
                                         </TableCell>
                                         <TableCell className="text-gray-800">{transaction.amount}</TableCell>
                                         <TableCell>
-                                            <span className="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+                                            <span className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600">
                                                 {transaction.paymentType}
                                             </span>
                                         </TableCell>
                                         <TableCell className="text-gray-600">{transaction.dateTime}</TableCell>
                                         <TableCell>
-                                            <span className="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+                                            <span className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600">
                                                 {transaction.status}
                                             </span>
                                         </TableCell>
