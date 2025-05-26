@@ -5,7 +5,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as InvestmentIcon } from '@/assets/icons/investment.svg';
 
-import FundAccountModal from '@/modules/investments/components/fundAccountModal';
+import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 
 const data = [
     {
@@ -45,19 +45,14 @@ const Investment = () => {
 
     return (
         <div className="relative space-y-8">
-            <FundAccountModal
+            <FundOptionsModal
                 isOpen={isOpen}
                 onClose={setIsOpen}
-                data={{
-                    amount: 140000.00,
-                    acc_number: "0123456789",
-                    acc_name: "Alison Eyo",
-                    bank_name: "Paystack Titan",
-                }}
+                option="bank_transfer"
             />
             <div>
                 <h2 className="text-2xl font-semibold">Investment</h2>
-                <p className="text-xs text-gray-500 my-1">Track and manage your investments safely 💰</p>
+                <p className="text-sm text-gray-500 my-1">Track and manage your investments safely 💰</p>
             </div>
 
             {/* Stat Cards */}
@@ -73,7 +68,7 @@ const Investment = () => {
                             <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
                         </div>
                     </div>
-                    <button onClick={() => setIsOpen(true)} className='h-8 px-2 text-xs rounded-md bg-secondary cursor-pointer'>
+                    <button onClick={() => setIsOpen(true)} className='h-8 px-2 text-sm rounded-md bg-secondary cursor-pointer'>
                         Fund wallet
                     </button>
                 </div>
@@ -83,9 +78,9 @@ const Investment = () => {
                         <p className="my-5 text-2xl font-semibold">{'14'.toLocaleString(undefined, {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
-                        })} <span className='text-xs text-secondary'>investments</span></p>
+                        })} <span className='text-sm text-secondary'>investments</span></p>
 
-                        <Link to={'/investment/all'} className='flex items-center gap-1 text-xs'>
+                        <Link to={'/investment/all'} className='flex items-center gap-1 text-sm'>
                             <span className='font-medium'>View my investments</span>
                             <BsArrowRight className='w-4 h-4 text-secondary' />
                         </Link>
@@ -100,22 +95,22 @@ const Investment = () => {
                 <h2 className="text-2xl font-semibold">Available Investment</h2>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-2'>
                     {data.map((item, index) => (
-                        <div key={index} className='p-5 bg-white text-xs border border-[#E4E7EC] rounded-xl'>
+                        <div key={index} className='p-5 bg-white text-sm border border-[#E4E7EC] rounded-xl'>
                             <p className='text-secondary'>Investment Duration</p>
                             <p className='text-lg font-medium space-x-1'>
                                 <span>{item.days} days</span>
-                                <span className='text-xs text-secondary font-light'>({item.months} months)</span>
+                                <span className='text-sm text-secondary font-light'>({item.months} months)</span>
                             </p>
 
                             <div className='flex gap-10 my-4'>
-                                <div className='text-xs'>
+                                <div className='text-sm'>
                                     <p className='text-secondary'>Investment starts at</p>
                                     <p className='text-sm font-medium'>₦{item.investment.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
                                     })}</p>
                                 </div>
-                                <div className='text-xs'>
+                                <div className='text-sm'>
                                     <p className='text-secondary'>Interest starts at</p>
                                     <p className='text-sm font-medium'>{item.interest}%</p>
                                 </div>
@@ -123,7 +118,7 @@ const Investment = () => {
 
                             <Link
                                 to={'/investment/make-investment'}
-                                className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-xs font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
                                 <span>Invest</span>
                                 <BsArrowRight className="w-4 h-4" />
                             </Link>
