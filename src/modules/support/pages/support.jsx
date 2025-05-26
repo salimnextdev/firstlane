@@ -37,11 +37,11 @@ const Support = () => {
             <div className='flex items-center justify-between'>
                 <div>
                     <h2 className="text-2xl font-semibold">Support</h2>
-                    <p className="text-xs text-gray-500 my-1">Get quick and effective customer support</p>
+                    <p className="text-sm text-gray-500 my-1">Get quick and effective customer support</p>
                 </div>
                 <button
                     onClick={() => setIsOpen(true)}
-                    className='h-9 px-4 bg-primary text-xs rounded-md cursor-pointer'
+                    className='h-9 px-4 bg-primary text-sm rounded-md cursor-pointer'
                 >
                     Start a new chat
                 </button>
@@ -59,16 +59,16 @@ const Support = () => {
                                 <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
                                     <p className='capitalize'>A</p>
                                 </div>
-                                <div className='text-xs'>
+                                <div className='text-sm'>
                                     <p className='font-medium space-x-3'>
                                         <span>Admin</span>
                                         <span className='text-secondary'>|</span>
-                                        <span className='text-[11px] text-secondary font-normal'>19804672</span>
+                                        <span className='text-xs text-secondary font-normal'>19804672</span>
                                     </p>
                                     <p className='text-secondary font-light'>{item.type}</p>
                                 </div>
                             </div>
-                            <div className='text-[11px]'>
+                            <div className='text-xs'>
                                 <p>12:30</p>
                                 <p className='w-[29px] h-[17px] flex items-center justify-center bg-primary rounded-full'>10</p>
                             </div>
@@ -83,9 +83,9 @@ const Support = () => {
                         <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
                             <p className='capitalize'>A</p>
                         </div>
-                        <div className='text-xs'>
+                        <div className='text-sm'>
                             <p className='font-medium'>Admin</p>
-                            <p className='text-[11px] text-secondary font-light'>{selected.type}</p>
+                            <p className='text-xs text-secondary font-light'>{selected.type}</p>
                         </div>
                     </div>
 
@@ -93,7 +93,7 @@ const Support = () => {
                     <div className={`mt-5 w-full space-y-5 p-4 h-[60vh] overflow-y-auto cursor-pointer`}>
                         {/* Center */}
                         <div className='flex items-center justify-center'>
-                            <p className="inline-block px-3 py-1 text-[11px] text-center rounded-full bg-[#F0F2F5] text-secondary">
+                            <p className="inline-block px-3 py-1 text-xs text-center rounded-full bg-[#F0F2F5] text-secondary">
                                 Today
                             </p>
                         </div>
@@ -108,16 +108,16 @@ const Support = () => {
                                 </div>
                                 <div className='w-full space-y-1'>
                                     <div className={`w-full flex items-center justify-between p-3 bg-[#F1F1F2] rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
-                                        <div className='flex items-center gap-3 text-xs'>
+                                        <div className='flex items-center gap-3 text-sm'>
                                             <File />
-                                            <div className='space-y-1 text-xs'>
+                                            <div className='space-y-1 text-sm'>
                                                 <p>Filename.pdf</p>
-                                                <p className='text-[11px] text-secondary'>1 page • PDF • 4mb</p>
+                                                <p className='text-xs text-secondary'>1 page • PDF • 4mb</p>
                                             </div>
                                         </div>
                                         <Upload className="w-1/12" />
                                     </div>
-                                    <div className='flex items-center justify-start text-[11px] text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
                                         <p>Admin • 4:59PM</p>
                                     </div>
                                 </div>
@@ -133,11 +133,11 @@ const Support = () => {
                                 </div>
                                 <div className='w-full space-y-1'>
                                     <div className={`w-full p-3 bg-[#F1F1F2] rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
-                                        <div className='text-xs leading-relaxed'>
+                                        <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-start text-[11px] text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
                                         <p>Admin • 4:59PM</p>
                                     </div>
                                 </div>
@@ -149,11 +149,11 @@ const Support = () => {
                             <div className='w-full lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1'>
                                     <div className={`w-full p-3 bg-[#A9E7FF] rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
-                                        <div className='text-xs leading-relaxed'>
+                                        <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-start text-[11px] text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -166,11 +166,11 @@ const Support = () => {
                             <div className='w-full lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1'>
                                     <div className={`w-full p-3 bg-[#A9E7FF] rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
-                                        <div className='text-xs leading-relaxed'>
+                                        <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-start text-[11px] text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -183,16 +183,16 @@ const Support = () => {
                             <div className='w-full lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1'>
                                     <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
-                                        <div className='flex items-center gap-3 text-xs'>
+                                        <div className='flex items-center gap-3 text-sm'>
                                             <File />
-                                            <div className='space-y-1 text-xs'>
+                                            <div className='space-y-1 text-sm'>
                                                 <p>Filename.pdf</p>
-                                                <p className='text-[11px] text-secondary'>1 page • PDF • 4mb</p>
+                                                <p className='text-xs text-secondary'>1 page • PDF • 4mb</p>
                                             </div>
                                         </div>
                                         <Upload className="w-1/12" />
                                     </div>
-                                    <div className='flex items-center justify-start text-[11px] text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@ const Support = () => {
                         <div className='w-full relative mt-1'>
                             <textarea
                                 name="message"
-                                className={`w-full text-xs font-light h-12 px-4 pt-4 py-2 border border-[#D0D5DD] rounded-lg focus:outline-none resize-none`}
+                                className={`w-full text-sm font-light h-12 px-4 pt-4 py-2 border border-[#D0D5DD] rounded-lg focus:outline-none resize-none`}
                                 placeholder='Write your message'
                             />
                             <input
