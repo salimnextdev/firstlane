@@ -38,7 +38,7 @@ const SuccessModal = ({
                         <AlertDialogTitle className="text-2xl">
                             {title}
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-secondary">
+                        <AlertDialogDescription className="text-base text-secondary">
                             {description}
                         </AlertDialogDescription>
                         <div className='w-full flex justify-center gap-5'>
