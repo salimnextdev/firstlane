@@ -64,7 +64,7 @@ const SendOTPModal = ({
                 <div className="space-y-5">
                     <DialogHeader className="text-center">
                         <DialogTitle className="text-2xl">{title}</DialogTitle>
-                        <DialogDescription className="text-secondary">
+                        <DialogDescription className="text-base text-secondary">
                             An OTP code has been sent to your email, <span className='font-medium'>{email}</span>, to confirm your money transfer.
                         </DialogDescription>
                     </DialogHeader>
@@ -78,8 +78,8 @@ const SendOTPModal = ({
                             placeholder='000-000'
                         />
 
-                        <div className="flex items-center justify-between text-xs">
-                            <p className="text-secondary font-medium">
+                        <div className="flex items-center justify-between text-sm">
+                            <p className="text-secondary">
                                 {!resend && `${countdown}secs`}
                             </p>
                             <button
@@ -97,7 +97,7 @@ const SendOTPModal = ({
                     <div className="w-full flex justify-center gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-xs my-3 px-8 py-3 cursor-pointer rounded-md"
+                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm my-3 px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -106,8 +106,8 @@ const SendOTPModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            // className="h-11 bg-primary text-white text-xs my-3 px-8 py-3 cursor-pointer rounded-xl"
-                            className={`w-1/2 h-11 my-3 bg-primary text-xs rounded-xl ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
+                            // className="h-11 bg-primary text-white text-sm my-3 px-8 py-3 cursor-pointer rounded-xl"
+                            className={`w-1/2 h-11 my-3 bg-primary text-sm rounded-xl ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
                             disabled={resend}
                         >
                             {buttonSuccessText}

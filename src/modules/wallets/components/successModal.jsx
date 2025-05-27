@@ -40,7 +40,7 @@ const SuccessModal = ({
                         <AlertDialogTitle className="text-2xl">
                             {title}
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-secondary">
+                        <AlertDialogDescription className="text-base text-secondary">
                             You have successfully sent a sum of
                             ₦<span className='font-medium'>
                                 {amount.toLocaleString(undefined, {
@@ -53,13 +53,13 @@ const SuccessModal = ({
                         <div className='w-full flex justify-center gap-5'>
                             <AlertDialogCancel
                                 onClick={GotoInv}
-                                className='w-1/2 h-11 border border-[#E4E7EC] text-xs my-3 px-8 py-3 rounded-md cursor-pointer'
+                                className='w-1/2 h-11 border border-[#E4E7EC] text-sm my-3 px-8 py-3 rounded-md cursor-pointer'
                             >
                                 {buttonCLoseText}
                             </AlertDialogCancel>
                             <AlertDialogCancel
                                 onClick={GotoInv}
-                                className='w-1/2 h-11 bg-primary text-xs my-3 px-8 py-3 rounded-xl cursor-pointer'
+                                className='w-1/2 h-11 bg-primary text-sm my-3 px-8 py-3 rounded-xl cursor-pointer'
                             >
                                 {buttonSuccessText}
                             </AlertDialogCancel>
