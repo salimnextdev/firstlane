@@ -49,17 +49,17 @@ const ConfirmDetailsModal = ({
                     </div>
                     <DialogHeader className="text-center">
                         <DialogTitle className="text-2xl">{title}</DialogTitle>
-                        <DialogDescription className="text-secondary">{description}</DialogDescription>
+                        <DialogDescription className="text-base text-secondary">{description}</DialogDescription>
                     </DialogHeader>
 
                     <div className='bg-[#F9FAFB] p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
                         <div className='flex items-center gap-2 text-secondary'>
                             <p>Name:</p>
-                            <p className="text-gray-700">{data.name}</p>
+                            <p className="text-gray-700 font-medium">{data.name}</p>
                         </div>
                         <div className='flex items-center gap-2 text-secondary'>
                             <p>Investment amount:</p>
-                            <p className="text-gray-700">₦{data.amount.toLocaleString(undefined, {
+                            <p className="text-gray-700 font-medium">₦{data.amount.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}</p>
@@ -69,7 +69,7 @@ const ConfirmDetailsModal = ({
                     <div className="w-full flex justify-center gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-xs my-3 px-8 py-3 cursor-pointer rounded-md"
+                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm my-3 px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -78,7 +78,7 @@ const ConfirmDetailsModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            className="w-1/2 h-11 bg-primary text-white text-xs my-3 px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-1/2 h-11 bg-primary text-white text-sm my-3 px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
