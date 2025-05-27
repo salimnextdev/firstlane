@@ -21,12 +21,18 @@ import { ReactComponent as Logout } from '@/assets/icons/sign-out.svg';
 import logo from '@/assets/images/logo.png';
 
 import CouponModal from '@/modules/investments/components/couponModal';
+import LogoutModal from '@/components/LogoutModal';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isLogout, setIsLogout] = useState(false);
 
     return (
         <div className="w-8 md:w-[272px] h-screen bg-white fixed left-0 top-0 z-10">
+            <LogoutModal
+                isOpen={isLogout}
+                onClose={setIsLogout}
+            />
             <CouponModal
                 title='Sync investment'
                 description="Enter your given coupon code to sync your investment on Firstlane digital application.
@@ -39,7 +45,7 @@ const Sidebar = () => {
                 <img className="w-8" alt="logo" src={logo} />
                 <h1 className="text-2xl font-medium text-primary">FirstLane</h1>
             </div>
-            <nav className="px-4 space-y-2 text-xs">
+            <nav className="px-4 space-y-2 text-sm">
                 <NavLink to="/dashboard" className={({ isActive, isPending }) =>
                     `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
                 >
@@ -92,13 +98,13 @@ const Sidebar = () => {
             </nav>
             <div className="absolute bottom-4 left-4 w-11/12">
                 <div className="w-[240px] bg-gradient-to-br from-[#0B1E3A] to-[#142F57] text-white mb-6 mr-4 p-6 rounded-xl">
-                    <h2 className="text-xs font-medium mb-2">Existing user?</h2>
-                    <p className="text-xs text-[#D0D5DD] font-light mb-4">
+                    <h2 className="text-sm font-medium mb-2">Existing user?</h2>
+                    <p className="text-sm text-[#D0D5DD] font-light mb-4">
                         Are you an existing user who has investments with Firstlane? Click button to reflect your investment digitally here.
                     </p>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="text-xs font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer"
+                        className="text-sm font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer"
                     >
                         Sync investment
                     </button>
@@ -114,13 +120,12 @@ const Sidebar = () => {
                             />
                             <span className='absolute bottom-1 right-0 w-3 h-3 bg-green-500 border border-white rounded-full'></span>
                         </div>
-                        <div className="w-8/12 text-xs">
+                        <div className="w-8/12 text-sm">
                             <p className="font-medium">Alison Eyo</p>
                             <p className="text-secondary truncate">alison.e@rayna.ui</p>
                         </div>
                     </div>
-                    <p className='w-2/12 cursor-pointer'>
-                        {/* <MdLogout className='w-4 h-4' /> */}
+                    <p onClick={()=> setIsLogout(true)} className='w-2/12 cursor-pointer'>
                         <Logout className="" />
                     </p>
                 </div>
