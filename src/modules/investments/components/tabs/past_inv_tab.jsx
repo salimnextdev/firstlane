@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { BsArrowRight } from 'react-icons/bs';
 
-import SendMoneyModal from '@/modules/wallets/components/sendMoneyModal';
+import SendMoneyModal from '@/modules/wallets/components/sendWithdrawModal';
 
 const PastInvestmentTab = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false);
