@@ -12,7 +12,7 @@ import RadioInput from '@/components/FormInputs/RadioInput';
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
-import SendOTPModal from '@/modules/wallets/components/SendOTPModal';
+import SendOTPModal from '@/modules/wallets/components/OTPModal';
 
 const SendMoneyModal = ({
     isOpen,
@@ -76,7 +76,7 @@ const SendMoneyModal = ({
                     <div className="w-full flex justify-center gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-xs px-8 py-3 cursor-pointer rounded-md"
+                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -85,7 +85,7 @@ const SendMoneyModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            className="w-1/2 h-11 bg-primary text-white text-xs px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
