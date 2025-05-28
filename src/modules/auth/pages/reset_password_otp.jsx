@@ -37,13 +37,13 @@ const ResetPasswordOTP = () => {
         <div className="w-full h-screen flex items-start justify-center md:p-10 overflow-hidden">
             <AuthImageContainer />
 
-            <div className="w-full md:w-1/2 md:mt-20 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
+            <div className="w-full md:w-1/2 mt-10 md:mt-20 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
                 <div className='w-full lg:w-10/12'>
-                    <div className="flex items-center gap-2 mb-6">
+                    <div className="hidden md:flex items-center gap-2 mb-6">
                         <img className="w-7" alt="logo" src={logo} />
                         <h1 className="text-lg font-medium text-primary">FirstLane</h1>
                     </div>
-                    <h2 className="text-4xl font-bold text-gray-900">
+                    <h2 className="text-xl md:text-4xl font-bold text-gray-900">
                         Reset password
                     </h2>
                     <p className="mt-2 mb-6 text-sm text-secondary">
