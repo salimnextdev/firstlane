@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { IoIosSearch } from 'react-icons/io';
@@ -13,6 +13,8 @@ import { ReactComponent as Setting } from '@/assets/icons/setting.svg';
 import { ReactComponent as KYC } from '@/assets/icons/kyc.svg';
 import { ReactComponent as Bell } from '@/assets/icons/bell.svg';
 import { ReactComponent as Menu } from '@/assets/icons/menu.svg';
+
+import NotificationPanel from './NotificationPanel';
 
 const mapper = {
     "dashboard": Dashboard,
@@ -35,8 +37,12 @@ const Header = () => {
         return <IconComponent color="#000" className="w-5 h-5 text-black" />;
     };
 
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
+            <NotificationPanel isOpen={isOpen} onClose={setIsOpen} />
+            
             <div className='w-full h-[64px] px-6 flex items-center justify-between'>
                 <div className="flex items-center gap-2 text-base">
                     <Icon />
@@ -51,7 +57,7 @@ const Header = () => {
                             className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
                         />
                     </div>
-                    <Bell className="cursor-pointer" />
+                    <Bell onClick={() => setIsOpen(true)} className="cursor-pointer" />
                     <Menu className="md:hidden cursor-pointer" />
                 </div>
             </div>
