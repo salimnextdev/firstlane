@@ -23,7 +23,7 @@ const mapper = {
     "fx transactions": Transaction,
     "wallets": Wallet,
     "support": Support,
-    "setting": Setting,
+    "settings": Setting,
     "kyc verification": KYC
 }
 
