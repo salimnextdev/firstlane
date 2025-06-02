@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
+import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
+
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
@@ -7,45 +10,75 @@ const KYCStep1 = ({ nextStep }) => {
 
     const [formData, setFormData] = useState({
         email: "",
-        password: ""
+        password: "",
+        profile: null,
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, type, files, value } = e.target;
 
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
+
     return (
         <div className="space-y-4">
             <form method='post' className='w-full space-y-4'>
-                <div className='flex items-center gap-3'>
-                    <div className='w-90'>
-                        <SelectInput
-                            label="Title"
-                            name="title"
-                            className='w-full text-sm'
-                            value={formData.title}
+                <div className='flex items-center gap-5'>
+                    <div className='w-[64px] h-[64px] flex items-center justify-center bg-[#F0F2F5] border border-[#E4E7EC] overflow-hidden rounded-lg'>
+                        {formData.profile && formData.profile.file ? (
+                            <img
+                                src={typeof formData.profile.file === 'string' ? formData.profile.file : URL.createObjectURL(formData.profile.file)}
+                                alt="Profile Preview"
+                                className='w-full h-full object-cover'
+                            />
+                        ) : (
+                            <KYC_Upload />
+                        )}
+                    </div>
+
+                    <div className='w-[122px] h-[36px] flex items-center justify-center border border-[#D0D5DD] rounded-lg'>
+                        <input
+                            type="file"
+                            id="profile"
+                            name="profile"
+                            accept="image/*"
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
-                            placeholder="Mr"
+                            className="top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            hidden
+                        />
+                        <label htmlFor="profile" className='text-sm font-normal cursor-pointer'>Upload profile</label>
+                    </div>
+                </div>
+                <div className='flex flex-col md:flex-row items-center gap-3'>
+                    <div className='w-full flex items-center gap-3'>
+                        <div className='w-32 md:w-90'>
+                            <SelectInput
+                                label="Title"
+                                name="title"
+                                className='w-full text-sm'
+                                value={formData.title}
+                                onChange={handleChange}
+                                options={[
+                                    { label: "Mr", value: "Mr" },
+                                    { label: "Mrs", value: "Mrs" },
+                                    { label: "Sir", value: "Sir" },
+                                    { label: "Miss", value: "Miss" },
+                                ]}
+                                placeholder="Mr"
+                            />
+                        </div>
+                        <TextInput
+                            label="First Name"
+                            name="firstname"
+                            className='w-full text-sm'
+                            value={formData.firstname}
+                            onChange={handleChange}
+                            placeholder="Adam"
                         />
                     </div>
-                    <TextInput
-                        label="First Name"
-                        name="firstname"
-                        className='w-full text-sm'
-                        value={formData.firstname}
-                        onChange={handleChange}
-                        placeholder="Adam"
-                    />
                     <TextInput
                         label="Last Name"
                         name="lastname"
@@ -56,7 +89,7 @@ const KYCStep1 = ({ nextStep }) => {
                     />
                 </div>
 
-                <div className='flex items-center gap-3'>
+                <div className='flex flex-col md:flex-row items-center gap-3'>
                     <TextInput
                         label="Email Address"
                         name="email"
@@ -76,26 +109,28 @@ const KYCStep1 = ({ nextStep }) => {
                     />
                 </div>
 
-                <div className='w-full flex items-center gap-3'>
-                    <DateInput
-                        label="Date of Birth"
-                        name="dob"
-                        placeholder='DD / MM / YY'
-                    />
-                    <SelectInput
-                        label="Gender"
-                        name="gender"
-                        className='text-sm'
-                        value={formData.gender}
-                        onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
-                        placeholder="Select Gender"
-                    />
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
+                    <div className='w-full flex items-center gap-3'>
+                        <DateInput
+                            label="Date of Birth"
+                            name="dob"
+                            placeholder='DD / MM / YY'
+                        />
+                        <SelectInput
+                            label="Gender"
+                            name="gender"
+                            className='text-sm'
+                            value={formData.gender}
+                            onChange={handleChange}
+                            options={[
+                                { label: "Mr", value: "Mr" },
+                                { label: "Mrs", value: "Mrs" },
+                                { label: "Sir", value: "Sir" },
+                                { label: "Miss", value: "Miss" },
+                            ]}
+                            placeholder="Select Gender"
+                        />
+                    </div>
 
                     <SelectInput
                         label="Marital Status"
@@ -122,7 +157,7 @@ const KYCStep1 = ({ nextStep }) => {
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
-                <div className='w-full flex items-center gap-3'>
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
                     <SelectInput
                         label="Nationality"
                         name="nationality"
@@ -138,40 +173,42 @@ const KYCStep1 = ({ nextStep }) => {
                         placeholder="Select Nationality"
                     />
 
-                    <SelectInput
-                        label="State"
-                        name="state"
-                        className='text-sm'
-                        value={formData.state}
-                        onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
-                        placeholder="Select State"
-                    />
+                    <div className='w-full flex items-center gap-3'>
+                        <SelectInput
+                            label="State"
+                            name="state"
+                            className='text-sm'
+                            value={formData.state}
+                            onChange={handleChange}
+                            options={[
+                                { label: "Mr", value: "Mr" },
+                                { label: "Mrs", value: "Mrs" },
+                                { label: "Sir", value: "Sir" },
+                                { label: "Miss", value: "Miss" },
+                            ]}
+                            placeholder="Select State"
+                        />
 
-                    <SelectInput
-                        label="LGA"
-                        name="lga"
-                        className='text-sm'
-                        value={formData.lga}
-                        onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
-                        placeholder="Select LGA"
-                    />
+                        <SelectInput
+                            label="LGA"
+                            name="lga"
+                            className='text-sm'
+                            value={formData.lga}
+                            onChange={handleChange}
+                            options={[
+                                { label: "Mr", value: "Mr" },
+                                { label: "Mrs", value: "Mrs" },
+                                { label: "Sir", value: "Sir" },
+                                { label: "Miss", value: "Miss" },
+                            ]}
+                            placeholder="Select LGA"
+                        />
+                    </div>
                 </div>
 
                 <button
                     onClick={nextStep}
-                    className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                    className='w-full md:w-36 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
                 >
                     Save and continue
                 </button>

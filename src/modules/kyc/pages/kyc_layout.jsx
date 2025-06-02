@@ -27,7 +27,7 @@ const KYCVerification = () => {
                 <BackButton />
 
                 <div className='mb-5 space-y-1'>
-                    <h2 className="text-2xl font-medium">KYC Verification</h2>
+                    <h2 className="text-base md:text-2xl font-medium">KYC Verification</h2>
                     <p className="text-sm text-secondary">{mapper[step]} &nbsp;|&nbsp; Step {step}/4</p>
                 </div>
 
