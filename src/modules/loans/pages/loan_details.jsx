@@ -32,55 +32,55 @@ const LoanDetails = () => {
                 </span>
 
                 <div className='space-y-5 mt-5'>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Amount</p>
                             <p className='text-base font-medium'>₦{data.amount.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Purpose</p>
                             <p className='text-base font-medium'>{data.purpose}</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Type</p>
                             <p className='text-base font-medium'>{data.type}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Loan tenure</p>
                             <p className='text-base font-medium'>{data.tenure} months</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Repayment interval</p>
                             <p className='text-base font-medium'>{data.interval}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Date & time</p>
                             <p className='text-base font-medium'>{data.datetime} months</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Employer's name</p>
                             <p className='text-base font-medium'>{data.employer_name}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Employer's phone number</p>
                             <p className='text-base font-medium'>{data.employer_phone} months</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Employer's address</p>
                             <p className='text-base font-medium'>{data.employer_address}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Your monthly income</p>
                             <p className='text-base font-medium'>₦{data.income.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
@@ -88,32 +88,32 @@ const LoanDetails = () => {
                             })}</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>State</p>
                             <p className='text-base font-medium'>{data.state}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>LGA</p>
                             <p className='text-base font-medium'>{data.lga}</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-sm space-y-1'>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Collateral</p>
                             <p className='text-base font-medium'>{data.collateral}</p>
                         </div>
-                        <div className='w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
                             <p className='text-secondary'>Note</p>
                             <p className='text-base font-medium'>{data.note}</p>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='w-1/2 text-xs space-y-1'>
-                            <p className='text-secondary'>smvoice of item from vendor</p>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                        <div className='w-full md:w-1/2 text-sm space-y-1'>
+                            <p className='text-secondary'>Invoice of item from vendor</p>
                             <div className='flex items-center gap-2'>
                                 <span className='text-base font-medium'>{data.invoice}</span>
-                                <Download className='cursor-pointer'/>
+                                <Download className='cursor-pointer' />
                             </div>
                         </div>
                         {/* <div className='w-1/2 tsmt-xs space-y-1'>
