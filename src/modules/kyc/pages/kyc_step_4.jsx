@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import FileInput from '@/components/FormInputs/FileInput';
+import { IoIosArrowRoundBack } from 'react-icons/io';
 
 const KYCStep4 = ({ prevStep, nextStep }) => {
 
@@ -67,19 +68,23 @@ const KYCStep4 = ({ prevStep, nextStep }) => {
                     />
                 </div>
 
-                <div className='space-x-3'>
-                    <button
-                        onClick={prevStep}
-                        className='h-9 px-3 rounded-md border border-gray-200 text-sm cursor-pointer'
-                    >
-                        Previous
-                    </button>
-                    <button
-                        onClick={nextStep}
-                        className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                    >
-                        Submit for verification
-                    </button>
+                <div className="fixed md:static bottom-0 z-10 w-full bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                    <div className="flex items-center justify-center md:justify-start gap-3 mr-8 md:m-0 h-[71px]">
+                        <button
+                            onClick={prevStep}
+                            className="w-3/12 md:w-20 h-11 md:h-9 flex items-center justify-center md:justify-start px-3 text-sm font-medium rounded-md border border-gray-200 cursor-pointer"
+                        >
+                            <span className="hidden md:block">Previous</span>
+                            <IoIosArrowRoundBack className="w-7 h-7 md:hidden text-secondary" />
+                        </button>
+
+                        <button
+                            onClick={nextStep}
+                            className="w-8/12 md:w-44 h-11 md:h-9 flex items-center justify-center px-3 font-medium rounded-md bg-primary text-white text-sm cursor-pointer"
+                        >
+                            Submit for verification
+                        </button>
+                    </div>
                 </div>
             </form>
 

@@ -21,14 +21,14 @@ const KYCVerification = () => {
     }
 
     return (
-        <div className="onboarding-container">
+        <div className="">
             <ScrollToTop />
             <div className="space-y-4">
                 <BackButton />
 
                 <div className='mb-5 space-y-1'>
                     <h2 className="text-base md:text-2xl font-medium">KYC Verification</h2>
-                    <p className="text-sm text-secondary">{mapper[step]} &nbsp;|&nbsp; Step {step}/4</p>
+                    <p className="text-xs md:text-sm text-secondary">{mapper[step]} &nbsp;|&nbsp; Step {step}/4</p>
                 </div>
 
                 {step === 1 && <KYCStep1 nextStep={nextStep} />}

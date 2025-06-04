@@ -5,6 +5,7 @@ import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
+import { IoIosArrowRoundBack } from 'react-icons/io';
 
 const KYCStep1 = ({ nextStep }) => {
 
@@ -24,7 +25,7 @@ const KYCStep1 = ({ nextStep }) => {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-hidden">
             <form method='post' className='w-full space-y-4'>
                 <div className='flex items-center gap-5'>
                     <div className='w-[64px] h-[64px] flex items-center justify-center bg-[#F0F2F5] border border-[#E4E7EC] overflow-hidden rounded-lg'>
@@ -206,12 +207,14 @@ const KYCStep1 = ({ nextStep }) => {
                     </div>
                 </div>
 
-                <button
-                    onClick={nextStep}
-                    className='w-full md:w-36 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                >
-                    Save and continue
-                </button>
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                    <button
+                        onClick={nextStep}
+                        className='w-full md:w-36 h-11 md:h-9 mt-3 px-3 text-sm font-medium rounded-md bg-primary cursor-pointer'
+                    >
+                        Save and continue
+                    </button>
+                </div>
             </form>
 
         </div>
