@@ -29,14 +29,14 @@ const PersonalLoans = () => {
             <BackButton />
 
             <div className='flex items-center justify-between'>
-                <h2 className="text-2xl font-medium">Apply for a personal loan</h2>
+                <h2 className="text-base md:text-2xl font-medium">Apply for a personal loan</h2>
                 <button className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'>
                     Submit application
                 </button>
             </div>
 
-            <div className='bg-[#F9FAFB] p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
-                <div className='flex items-center gap-3'>
+            <div className='md:bg-[#F9FAFB] md:p-5 space-y-3 md:border border-[#E4E7EC] rounded-xl'>
+                <div className='flex flex-col md:flex-row items-center gap-3'>
                     <TextInput
                         label="How much do you want?"
                         name="amount"
@@ -61,7 +61,7 @@ const PersonalLoans = () => {
                     />
                 </div>
 
-                <div className='w-full flex items-center gap-3'>
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
                     <SelectInput
                         label="How long before you pay?"
                         name="duration"
@@ -92,7 +92,7 @@ const PersonalLoans = () => {
                     />
                 </div>
 
-                <div className='w-full flex items-center gap-3'>
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
                     <SelectInput
                         label="Collateral?"
                         name="collateral"
@@ -120,7 +120,7 @@ const PersonalLoans = () => {
             </div>
 
             <div className='flex items-center gap-4 text-sm pr-8 text-secondary'>
-                <input type="checkbox" name="" id="" className='w-5 h-5' />
+                <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095]' />
                 {/* <CheckboxInput
                     name='check'
                     value='check'
