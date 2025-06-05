@@ -28,11 +28,16 @@ const PersonalLoans = () => {
         <form method='post' className="space-y-5">
             <BackButton />
 
-            <div className='flex items-center justify-between'>
-                <h2 className="text-base md:text-2xl font-medium">Apply for a personal loan</h2>
-                <button className='h-9 px-3 rounded-md bg-primary text-sm cursor-pointer'>
-                    Submit application
-                </button>
+            <div className="w-full flex items-center justify-between gap-4">
+                <h2 className="text-base md:text-2xl font-medium">
+                    Apply for a personal loan
+                </h2>
+
+                <div className="fixed md:static bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto pr-10 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                    <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer">
+                        Submit application
+                    </button>
+                </div>
             </div>
 
             <div className='md:bg-[#F9FAFB] md:p-5 space-y-3 md:border border-[#E4E7EC] rounded-xl'>
@@ -119,14 +124,8 @@ const PersonalLoans = () => {
                 </div>
             </div>
 
-            <div className='flex items-center gap-4 text-sm pr-8 text-secondary'>
+            <div className='flex md:items-center gap-4 text-sm pr-8 text-secondary'>
                 <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095]' />
-                {/* <CheckboxInput
-                    name='check'
-                    value='check'
-                    checked={checked}
-                    onChange={(e) => setChecked(e.target.checked)}
-                /> */}
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
 

@@ -30,7 +30,7 @@ const FinanceLoans = () => {
                 </h2>
 
                 <div className="fixed md:static bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto pr-10 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
-                    <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary font-medium text-sm text-white cursor-pointer">
+                    <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer">
                         Submit application
                     </button>
                 </div>
@@ -105,7 +105,7 @@ const FinanceLoans = () => {
                 </div>
             </div>
 
-            <div className='flex items-center gap-4 md:pr-8 text-sm text-secondary'>
+            <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary'>
                 <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095]' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
