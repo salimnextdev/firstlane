@@ -113,7 +113,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     <div className="flex items-center justify-center md:justify-start gap-3 mr-8 md:m-0 h-[71px]">
                         <button
                             onClick={prevStep}
-                            className="w-3/12 md:w-20 h-11 md:h-9 flex items-center justify-center md:justify-start px-3 text-sm font-medium rounded-md border border-gray-200 cursor-pointer"
+                            className="w-3/12 md:w-20 h-11 md:h-9 flex items-center justify-center md:justify-start px-3 text-sm rounded-md border border-gray-200 cursor-pointer"
                         >
                             <span className="hidden md:block">Previous</span>
                             <IoIosArrowRoundBack className="w-7 h-7 md:hidden text-secondary" />
@@ -121,7 +121,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
 
                         <button
                             onClick={nextStep}
-                            className="w-8/12 md:w-36 h-11 md:h-9 flex items-center justify-center px-3 font-medium rounded-md bg-primary text-white text-sm cursor-pointer"
+                            className="w-8/12 md:w-36 h-11 md:h-9 flex items-center justify-center px-3 rounded-md bg-primary text-white text-sm cursor-pointer"
                         >
                             Save and continue
                         </button>

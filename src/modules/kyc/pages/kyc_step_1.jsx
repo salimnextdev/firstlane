@@ -210,7 +210,7 @@ const KYCStep1 = ({ nextStep }) => {
                 <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
                     <button
                         onClick={nextStep}
-                        className='w-full md:w-36 h-11 md:h-9 mt-3 px-3 text-sm font-medium rounded-md bg-primary cursor-pointer'
+                        className='w-full md:w-36 h-11 md:h-9 mt-3 px-3 text-sm rounded-md bg-primary cursor-pointer'
                     >
                         Save and continue
                     </button>
