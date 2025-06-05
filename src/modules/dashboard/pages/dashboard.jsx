@@ -170,7 +170,6 @@ const Dashboard = () => {
                         <p className="hidden md:block text-sm text-[#667085] text-wrap leading-relaxed">
                             We need to verify your documents and details to enjoy the features on FirstLane like finance investments, loans and FX transactions.
                             After successful verification, you would not have to upload any document again.
-
                         </p>
                     </div>
                 </div>
