@@ -69,7 +69,7 @@ const Loans = () => {
             <div className='hidden md:flex items-center justify-between'>
                 <div>
                     <h2 className="text-2xl font-semibold">Loans</h2>
-                    <p className="text-sm text-gray-500 my-1">Track and manage your loans safely 💰</p>
+                    <p className="text-sm text-gray-500 my-1 font-light">Track and manage your loans safely 💰</p>
                 </div>
                 <div className='w-1/4 flex items-center gap-3'>
                     <button
@@ -116,7 +116,7 @@ const Loans = () => {
                     onClick={() => navigate('/loans/applications')}
                     className='w-full flex items-center justify-end gap-1 text-sm'
                 >
-                    <span className='font-semibold'>Loan applications</span>
+                    <span className=''>Loan applications</span>
                     <BsArrowRight className='w-4 h-4 text-secondary' />
                 </button>
             </div>
@@ -134,9 +134,9 @@ const Loans = () => {
                             key={item.key}
                             className="min-w-[85%] md:min-w-0 snap-start bg-[#F9FAFB] p-5 space-y-3 border border-[#E4E7EC] rounded-xl"
                         >
-                            <p className="text-sm text-secondary">{item.label}</p>
+                            <p className="text-sm md:text-base text-secondary font-light">{item.label}</p>
                             <div className="flex items-center gap-5">
-                                <p className="text-2xl font-semibold">
+                                <p className="text-[20px] md:text-[28px] font-bold">
                                     ₦{item.amount.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
@@ -161,18 +161,18 @@ const Loans = () => {
             </div>
 
             <div>
-                <h2 className="text-base md:text-lg md:text-[#475367] font-medium">Loan Types</h2>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 mt-2'>
+                <h2 className="text-base md:text-lg md:text-[#475367] ">Loan Types</h2>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mt-2'>
                     {data.map((item, index) => (
-                        <div key={index} className='p-5 space-y-3 bg-[#F9FAFB] text-sm border border-[#E4E7EC] rounded-xl'>
-                            <p className='text-base md:text-xl font-medium'>{item.title}</p>
-                            <p className='text-sm md:text-base text-secondary'>
+                        <div key={index} className='px-5 py-3 space-y-3 bg-[#F9FAFB] text-sm border border-[#E4E7EC] rounded-xl'>
+                            <p className='text-base md:text-2xl font-medium'>{item.title}</p>
+                            <p className='text-sm md:text-base text-secondary font-light'>
                                 {item.description}
                             </p>
 
                             <Link
                                 to={item.link}
-                                className="inline-flex items-center justify-center gap-3 px-4 h-9 bg-secondary text-sm rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                className="inline-flex items-center justify-center gap-3 px-4 h-9 md:h-10 bg-secondary text-sm rounded-md cursor-pointer hover:bg-primary/90 transition">
                                 Apply for loan
                             </Link>
                         </div>

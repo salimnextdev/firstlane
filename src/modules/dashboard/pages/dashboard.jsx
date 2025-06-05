@@ -138,8 +138,8 @@ const Dashboard = () => {
         <div className="relative space-y-4 md:space-y-6">
             <div className='flex flex-col lg:flex-row md:items-center justify-between'>
                 <div>
-                    <h2 className="text-base md:text-[28px] font-semibold">Welcome back, Olivia</h2>
-                    <p className="text-sm text-gray-500 my-1">Track, manage and invest your finance properly 💰</p>
+                    <h2 className="text-base md:text-[28px] font-bold">Welcome back, Olivia</h2>
+                    <p className="text-xs md:text-sm text-gray-500 my-1 font-light">Track, manage and invest your finance properly 💰</p>
                 </div>
                 <div className='hidden md:flex items-center gap-3 text-sm font-medium'>
                     <Link to={'/loans'}>
@@ -194,9 +194,9 @@ const Dashboard = () => {
                             className="min-w-[85%] md:min-w-0 md:flex-1 snap-start flex justify-between bg-[#F9FAFB] md:h-[149px] p-5 rounded-xl border border-[#E4E7EC]"
                         >
                             <div>
-                                <p className="text-sm text-[#667085] mb-2">{card.label}</p>
+                                <p className="text-sm md:text-base text-secondary mb-2 font-light">{card.label}</p>
                                 <div className="flex items-center gap-5 justify-between my-2">
-                                    <p className="text-xl md:text-2xl font-semibold">
+                                    <p className="text-[20px] md:text-[28px] font-bold">
                                         {statsView[card.key]
                                             ? '₦' +
                                             card.value.toLocaleString(undefined, {
