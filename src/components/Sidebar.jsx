@@ -28,7 +28,7 @@ const Sidebar = () => {
     const [isLogout, setIsLogout] = useState(false);
 
     return (
-        <div className="w-8 md:w-[272px] h-screen bg-white fixed left-0 top-0 z-10">
+        <div className="w-8 md:w-[272px] relative h-screen hidden md:block bg-white fixed left-0 top-0 z-10">
             <LogoutModal
                 isOpen={isLogout}
                 onClose={setIsLogout}
@@ -47,49 +47,49 @@ const Sidebar = () => {
             </div>
             <nav className="px-4 space-y-2 text-sm">
                 <NavLink to="/dashboard" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <LuLayoutDashboard className='w-5 h-5' /> */}
                     <Dashboard className="icon" />
                     <span className='hidden md:inline'>Dashboard</span>
                 </NavLink>
                 <NavLink to="/loans" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <HiOutlineCash className='w-5 h-5' /> */}
                     <Loan className="icon" />
                     <span className='hidden md:inline'>Loans</span>
                 </NavLink>
                 <NavLink to="/investment" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <BsDatabaseUp className='w-5 h-5' /> */}
                     <Investment className="icon" />
                     <span className='hidden md:inline'>Investment</span>
                 </NavLink>
                 <NavLink to="/fx-transactions" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <AiOutlineTransaction className='w-5 h-5' /> */}
                     <Transaction className="icon" />
                     <span className='hidden md:inline'>FX Transactions</span>
                 </NavLink>
                 <NavLink to="/wallets" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <IoWalletOutline className='w-5 h-5' /> */}
                     <Wallet className="icon" />
                     <span className='hidden md:inline'>Wallets</span>
                 </NavLink>
                 <NavLink to="/support" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <FaHeadphonesAlt className='w-4 h-4' /> */}
                     <Support className="icon" />
                     <span className='hidden md:inline'>Support</span>
                 </NavLink>
                 <NavLink to="/settings" className={({ isActive, isPending }) =>
-                    `flex items-center gap-3 p-2 ${isActive ? 'text-primary font-medium' : 'text-black'}`}
+                    `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
                     {/* <IoSettingsOutline className='w-5 h-5' /> */}
                     <Setting className="icon" />
