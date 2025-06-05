@@ -40,7 +40,7 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
+        <header className="sticky top-0 z-10 bg-white border-b border-gray-200 rounded-t-3xl">
             <NotificationPanel isOpen={isOpen} onClose={setIsOpen} />
             
             <div className='w-full h-[64px] px-6 flex items-center justify-between'>
