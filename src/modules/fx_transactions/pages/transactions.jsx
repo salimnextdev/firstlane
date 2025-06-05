@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { IoIosSearch } from 'react-icons/io';
-import { RiEyeCloseLine } from "react-icons/ri";
 
 import {
     Table,
@@ -15,13 +14,11 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 
 import ConfirmModal from '@/modules/fx_transactions/components/confirmTransaction';
-import SuccessModal from '@/modules/fx_transactions/components/successModal';
-import AccountFormModal from '@/modules/fx_transactions/components/accountFormModal';
-import SelectInput from '@/components/FormInputs/SelectInput';
 import CountrySelect from '@/components/FormInputs/CountrySelect';
 import FilterDropdown from '@/components/FormInputs/filterDropdown';
 import { MoreVertical } from 'lucide-react';
 import TableDropdown from '@/components/FormInputs/tableDropdown';
+import TableFilter from '@/components/TableFilter';
 
 const data = [
     [
@@ -62,25 +59,48 @@ const FXTransactions = () => {
         setFilter(value)
     };
 
+    const [filters, setFilters] = useState({
+        types: [],
+        statuses: [],
+        datePeriod: [],
+        currencyPairs: [],
+    });
+
+    const filterOptions = {
+        types: [],
+        statuses: ['Approved', 'Pending', 'Rejected'],
+        datePeriod: [],
+        currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
+    };
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const handleClearFilters = () => {
+        setFilters({
+            types: [],
+            statuses: [],
+            datePeriod: [],
+            currencyPairs: [],
+        });
+    };
+
     return (
         <div className="relative space-y-8">
-            <AccountFormModal
+            <ConfirmModal
                 isOpen={isOpen}
                 onClose={setIsOpen}
-            />
-            {/* <SuccessModal
-                isOpen={isOpen}
-                onClose={setIsOpen}
-            /> */}
-            {/* <ConfirmModal
-                isOpen={isOpen}
-                onClose={setIsOpen}
+                type={option}
                 data={{
                     acc_number: "0123456789",
                     acc_name: "Firstlane Multi Investment LTD",
-                    bank_name: "Paystack Titan",
+                    bank_name: "City Morgage Bank",
+                    type: "Checking",
+                    wire: "567890",
+                    ach: "012345",
                 }}
-            /> */}
+            />
             <div className='flex items-center justify-between'>
                 <div>
                     <h2 className="text-2xl font-semibold">FXTransactions</h2>
@@ -139,7 +159,7 @@ const FXTransactions = () => {
                         </div>
                     </div>
                     <button
-                        onClick={() => navigate('/fx-transactions')}
+                        onClick={() => setIsOpen(true)}
                         className='w-20 h-9 bg-primary text-sm rounded-md cursor-pointer'
                     >
                         {option} Naira
@@ -148,7 +168,7 @@ const FXTransactions = () => {
 
                 <div className='px-5 py-3 space-y-3 bg-[#F0F2F5] border border-[#E4E7EC] rounded-xl'>
                     <p className='text-sm text-secondary'>Current exchange rates</p>
-                    <div className='flex items-center gap-10 font-medium'>
+                    <div className='flex flex-wrap items-center gap-10 font-medium'>
                         {data.map((item, index) => (
                             <span key={index}>{item[0]} ~ {item[1].toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
@@ -163,9 +183,9 @@ const FXTransactions = () => {
             <div className="w-full rounded-lg border border-[#E4E7EC] bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="w-full text-[20px] font-medium text-[#475367]">Recent FX Transactions</h2>
-                        <div className="w-8/12 flex items-center justify-between space-x-2">
-                            <div className="relative w-full">
+                        <h2 className="text-[20px] font-medium text-[#475367]">Recent FX Transactions</h2>
+                        <div className=" flex items-center justify-end gap-5 space-x-2">
+                            <div className="relative">
                                 <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
                                 <input
                                     type="text"
@@ -173,7 +193,13 @@ const FXTransactions = () => {
                                     className="w-full h-[40px] pl-10 pr-4 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
                                 />
                             </div>
-                            <FilterDropdown options={options} value={filter} onSelect={handleFilterSelect} />
+
+                            <TableFilter
+                                filterOptions={filterOptions}
+                                filters={filters}
+                                onFilterChange={handleFilterChange}
+                                onClearFilters={handleClearFilters}
+                            />
                         </div>
                     </div>
 
@@ -184,11 +210,12 @@ const FXTransactions = () => {
                                     <TableHead className="w-12 p-4">
                                         <Checkbox />
                                     </TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Sent amount</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Received amount</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Sell amount</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Buy amount</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Currency pair</TableHead>
+                                    <TableHead className="font-medium text-sm text-gray-600">Exchange rate</TableHead>
                                     <TableHead className="font-medium text-sm text-gray-600">Date & time</TableHead>
                                     <TableHead className="font-medium text-sm text-gray-600">Status</TableHead>
-                                    <TableHead className=""></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody className='text-sm text-secondary'>
@@ -197,19 +224,21 @@ const FXTransactions = () => {
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>
-                                        <TableCell className="text-gray-800">{transaction.sent_amount}</TableCell>
-                                        <TableCell className="text-gray-800">{transaction.amount}</TableCell>
+                                        <TableCell className="text-gray-800">NGN{transaction.sent_amount}</TableCell>
+                                        <TableCell className="text-gray-800">${transaction.buy_amount}</TableCell>
+                                        <TableCell className="text-gray-800">{transaction.currency_pair}</TableCell>
+                                        <TableCell className="text-gray-800">{transaction.exchange_rate}</TableCell>
                                         <TableCell className="text-gray-600">{transaction.dateTime}</TableCell>
                                         <TableCell>
-                                            <span className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600">
+                                            <span
+                                                className={`px-3 py-1 text-xs font-normal capitalize rounded-full
+                                                ${transaction.status === 'successful' ? 'bg-success' :
+                                                        transaction.status === 'pending' ? 'bg-warning' :
+                                                            'bg-danger'
+                                                    }`}
+                                            >
                                                 {transaction.status}
                                             </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            {/* <p className="w-[32px] h-[32px] flex items-center justify-center p-2 border border-[#E4E7EC] rounded-lg cursor-pointer">
-                                                <MoreVertical />
-                                            </p> */}
-                                            <TableDropdown options={options} onSelect={handleFilterSelect} />
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -227,42 +256,47 @@ export default FXTransactions;
 const transactions = [
     {
         id: 1,
-        sent_amount: "₦10,000.00",
-        amount: "₦10,000.00",
-        paymentType: "Type",
+        sent_amount: "10,000.00",
+        buy_amount: "100",
+        currency_pair: "USD/NGN",
+        exchange_rate: "$1/₦1,600.00",
         dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "Type"
+        status: "successful"
     },
     {
         id: 2,
-        sent_amount: "₦10,000.00",
-        amount: "₦10,000.00",
-        paymentType: "Type",
+        sent_amount: "10,000.00",
+        buy_amount: "100",
+        currency_pair: "USD/NGN",
+        exchange_rate: "$1/₦1,600.00",
         dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "Type"
+        status: "successful"
     },
     {
         id: 3,
-        sent_amount: "₦10,000.00",
-        amount: "₦10,000.00",
-        paymentType: "Type",
+        sent_amount: "10,000.00",
+        buy_amount: "100",
+        currency_pair: "USD/NGN",
+        exchange_rate: "$1/₦1,600.00",
         dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "Type"
+        status: "successful"
     },
     {
         id: 4,
-        sent_amount: "₦10,000.00",
-        amount: "₦10,000.00",
-        paymentType: "Type",
+        sent_amount: "10,000.00",
+        buy_amount: "100",
+        currency_pair: "USD/NGN",
+        exchange_rate: "$1/₦1,600.00",
         dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "Type"
+        status: "failed"
     },
     {
         id: 5,
-        sent_amount: "₦10,000.00",
-        amount: "₦10,000.00",
-        paymentType: "Type",
+        sent_amount: "10,000.00",
+        buy_amount: "100",
+        currency_pair: "USD/NGN",
+        exchange_rate: "$1/₦1,600.00",
         dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "Type"
+        status: "successful"
     }
 ];
