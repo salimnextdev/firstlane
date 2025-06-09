@@ -33,7 +33,7 @@ const LoanDetails = () => {
 
                 <div className='space-y-5 mt-5'>
                     <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
-                        <div className='w-full md:w-1/2 text-sm space-y-1'>
+                        <div className='w-full md:w-1/2 text-xs md:text-sm space-y-1'>
                             <p className='text-secondary'>Amount</p>
                             <p className='text-base font-medium'>₦{data.amount.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
