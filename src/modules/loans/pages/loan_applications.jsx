@@ -10,33 +10,54 @@ import {
 } from '@/components/ui/table';
 // import { ActionDialog } from '@/components/ActionDialog';
 import BackButton from '@/components/BackButton';
+
+import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
+import { ReactComponent as Filter } from '@/assets/icons/filter.svg';
 import { MoreVertical } from 'lucide-react';
 import { IoIosSearch } from 'react-icons/io';
 
+import LoanCard from "@/modules/loans/components/LoanCard";
+import { useNavigate } from 'react-router-dom';
+
 const LoanApplications = () => {
+    const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(null);
     const [selectedInvestments, setSelectedInvestments] = useState([]);
     const [investments, setInvestments] = useState([
         {
             id: '00001',
-            amount: 45231000.89,
+            amount: 10000.89,
             type: 'Employee',
-            maturityDate: '09/02/25',
-            interest: '3',
+            purpose: 'Equipment purchase',
+            status: "successful"
         },
         {
             id: '00002',
-            amount: 45231000.89,
+            amount: 10000.89,
             type: 'Business',
-            maturityDate: '09/05/25',
-            interest: '90',
+            purpose: 'Marketing',
+            status: "pending"
         },
         {
             id: '00003',
-            amount: 45231000.89,
+            amount: 10000.89,
             type: 'Asset finance',
-            maturityDate: '09/10/25',
-            interest: '45',
+            purpose: 'Marketing',
+            status: "pre-approved"
+        },
+        {
+            id: '00001',
+            amount: 10000.89,
+            type: 'Employee',
+            purpose: 'Asset acquisition',
+            status: "successful"
+        },
+        {
+            id: '00002',
+            amount: 10000.89,
+            type: 'Business',
+            purpose: 'Marketing',
+            status: "successful"
         },
     ]);
 
@@ -62,10 +83,10 @@ const LoanApplications = () => {
         <div className="space-y-5">
             <BackButton />
 
-            {/* Loan Application Table */}
-            <div className="overflow-x-auto border border-[#E4E7EC] rounded-lg">
+            {/* DESKTOP ::::  Loan Application Table */}
+            <div className="hidden md:block w-full overflow-x-auto border border-[#E4E7EC] rounded-lg">
                 <div className="flex items-center justify-between px-5 py-2">
-                    <h2 className="text-base font-medium text-[#475367]">Loan Applications</h2>
+                    <h2 className="md:text-[20px] font-medium text-[#475367]">Loan Applications</h2>
                     <div className="flex items-center space-x-2">
                         <div className="relative w-full">
                             <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
@@ -87,35 +108,35 @@ const LoanApplications = () => {
                 <Table className="w-full">
                     <TableHeader className="bg-gray-50">
                         <TableRow className="border-b border-gray-100">
-                            <TableHead className="text-left px-6 py-3 text-sm font-light accent-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 <input
                                     type="checkbox"
                                     checked={isAllSelected}
                                     onChange={e => handleSelectAll(e.target.checked)}
-                                    className="h-4 w-4 rounded border-gray-300"
+                                    className="h-4 w-4 rounded border border-gray-300 accent-[#64748B]"
                                 />
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 Amount
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 Type
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 Purpose
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 Date & Time
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]">
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 Status
                             </TableHead>
-                            <TableHead className="text-left px-6 py-3 text-sm font-light text-[#64748B]"></TableHead>
+                            <TableHead className="text-left px-6 py-3 text-xs font-normal"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="">
                         {investments.map(investment => (
-                            <TableRow key={investment.id} className="text-sm border-b border-gray-100 last:border-b-0">
+                            <TableRow key={investment.id} className="text-sm font-light border-b border-gray-100 last:border-b-0">
                                 <TableCell className="px-6 py-4">
                                     <input
                                         type="checkbox"
@@ -131,7 +152,7 @@ const LoanApplications = () => {
                                     })}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
-                                    <span className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600">
+                                    <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
                                         {investment.type}
                                     </span>
                                 </TableCell>
@@ -144,10 +165,16 @@ const LoanApplications = () => {
                                     })}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
-                                    {investment.maturityDate}
-                                </TableCell>
-                                <TableCell className="px-6 py-4">
-                                    {investment.interest} %
+                                    <span
+                                        className={`px-3 py-1 text-xs font-normal capitalize rounded-full
+                                                ${investment.status === 'successful' ? 'bg-success' :
+                                                investment.status === 'pre-approved' ? 'bg-neutral' :
+                                                    investment.status === 'pending' ? 'bg-warning' :
+                                                        'bg-danger'
+                                            }`}
+                                    >
+                                        {investment.status}
+                                    </span>
                                 </TableCell>
                                 <TableCell className="px-6 py-4 relative">
                                     <button
@@ -155,47 +182,11 @@ const LoanApplications = () => {
                                         onClick={() =>
                                             setShowDropdown(showDropdown === investment.id ? null : investment.id)
                                         }>
-                                        <MoreVertical size={16} />
+                                        <Dot className="" />
                                     </button>
                                     {showDropdown === investment.id && (
-                                        <div className="absolute right-0 mt-1 z-10 w-48 bg-white rounded-md shadow-lg border border-gray-200">
-                                            <div className="py-1">
-                                                {/* <button
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => navigateToinvestmentDetails(investment.id)}>
-                          View details
-                        </button> */}
-
-                                                {/* <ActionDialog
-                          trigger={
-                            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                              Withdraw investment
-                            </button>
-                          }
-                          title="Approve investment application"
-                          description="Ensure you are certain about the decision you are making because this action is irreversible. Are you sure you want to approve this investment?"
-                          confirmText="Yes, approve"
-                          cancelText="No, cancel"
-                          confirmVariant="primary"
-                          onConfirm={() => handleApproveInvestment(investment.id)}
-                          onCancel={() => navigateToinvestmentDetails(investment.id)}
-                        /> */}
-
-                                                {/* <ActionDialog
-                          trigger={
-                            <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                              Terminate investment
-                            </button>
-                          }
-                          title="Reject investment application"
-                          description="Ensure you are certain about the decision you are making because this action is irreversible. Are you sure you want to reject this investment?"
-                          confirmText="Yes, reject application"
-                          cancelText="No, view details"
-                          confirmVariant="danger"
-                          onConfirm={() => handleRejectInvestment(investment.id)}
-                          onCancel={() => navigateToinvestmentDetails(investment.id)}
-                        /> */}
-                                            </div>
+                                        <div className="absolute right-0 mt-1 p-2 z-10 w-48 bg-white rounded-md shadow-md border border-gray-200 cursor-pointer">
+                                            <span className='cursor-pointer'>View details</span>
                                         </div>
                                     )}
                                 </TableCell>
@@ -203,6 +194,25 @@ const LoanApplications = () => {
                         ))}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* MOBILE ::::  Loan Application Table */}
+            <div className='md:hidden space-y-4'>
+                <div className='flex items-center justify-between'>
+                    <p className='font-medium'>Loan Applications</p>
+                    <div className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center">
+                        <Filter className="" />
+                    </div>
+                </div>
+
+                <div className='space-y-2' id='mobile_transaction_card'>
+                    {investments.map((loan, index) => (
+                        <div key={index} onClick={()=> navigate(`/loans/applications/${index}`)}>
+                            <LoanCard loan={loan} />
+                        </div>
+                        
+                    ))}
+                </div>
             </div>
         </div>
     );
