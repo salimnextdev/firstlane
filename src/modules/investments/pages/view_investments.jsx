@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ActiveInvestmentTab from '@/modules/investments/components/tabs/active_inv_tab';
 import PastInvestmentTab from '@/modules/investments/components/tabs/past_inv_tab';
+import BackButton from '@/components/BackButton';
 
 const data = [
     {
@@ -13,7 +14,8 @@ const data = [
         balance: 30000.00,
         earned: 30000.00,
         interest: 3,
-        type: "active_investment"
+        type: "active_investment",
+        withdrawn: true
     },
     {
         days: 180,
@@ -22,7 +24,8 @@ const data = [
         balance: 1020000.00,
         earned: 30000.00,
         interest: 3,
-        type: "past_investment"
+        type: "past_investment",
+        withdrawn: true
     },
     {
         days: 180,
@@ -31,7 +34,8 @@ const data = [
         balance: 1020000.00,
         earned: 30000.00,
         interest: 3,
-        type: "active_investment"
+        type: "active_investment",
+        withdrawn: true
     },
     {
         days: 360,
@@ -40,7 +44,8 @@ const data = [
         balance: 205000.00,
         earned: 15000.00,
         interest: 3,
-        type: "active_investment"
+        type: "active_investment",
+        withdrawn: true
     },
     {
         days: 360,
@@ -49,7 +54,8 @@ const data = [
         balance: 205000.00,
         earned: 15000.00,
         interest: 3,
-        type: "past_investment"
+        type: "past_investment",
+        withdrawn: false
     },
     {
         days: 540,
@@ -58,7 +64,8 @@ const data = [
         balance: 60000.00,
         earned: 30000.00,
         interest: 3,
-        type: "past_investment"
+        type: "past_investment",
+        withdrawn: true
     },
     {
         days: 720,
@@ -67,7 +74,8 @@ const data = [
         balance: 30000.00,
         earned: 30000.00,
         interest: 3,
-        type: "active_investment"
+        type: "active_investment",
+        withdrawn: true
     },
 ]
 
@@ -78,14 +86,16 @@ const ViewInvestment = () => {
 
     return (
         <div className="relative space-y-4">
+            <BackButton />
+
             <div>
-                <h2 className="text-2xl font-semibold">Investment</h2>
-                <p className="text-sm text-gray-500 my-1">Track and manage your investments safely 💰</p>
+                <h2 className="text-base md:text-2xl font-semibold">Investments</h2>
+                <p className="hidden md:block text-sm text-gray-500 my-1 font-light">Track and manage your investments safely 💰</p>
             </div>
 
             {/* Tab View */}
             <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-                <TabsList className='w-4/12 !hidden lg:!grid grid-cols-2 gap-5 mb-4'>
+                <TabsList className='w-full md:w-4/12 lg:!grid grid-cols-2 gap-3 md:gap-5 md:mb-4'>
                     <TabsTrigger
                         value="active_investment"
                         className={`h-10 text-sm font-light ${currentTab === 'active_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
