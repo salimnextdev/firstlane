@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import SelectInput from '@/components/FormInputs/SelectInput';
 import { RiEyeCloseLine } from "react-icons/ri";
-import { Link, useNavigate } from 'react-router-dom';
 import { BsArrowRight } from 'react-icons/bs';
+
+import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
+import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 const loanData = [
     {
@@ -48,6 +52,18 @@ const data = [
 const Loans = () => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState('');
+
+    const [statsView, setStatsView] = useState({
+        collected: true,
+        repaid: true,
+        due: true
+    });
+    const toggleStatsView = (stat) => {
+        setStatsView(prev => ({
+            ...prev,
+            [stat]: !prev[stat]
+        }));
+    };
 
     const scrollRef = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -137,12 +153,24 @@ const Loans = () => {
                             <p className="text-sm md:text-base text-secondary font-light">{item.label}</p>
                             <div className="flex items-center gap-5">
                                 <p className="text-[20px] md:text-[28px] font-bold">
-                                    ₦{item.amount.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
+                                    {statsView[item.key]
+                                        ? '₦' +
+                                        item.amount.toLocaleString(undefined, {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2,
+                                        })
+                                        : '*************'}
                                 </p>
-                                <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
+                                {statsView[item.key] ?
+                                    <EyeClose
+                                        onClick={() => toggleStatsView(item.key)}
+                                        className="text-secondary cursor-pointer"
+                                    /> :
+                                    <EyeOpen
+                                        onClick={() => toggleStatsView(item.key)}
+                                        className="text-secondary cursor-pointer"
+                                    />
+                                }
                             </div>
                         </div>
                     ))}
@@ -153,7 +181,7 @@ const Loans = () => {
                     {loanData.map((_, index) => (
                         <div
                             key={index}
-                            className={`h-2 rounded-full mx-1 transition-all duration-300 ${index === activeIndex ? 'w-4 bg-[#98A2B3]' : 'w-2 bg-[#E4E7EC]'
+                            className={`h-2 rounded-full mx-1 transition-all duration-300 ${index === activeIndex ? 'w-5 bg-[#98A2B3]' : 'w-2 bg-[#E4E7EC]'
                                 }`}
                         ></div>
                     ))}
