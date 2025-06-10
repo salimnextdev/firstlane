@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
 import { ReactComponent as Bank } from '@/assets/icons/bank.svg';
 import { ReactComponent as Payment } from '@/assets/icons/payment.svg';
 import { ReactComponent as Coupon } from '@/assets/icons/coupon.svg';
@@ -21,7 +22,7 @@ const FundOptionsModal = ({
     isOpen,
     onClose,
     option,
-    buttonCLoseText = 'Close',
+    buttonCLoseText = 'Cancel',
     buttonSuccessText = 'Proceed'
 }) => {
 
@@ -60,11 +61,14 @@ const FundOptionsModal = ({
                 title="Fund account"
                 description="You can select either of the options below to fund your account. "
             />}
-            <DialogContent className="z-50 p-6 bg-white border border-[#E4E7EC] rounded-xl max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl">Fund Account</DialogTitle>
-                        <DialogDescription className="text-base text-secondary">
+                    <div className="w-[48px] h-[48px] bg-[#D8D9EA] rounded-full hidden md:flex items-center justify-center">
+                        <Investment className="text-primary" />
+                    </div>
+                    <DialogHeader className="text-left">
+                        <DialogTitle className="text-xl md:text-2xl">Fund Account</DialogTitle>
+                        <DialogDescription className="text-sm md:text-base text-secondary font-light">
                             You can select either of the options below to fund your account.
                         </DialogDescription>
                     </DialogHeader>
@@ -72,12 +76,13 @@ const FundOptionsModal = ({
                     <div className='space-y-4 text-sm text-secondar'>
                         <div className='flex items-center gap-3'>
                             <p><Bank /></p>
-                            <div className='space-y-1'>
+                            <div className='w-full space-y-1'>
                                 <p className='text-base font-medium'>Bank Transfer</p>
-                                <p className='text-sm text-secondary'>You make payment to our account from your general bank account</p>
+                                <p className='text-xs text-secondary'>You make payment to our account from your general bank account</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
+                                className="float-right"
                                 value="bank_transfer"
                                 checked={selectedOption === "bank_transfer"}
                                 onChange={() => setSelectedOption("bank_transfer")}
@@ -85,25 +90,27 @@ const FundOptionsModal = ({
                         </div>
                         <div className='flex items-center gap-3'>
                             <p><Payment /></p>
-                            <div className='space-y-1'>
+                            <div className='w-full space-y-1'>
                                 <p className='text-base font-medium'>Bank Payment</p>
-                                <p className='text-sm text-secondary'>You make payment to our account from your general bank account</p>
+                                <p className='text-xs text-secondary'>You make payment to our account from your general bank account</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
+                                className="float-right"
                                 value="bank_payment"
                                 checked={selectedOption === "bank_payment"}
                                 onChange={() => setSelectedOption("bank_payment")}
                             />
                         </div>
                         <div className='flex items-center gap-3'>
-                            <Coupon />
-                            <div className='space-y-1'>
+                            <p><Coupon /></p>
+                            <div className='w-full space-y-1'>
                                 <p className='text-base font-medium'>Coupon Code</p>
-                                <p className='text-sm text-secondary'>Your coupon carries the same value as your investment amount</p>
+                                <p className='text-xs text-secondary'>Your coupon carries the same value as your investment amount</p>
                             </div>
                             <RadioCheckInput
                                 name="fund_option"
+                                className="float-right"
                                 value="coupon_code"
                                 checked={selectedOption === "coupon_code"}
                                 onChange={() => setSelectedOption("coupon_code")}
@@ -111,16 +118,16 @@ const FundOptionsModal = ({
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-center gap-5 font-medium">
+                    <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
                         <button
                             onClick={handleModal}
-                            className="w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
