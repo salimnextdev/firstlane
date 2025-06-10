@@ -6,6 +6,8 @@ import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
 import { ReactComponent as WalletPlus } from '@/assets/icons/wallet-plus.svg';
 import { ReactComponent as Money } from '@/assets/icons/money.svg';
+import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
+import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import SendMoneyModal from '@/modules/wallets/components/sendWithdrawModal';
 import FundAccountModal from '@/modules/investments/components/fundAccountModal';
@@ -13,7 +15,7 @@ import WalletCard from '@/modules/wallets/components/WalletCard';
 
 const Wallets = () => {
     const navigate = useNavigate();
-    const [balanceOpen, setBalanceOpen] = useState(true);
+    const [statsView, setStatsView] = useState(true);
     const [modal, setModal] = useState('');
     const [isOpen, setIsOpen] = useState(true);
 
@@ -94,17 +96,25 @@ const Wallets = () => {
                         <p className="text-sm text-gray-300 mb-2">Wallet balance</p>
                         <div className='flex items-center gap-5 justify-between mt-5'>
                             <p className="text-xl md:text-2xl font-semibold">
-                                {balanceOpen ? '₦' + 140000.00.toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }) : "*************"}
-                            </p>
-                            <p>
-                                {!balanceOpen ?
-                                    <RiEyeCloseLine onClick={() => setBalanceOpen(!balanceOpen)} className="w-6 h-6 text-[#98A2B3] cursor-pointer" /> :
-                                    <RiEyeLine onClick={() => setBalanceOpen(!balanceOpen)} className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
+                                {statsView
+                                    ? '₦' +
+                                    140000.00.toLocaleString(undefined, {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
+                                    : '*************'
                                 }
                             </p>
+                            {statsView ?
+                                <EyeClose
+                                    onClick={() => setStatsView(!statsView)}
+                                    className="text-secondary cursor-pointer"
+                                /> :
+                                <EyeOpen
+                                    onClick={() => setStatsView(!statsView)}
+                                    className="text-secondary cursor-pointer"
+                                />
+                            }
                         </div>
                     </div>
                 </div>
@@ -122,12 +132,6 @@ const Wallets = () => {
                             </div>
                             <p className='cursor-pointer'>Send money</p>
                         </div>
-                        {/* <div onClick={() => openModal("receive_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer'>
-                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-white rounded-full'>
-                                <Money />
-                            </div>
-                            <p className='cursor-pointer'>Receive money</p>
-                        </div> */}
                     </div>
                 </div>
             </div>
