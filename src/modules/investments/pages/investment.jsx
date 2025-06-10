@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { RiEyeCloseLine } from "react-icons/ri";
 import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as InvestmentIcon } from '@/assets/icons/investment.svg';
+import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
+import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 
@@ -42,6 +44,7 @@ const data = [
 
 const Investment = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [statsView, setStatsView] = useState(true);
 
     return (
         <div className="relative space-y-2 md:space-y-6">
@@ -61,11 +64,26 @@ const Investment = () => {
                     <div className='space-y-3'>
                         <p className="text-sm text-gray-300 md:mb-2">Available balance</p>
                         <div className='flex items-center gap-5 justify-between md:mt-10'>
-                            <p className="text-xl md:text-[32px] font-semibold">₦{140000.00.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}</p>
-                            <RiEyeCloseLine className="w-6 h-6 text-[#98A2B3] cursor-pointer" />
+                            <p className="text-xl md:text-[32px] font-semibold">
+                                {statsView
+                                    ? '₦' +
+                                    1400000.00.toLocaleString(undefined, {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
+                                    : '*************'
+                                }
+                            </p>
+                            {statsView ?
+                                <EyeClose
+                                    onClick={() => setStatsView(!statsView)}
+                                    className="text-secondary cursor-pointer"
+                                /> :
+                                <EyeOpen
+                                    onClick={() => setStatsView(!statsView)}
+                                    className="text-secondary cursor-pointer"
+                                />
+                            }
                         </div>
                         <button onClick={() => setIsOpen(true)} className='block md:hidden h-8 px-4 text-sm rounded-md bg-secondary cursor-pointer'>
                             Fund wallet
