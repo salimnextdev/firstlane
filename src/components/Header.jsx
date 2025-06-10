@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { IoIosSearch } from 'react-icons/io';
 
+import { ReactComponent as Logo } from '@/assets/icons/logo.svg';
 import { ReactComponent as Dashboard } from '@/assets/icons/dashboard.svg';
 import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
 import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
@@ -28,6 +29,7 @@ const mapper = {
 }
 
 const Header = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const path = location.pathname;
     const pageName = path.split("/")[1]?.replace('-', ' ');
@@ -43,8 +45,12 @@ const Header = () => {
         <header className="sticky top-0 z-10 bg-white border-b border-gray-200 rounded-t-3xl">
             <NotificationPanel isOpen={isOpen} onClose={setIsOpen} />
             
-            <div className='w-full h-[64px] px-6 flex items-center justify-between'>
-                <div className="flex items-center gap-2 text-base">
+            <div className='w-full h-[64px] px-5 flex items-center justify-between'>
+                <div onClick={()=> navigate('/dashboard')} className='md:hidden flex items-center gap-2 select-none'>
+                    <Logo />
+                    <p className='text-[18px] text-primary font-medium'>FirstLane</p>
+                </div>
+                <div className="hidden md:flex items-center gap-2 text-base">
                     <Icon />
                     <span className='font-medium capitalize'>{pageName}</span>
                 </div>
