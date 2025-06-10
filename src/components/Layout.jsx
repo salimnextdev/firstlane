@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import MobileNavigation from './MobileNavigation';
 
 const Layout = () => {
   return (
@@ -11,11 +12,15 @@ const Layout = () => {
         <Sidebar />
       </div>
 
+      <div className=''>
+        <MobileNavigation />
+      </div>
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col md:m-1 md:mb-0 overflow-auto md:border border-gray-200 rounded-t-3xl">
+      <div className="flex-1 flex flex-col md:m-1 md:mb-0 h-screen overflow-auto md:border border-gray-200 rounded-t-3xl">
         <Header />
 
-        <main className="flex-1 px-5 py-4 bg-[#FDFDFD]">
+        <main className="flex-1 px-5 pb-24 md:pb-4 py-4 bg-[#FDFDFD]">
           <Outlet />
         </main>
       </div>
