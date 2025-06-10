@@ -19,6 +19,7 @@ import FilterDropdown from '@/components/FormInputs/filterDropdown';
 import { MoreVertical } from 'lucide-react';
 import TableDropdown from '@/components/FormInputs/tableDropdown';
 import TableFilter from '@/components/TableFilter';
+import { BsArrowRight } from 'react-icons/bs';
 
 const data = [
     [
@@ -87,7 +88,7 @@ const FXTransactions = () => {
     };
 
     return (
-        <div className="relative space-y-8">
+        <div className="relative space-y-3 md:space-y-6">
             <ConfirmModal
                 isOpen={isOpen}
                 onClose={setIsOpen}
@@ -101,10 +102,10 @@ const FXTransactions = () => {
                     ach: "012345",
                 }}
             />
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col md:flex-row md:items-center justify-between gap-2'>
                 <div>
-                    <h2 className="text-2xl font-semibold">FXTransactions</h2>
-                    <p className="text-sm text-gray-500 my-1">Track and manage your FX transactions safely 💰</p>
+                    <h2 className="text-xl md:text-2xl font-semibold">FXTransactions</h2>
+                    <p className="text-sm text-gray-500 my-1 font-light">Track and manage your FX transactions safely 💰</p>
                 </div>
                 <div className='flex items-center gap-3'>
                     <button
@@ -124,8 +125,8 @@ const FXTransactions = () => {
 
             <div className='space-y-3'>
                 {/* Stat Cards */}
-                <div className='space-y-3'>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className='space-y-2 md:space-y-3'>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                         <div className='p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
                             <p className="text-sm text-secondary">{option === 'Buy' ? 'You buy' : 'You sell'}</p>
                             <div className='flex items-center justify-between'>
@@ -160,32 +161,42 @@ const FXTransactions = () => {
                     </div>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className='w-20 h-9 bg-primary text-sm rounded-md cursor-pointer'
+                        className='w-full md:w-20 h-11 md:h-9 bg-primary text-sm rounded-md cursor-pointer'
                     >
                         {option} Naira
                     </button>
                 </div>
 
                 <div className='px-5 py-3 space-y-3 bg-[#F0F2F5] border border-[#E4E7EC] rounded-xl'>
-                    <p className='text-sm text-secondary'>Current exchange rates</p>
-                    <div className='flex flex-wrap items-center gap-10 font-medium'>
+                    <p className='text-sm text-secondary font-light'>Current exchange rates</p>
+                    <div className='flex items-center gap-2 md:gap-10 font-medium overflow-auto'>
                         {data.map((item, index) => (
-                            <span key={index}>{item[0]} ~ {item[1].toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}</span>
+                            <div key={index} className='w-full flex items-center gap-2'>
+                                <p>{item[0]}</p>
+                                <span>~</span>
+                                <p>{item[1].toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}</p>
+                                <span className='md:hidden text-[#D0D5DD]'>|</span>
+                            </div>
                         ))}
                     </div>
                 </div>
             </div>
 
+            <Link to={'/fx-transactions/all'} className='md:hidden flex items-center gap-2 text-sm bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC]'>
+                <span className='font-medium'>View all FX Transactions</span>
+                <BsArrowRight className='w-4 h-4 text-secondary' />
+            </Link>
+
             {/* Recent Transactions Table */}
-            <div className="w-full rounded-lg border border-[#E4E7EC] bg-white">
+            <div className="hidden md:block w-full rounded-lg border border-[#E4E7EC] bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="text-[20px] font-medium text-[#475367]">Recent FX Transactions</h2>
-                        <div className=" flex items-center justify-end gap-5 space-x-2">
-                            <div className="relative">
+                        <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent FX Transactions</h2>
+                        <div className="w-full flex items-center justify-end gap-2">
+                            <div className="w-4/12 relative">
                                 <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
                                 <input
                                     type="text"
@@ -208,27 +219,27 @@ const FXTransactions = () => {
                             <TableHeader>
                                 <TableRow className="bg-[#F9FAFB] border-b border-[#E4E7EC]">
                                     <TableHead className="w-12 p-4">
-                                        <Checkbox />
+                                        <Checkbox className="!accent-[#3E4095]"/>
                                     </TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Sell amount</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Buy amount</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Currency pair</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Exchange rate</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Date & time</TableHead>
-                                    <TableHead className="font-medium text-sm text-gray-600">Status</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Sell amount</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Buy amount</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Currency pair</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Exchange rate</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Date & time</TableHead>
+                                    <TableHead className="font-medium text-xs text-gray-600">Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody className='text-sm text-secondary'>
                                 {transactions.map((transaction) => (
-                                    <TableRow key={transaction.id} className="border-b border-gray-100">
+                                    <TableRow key={transaction.id} className="text-sm border-b border-gray-100">
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>
-                                        <TableCell className="text-gray-800">NGN{transaction.sent_amount}</TableCell>
-                                        <TableCell className="text-gray-800">${transaction.buy_amount}</TableCell>
-                                        <TableCell className="text-gray-800">{transaction.currency_pair}</TableCell>
-                                        <TableCell className="text-gray-800">{transaction.exchange_rate}</TableCell>
-                                        <TableCell className="text-gray-600">{transaction.dateTime}</TableCell>
+                                        <TableCell className="font-light">NGN{transaction.sent_amount}</TableCell>
+                                        <TableCell className="font-light">${transaction.buy_amount}</TableCell>
+                                        <TableCell className="font-light">{transaction.currency_pair}</TableCell>
+                                        <TableCell className="font-light">{transaction.exchange_rate}</TableCell>
+                                        <TableCell className="font-light">{transaction.dateTime}</TableCell>
                                         <TableCell>
                                             <span
                                                 className={`px-3 py-1 text-xs font-normal capitalize rounded-full
