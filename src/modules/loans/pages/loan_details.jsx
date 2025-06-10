@@ -116,7 +116,7 @@ const LoanDetails = () => {
                                 <Download className='cursor-pointer' />
                             </div>
                         </div>
-                        {/* <div className='w-1/2 tsmt-xs space-y-1'>
+                        {/* <div className='w-1/2 text-xs space-y-1'>
                             <p className='text-secondary'>Note</p>
                             <p className='text-base font-medium'>{data.lga}</p>
                         </div> */}
