@@ -173,7 +173,7 @@ const EmployeeLoans = () => {
                 </div>
             </div>
 
-            <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary'>
+            <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>
                 <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095]' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
