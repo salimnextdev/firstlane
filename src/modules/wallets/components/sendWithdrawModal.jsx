@@ -32,10 +32,10 @@ const SendMoneyModal = ({
                 onClose={setIsModalOpen}
                 type={type}
             />
-            <DialogContent className="z-50 p-6 px-8 bg-white border border-[#E4E7EC] rounded-xl max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <DialogHeader className="text-left">
-                        <DialogTitle className="text-2xl">{title}</DialogTitle>
+                        <DialogTitle className="text-xl md:text-2xl">{title}</DialogTitle>
                     </DialogHeader>
 
                     <form method="post" className='space-y-4'>
@@ -73,10 +73,10 @@ const SendMoneyModal = ({
                         />
                     </form>
 
-                    <div className="w-full flex justify-center gap-5 font-medium">
+                    <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -85,7 +85,7 @@ const SendMoneyModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            className="w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
