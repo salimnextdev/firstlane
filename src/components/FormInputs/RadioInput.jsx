@@ -11,7 +11,7 @@ const RadioInput = ({
 }) => {
   return (
     <div className="flex items-center justify-between p-3 border border-[#E4E7EC] rounded-md">
-      <label htmlFor={name} className="block text-base">
+      <label htmlFor={name} className="block text-sm md:text-base font-light">
         {label}
       </label>
       <div className="relative w-5 h-5">
