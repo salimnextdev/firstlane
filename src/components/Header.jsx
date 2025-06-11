@@ -28,7 +28,7 @@ const mapper = {
     "kyc verification": KYC
 }
 
-const Header = () => {
+const Header = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const path = location.pathname;
@@ -39,11 +39,11 @@ const Header = () => {
         return <IconComponent color="#000" className="w-5 h-5 text-black" />;
     };
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [notificationOpen, setNotificationOpen] = useState(false);
 
     return (
         <header className="sticky top-0 z-10 bg-white border-b border-gray-200 rounded-t-3xl">
-            <NotificationPanel isOpen={isOpen} onClose={setIsOpen} />
+            <NotificationPanel isOpen={notificationOpen} onClose={setNotificationOpen} />
             
             <div className='w-full h-[64px] px-5 flex items-center justify-between'>
                 <div onClick={()=> navigate('/dashboard')} className='md:hidden flex items-center gap-2 select-none'>
@@ -63,8 +63,8 @@ const Header = () => {
                             className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
                         />
                     </div>
-                    <Bell onClick={() => setIsOpen(true)} className="cursor-pointer" />
-                    <Menu className="md:hidden cursor-pointer" />
+                    <Bell onClick={() => setNotificationOpen(true)} className="cursor-pointer" />
+                    <Menu onClick={() => onClose(!isOpen)} className="md:hidden cursor-pointer" />
                 </div>
             </div>
         </header>
