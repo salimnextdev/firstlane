@@ -19,19 +19,19 @@ const SuccessModal = ({
     buttonCLoseText = "Ok, Close",
 }) => {
     return (
-        <AlertDialog open={isOpen} onOpenChange={onClose} className='backdrop-blur-sm bg-white/30'>
-            <AlertDialogContent className="p-6 px-8 bg-white border border-[#E4E7EC] rounded-xl">
+        <AlertDialog open={isOpen} onOpenChange={onClose}>
+            <AlertDialogContent className="md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl">
                 <div className="space-y-5">
                     <div
                         className='w-[48px] h-[48px] bg-[#E7F6EC] rounded-full flex items-center justify-center'
                     >
                         <Check className='' />
                     </div>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="text-2xl">
+                    <AlertDialogHeader className="text-left">
+                        <AlertDialogTitle className="text-xl md:text-2xl">
                             {title}
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-base text-secondary">
+                        <AlertDialogDescription className="text-sm md:text-base text-secondary font-light">
                             {description}
                         </AlertDialogDescription>
                         <AlertDialogCancel
