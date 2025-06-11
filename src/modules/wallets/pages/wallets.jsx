@@ -120,13 +120,13 @@ const Wallets = () => {
                 </div>
                 <div className='hidden md:block border-l-3 border-[#344054]'>
                     <div className='flex items-center justify-between md:px-32'>
-                        <div onClick={() => openModal("fund_wallet")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer'>
+                        <div onClick={() => openModal("fund_wallet")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
                             <div className='w-[48px] h-[48px] flex items-center justify-center bg-white rounded-full'>
                                 <WalletPlus />
                             </div>
                             <p className='cursor-pointer'>Fund wallet</p>
                         </div>
-                        <div onClick={() => openModal("send_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer'>
+                        <div onClick={() => openModal("send_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
                             <div className='w-[48px] h-[48px] flex items-center justify-center bg-white rounded-full'>
                                 <Money />
                             </div>
@@ -140,14 +140,14 @@ const Wallets = () => {
             <div className='w-full md:hidden flex items-center gap-3 text-sm'>
                 <div
                     onClick={() => openModal("fund_wallet")}
-                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC]'
+                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC] select-none'
                 >
                     <WalletPlus />
                     <p>Fund wallet</p>
                 </div>
                 <div
                     onClick={() => openModal("send_money")}
-                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC]'
+                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC] select-none'
                 >
                     <Money />
                     <p>Send money</p>
@@ -166,7 +166,7 @@ const Wallets = () => {
 
                 <div className='space-y-2' id='mobile_transaction_card'>
                     {transactions.map((transaction, index) => (
-                        <div key={index} onClick={() => navigate(`/wallets/${index}`)}>
+                        <div key={index} onClick={() => navigate(`/wallets/all/${index}`)}>
                             <WalletCard wallet={transaction} />
                         </div>
 
