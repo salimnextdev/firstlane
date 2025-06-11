@@ -36,9 +36,9 @@ const AccountFormModal = ({
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
             />
-            <DialogContent className="z-50 p-6 px-8 bg-white border border-[#E4E7EC] rounded-xl md:!max-w-[680px] mx-auto">
+            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl md:!max-w-[680px] mx-auto">
                 <div className="space-y-5">
-                    <div className="w-[48px] h-[48px] bg-[#D8D9EA] flex items-center justify-center rounded-full">
+                    <div className="w-[48px] h-[48px] bg-[#D8D9EA] hidden md:flex items-center justify-center rounded-full">
                         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9 6.0268C9.483 3.17323 11.9665 1 14.9575 1C18.2947 1 21 3.70532 21 7.0425C21 10.0335 18.8268 12.517 15.9732 13" stroke="#3E4095" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M7 21C10.3137 21 13 18.3137 13 15C13 11.6863 10.3137 9 7 9C3.68629 9 1 11.6863 1 15C1 18.3137 3.68629 21 7 21Z" stroke="#3E4095" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -47,8 +47,8 @@ const AccountFormModal = ({
                         </svg>
                     </div>
                     <DialogHeader className="text-left">
-                        <DialogTitle className="text-2xl">{title}</DialogTitle>
-                        <DialogDescription className="text-base text-secondary">
+                        <DialogTitle className="text-base md:text-2xl">{title}</DialogTitle>
+                        <DialogDescription className="text-sm md:text-base text-secondary font-light">
                             This is where your exchanged money would be paid into
                         </DialogDescription>
                     </DialogHeader>
@@ -134,10 +134,10 @@ const AccountFormModal = ({
                     </form>}
 
 
-                    <div className="w-full flex justify-center gap-5 font-medium">
+                    <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 mt-3 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
@@ -146,7 +146,7 @@ const AccountFormModal = ({
                                 setIsModalOpen(true);
                                 onClose();
                             }}
-                            className="w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
                             {buttonSuccessText}
                         </button>
