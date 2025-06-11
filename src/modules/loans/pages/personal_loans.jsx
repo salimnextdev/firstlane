@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
-import DateInput from '@/components/FormInputs/DateInput';
 import BackButton from '@/components/BackButton';
-import { Checkbox } from '@/components/ui/checkbox';
-import CheckboxInput from '@/components/FormInputs/CheckInput';
 
 const PersonalLoans = () => {
     const [formData, setFormData] = useState({
