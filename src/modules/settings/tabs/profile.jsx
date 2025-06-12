@@ -25,7 +25,7 @@ const Profile = () => {
 
     return (
         <div className="space-y-4 pb-20 md:pb-0">
-            <p className='hidden md:block px-3 py-1 inline-block text-xs bg-success rounded-full'>KYC verified</p>
+            <p className='hidden px-3 py-1 md:inline-block text-xs bg-success rounded-full'>KYC verified</p>
             <form method='post' className='w-full space-y-4'>
                 <div className='space-y-1'>
                     <p className='text-sm font-normal'>Profile Picture</p>
