@@ -24,9 +24,8 @@ const Profile = () => {
     };
 
     return (
-        <div className="space-y-4">
-            <p className='px-3 py-1 inline-block text-xs bg-success rounded-full'>KYC verified</p>
-
+        <div className="space-y-4 pb-20 md:pb-0">
+            <p className='hidden md:block px-3 py-1 inline-block text-xs bg-success rounded-full'>KYC verified</p>
             <form method='post' className='w-full space-y-4'>
                 <div className='space-y-1'>
                     <p className='text-sm font-normal'>Profile Picture</p>
@@ -211,11 +210,13 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <button
-                    className='w-full md:w-36 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                >
-                    Save and continue
-                </button>
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                    <button
+                        className='w-full md:w-36 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                    >
+                        Save and continue
+                    </button>
+                </div>
             </form>
 
         </div>

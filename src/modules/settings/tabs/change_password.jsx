@@ -65,18 +65,21 @@ const ChangePassword = () => {
                     placeholder="password"
                 />
 
-                <button
-                    type='button'
-                    onClick={()=> setIsOpen(true)}
-                    className='w-full md:w-20 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                >
-                    Proceed
-                </button>
+
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                    <button
+                        type='button'
+                        onClick={() => setIsOpen(true)}
+                        className='w-full md:w-20 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                    >
+                        Proceed
+                    </button>
+                </div>
             </form>
 
             <div className={`${isOpen ? 'block' : 'hidden'}`}>
-                <p className="mb-6 text-sm text-secondary">
-                    We have sent you an OTP code to your email, 
+                <p className="mb-3 md:mb-6 text-sm text-secondary font-light">
+                    We have sent you an OTP code to your email,
                     <span className='mx-1 font-medium'>adam.john@mail.com</span>
                     to help you securely change your password. Enter code to change the password
                 </p>
@@ -104,12 +107,14 @@ const ChangePassword = () => {
                         </button>
                     </div>
 
+                    <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
                     <button
-                        className={`w-16 h-9 mt-2 bg-primary text-sm rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
+                            className={`w-full md:w-16 h-11 md:h-9 mt-2 bg-primary text-sm rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
                         disabled={resend}
                     >
                         Verify
                     </button>
+                    </div>
                 </form>
             </div>
         </div>

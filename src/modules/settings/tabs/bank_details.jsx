@@ -11,7 +11,7 @@ const BankDetails = () => {
 
     return (
         <div className="space-y-4">
-            <div className='flex items-center gap-3'>
+            <div className='w-full flex flex-wrap items-center gap-3 overflow-auto'>
                 {currencies.map(item => (
                     <button
                         key={item}
@@ -51,11 +51,13 @@ const BankDetails = () => {
                         <IoIosCheckmarkCircle className='absolute top-1/2 right-5 w-[25px] h-[25px] text-[#0F973D]' />
                     </div>
 
-                    <button
-                        className='w-full md:w-32 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                    >
-                        Save changes
-                    </button>
+                    <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                        <button
+                            className='w-full md:w-32 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                        >
+                            Save changes
+                        </button>
+                    </div>
                 </form> :
 
                 <form method='post' className='space-y-4'>
@@ -109,11 +111,13 @@ const BankDetails = () => {
                         placeholder='Select bank'
                     />
 
-                    <button
-                        className='w-full md:w-32 h-9 my-5 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                    >
-                        Save changes
-                    </button>
+                    <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                        <button
+                            className='w-full md:w-32 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                        >
+                            Save changes
+                        </button>
+                    </div>
                 </form>}
         </div>
     );
