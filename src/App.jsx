@@ -12,6 +12,7 @@ import VerifyAccount from '@/modules/auth/pages/verify_account';
 import AccountSuccess from '@/modules/auth/pages/account_success';
 
 import Dashboard from '@/modules/dashboard/pages/dashboard';
+
 import Loans from '@/modules/loans/pages/loans';
 import PersonalLoans from '@/modules/loans/pages/personal_loans';
 import BusinessLoans from '@/modules/loans/pages/business_loans';
@@ -25,17 +26,26 @@ import MakeInvestment from '@/modules/investments/pages/make_investment';
 import ViewInvestment from '@/modules/investments/pages/view_investments';
 
 import FXTransactions from '@/modules/fx_transactions/pages/transactions';
+import AllTransactions from '@/modules/fx_transactions/pages/all_transactions';
+
 import Wallets from '@/modules/wallets/pages/wallets';
+import AllWallets from '@/modules/wallets/pages/all_wallets';
 import WalletDetails from '@/modules/wallets/pages/wallet_detials';
+
 import Support from '@/modules/support/pages/support';
 
+import Settings from '@/modules/settings/pages/settings';
+
 import KYCVerification from '@/modules/kyc/pages/kyc_layout';
+
+import ScrollToTop from '@/components/ScrollToTop';
 
 function App() {
   return (
     <Router>
-      <Routes>
+      <ScrollToTop />
 
+      <Routes>
         {/* Authentication View */}
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
@@ -59,9 +69,12 @@ function App() {
           <Route path="/investment/make-investment" element={<MakeInvestment />} />
           <Route path="/investment/all" element={<ViewInvestment />} />
           <Route path="/fx-transactions" element={<FXTransactions />} />
+          <Route path="/fx-transactions/all" element={<AllTransactions />} />
           <Route path="/wallets" element={<Wallets />} />
-          <Route path="/wallets/:ID" element={<WalletDetails />} />
+          <Route path="/wallets/all" element={<AllWallets />} />
+          <Route path="/wallets/all/:ID" element={<WalletDetails />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/kyc-verification" element={<KYCVerification />} />
         </Route>
       </Routes>
