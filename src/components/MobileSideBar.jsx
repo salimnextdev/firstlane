@@ -40,14 +40,14 @@ const MobileSideBar = ({ isOpen, onClose }) => {
                     <Support className="text-secondary" />
                     <span className=''>Chat with Support</span>
                 </NavLink>
-                <NavLink to="/investment" className={({ isActive, isPending }) =>
+                <NavLink to="/settings?tab=terms" className={({ isActive, isPending }) =>
                     `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-gray-900'}`}
                     onClick={() => onClose(!isOpen)}
                 >
                     <License className="text-secondary" />
                     <span className=''>Terms and Privacy Policy</span>
                 </NavLink>
-                <NavLink to="/fx-transactions" className={({ isActive, isPending }) =>
+                <NavLink to="/settings?tab=actions" className={({ isActive, isPending }) =>
                     `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-gray-900'}`}
                     onClick={() => onClose(!isOpen)}
                 >
