@@ -1,29 +1,51 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { ReactComponent as User } from '@/assets/icons/user.svg';
 import { ReactComponent as ShieldX } from '@/assets/icons/shieldx.svg';
-import { ReactComponent as Bell } from '@/assets/icons/bell.svg';
-import { ReactComponent as Bank } from '@/assets/icons/bank.svg';
+import { ReactComponent as Bell } from '@/assets/icons/bell-sm.svg';
+import { ReactComponent as Bank } from '@/assets/icons/bank-sm.svg';
 import { ReactComponent as License } from '@/assets/icons/license.svg';
 import { ReactComponent as Trash } from '@/assets/icons/trash.svg';
+
 import Profile from '../tabs/profile';
 import ChangePassword from '../tabs/change_password';
 import Notifications from '../tabs/notifications';
 import BankDetails from '../tabs/bank_details';
+import Terms from '../tabs/terms';
+
 import TextInput from '@/components/FormInputs/TextInput';
-import MobileSuccessPage from '@/components/MobileSuccessPage';
+import DeleteAccountModal from '@/components/DeleteAccountModal';
+import BackButton from '@/components/BackButton';
 
 const Settings = () => {
     const navigate = useNavigate();
-    const [selected, setSelected] = useState({});
-    const [isOpen, setIsOpen] = useState(false);
-    const [showModal, setShowModal] = useState(true);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const param = searchParams.get('tab');
 
+    useEffect(() => {
+        if (param) {
+            setCurrentTab(param);
+            setSelected(true);
+        }
+    }, [param]);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
+    const [selected, setSelected] = useState(false);
     const [currentTab, setCurrentTab] = useState("profile");
     const tabs = ["profile", "password", "notifications", "bank_details", "terms", "actions"];
+    const mapper = {
+        "profile": "Profile",
+        "password": "Change password",
+        "notifications": "Notifications",
+        "bank_details": "Bank details",
+        "terms": "Terms and privacy policy",
+        "actions": "Delete account",
+    };
 
     const [formData, setFormData] = useState({
         first_name: "",
@@ -39,74 +61,122 @@ const Settings = () => {
     };
 
     return (
-        <div className="relative space-y-3">
-            <MobileSuccessPage
+        <div className="space-y-3">
+            <DeleteAccountModal
                 isOpen={showModal}
                 onClose={setShowModal}
-                title="It hurts to see you leave. You can always change your mind and return. Firstlane misses you. "
-                buttonSuccessText="Create account"
-                buttonSuccessLink="/signup"
             />
+
+            {/* Controls the back button routing */}
+            {!selected ?
+                <BackButton className="md:hidden" /> :
+                <BackButton onClick={() => setSelected(false)} className="md:hidden" />
+            }
+
             <div>
-                <h2 className="text-2xl font-bold">Settings</h2>
-                <p className="text-sm text-gray-500 font-light my-1">Make changes to your Firstlane experience</p>
+                {!selected ?
+                    <h2 className="text-base md:text-2xl font-bold">Settings</h2> :
+                    <h2 className="text-base md:text-2xl font-medium">{mapper[currentTab]}</h2>
+                }
+                <p className="hidden md:block text-sm text-gray-500 font-light my-1">Make changes to your Firstlane experience</p>
             </div>
 
-            <div className='h-screen border border-[#E4E7EC] rounded-xl'>
-                <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full h-screen flex flex-col md:flex-row">
-                    <div className='border-r border-[#E4E7EC]'>
-                        <TabsList className="relative md:w-[384px] h-2/4 flex flex-col gap-2 p-5">
-                            <TabsTrigger
-                                value="profile"
-                                className="w-full flex items-center justify-start gap-3 p-3 text-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+            <div className='h-screen md:border border-[#E4E7EC] rounded-xl'>
+                <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full h-full flex flex-col md:flex-row">
+                    <div className={`${selected && 'hidden md:block'} md:border-r border-[#E4E7EC]`}>
+                        <TabsList className="w-full md:w-[384px] h-full md:h-1/2 flex flex-col gap-2 md:px-5">
+                            {/* Profile Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`w-full flex items-center ${currentTab === 'profile' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <User className="w-5 h-5 shrink-0" />
-                                <p>Profile</p>
-                            </TabsTrigger>
+                                <User />
+                                <TabsTrigger
+                                    value="profile"
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p>Profile</p>
+                                    <span className='px-3 py-1 md:hidden inline-block text-xs bg-success rounded-full'>
+                                        KYC verified
+                                    </span>
+                                </TabsTrigger>
+                            </div>
 
-                            <TabsTrigger
-                                value="password"
-                                className="w-full flex items-center justify-start gap-3 p-3 text-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+                            {/* Change Password Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`w-full flex items-center ${currentTab === 'password' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <ShieldX className="w-5 h-5 shrink-0" />
-                                <p>Change password</p>
-                            </TabsTrigger>
+                                <ShieldX />
+                                <TabsTrigger
+                                    value="password"
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p>Change password</p>
+                                </TabsTrigger>
+                            </div>
 
-                            <TabsTrigger
-                                value="notifications"
-                                className="w-full flex items-center justify-start gap-3 p-3 text-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+                            {/* Notifications Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`w-full flex items-center ${currentTab === 'notifications' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <Bell className="w-5 h-5 shrink-0" />
-                                <p>Notifications</p>
-                            </TabsTrigger>
+                                <Bell />
+                                <TabsTrigger
+                                    value="notifications"
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p>Notifications</p>
+                                </TabsTrigger>
+                            </div>
 
-                            <TabsTrigger
-                                value="bank_details"
-                                className="w-full flex items-center justify-start gap-3 p-3 text-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+                            {/* Bank Details Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`w-full flex items-center ${currentTab === 'bank_details' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <Bank className="w-5 h-5 shrink-0" />
-                                <p>Bank details</p>
-                            </TabsTrigger>
+                                <Bank />
+                                <TabsTrigger
+                                    value="bank_details"
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p>Bank details</p>
+                                </TabsTrigger>
+                            </div>
 
-                            <TabsTrigger
-                                value="terms"
-                                className="w-full flex items-center justify-start gap-3 p-3 pyxt-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+                            {/* Terms & Privacy Policy Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`hidden w-full md:flex items-center ${currentTab === 'terms' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <License className="w-5 h-5 shrink-0" />
-                                <p>Terms & privacy policy</p>
-                            </TabsTrigger>
+                                <License />
+                                <TabsTrigger
+                                    value="terms"
+                                    // Corrected class for terms - pyxt-sm looks like a typo, assuming p-3 is intended
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p>Terms & privacy policy</p>
+                                </TabsTrigger>
+                            </div>
 
-                            <TabsTrigger
-                                value="actions"
-                                className="w-full flex items-center justify-start gap-3 p-3 text-sm !font-normal cursor-pointer data-[state=active]:bg-[#F0F2F5] !shadow-none"
+                            {/* Delete Account Tab */}
+                            <div
+                                onClick={() => setSelected(true)}
+                                className={`hidden w-full md:flex items-center ${currentTab === 'actions' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
                             >
-                                <Trash className="w-5 h-5 shrink-0" />
-                                <p className='text-[#D42620]'>Delete account</p>
-                            </TabsTrigger>
+                                <Trash />
+                                <TabsTrigger
+                                    value="actions"
+                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
+                                >
+                                    <p className='text-[#D42620]'>Delete account</p>
+                                </TabsTrigger>
+                            </div>
+
                         </TabsList>
                     </div>
 
-                    <div className='w-full p-5'>
+                    <div className={`${!selected && 'hidden md:block'} w-full md:p-5`}>
                         <TabsContent value="profile">
                             <Profile />
                         </TabsContent>
@@ -118,6 +188,9 @@ const Settings = () => {
                         </TabsContent>
                         <TabsContent value="bank_details">
                             <BankDetails />
+                        </TabsContent>
+                        <TabsContent value="terms">
+                            <Terms />
                         </TabsContent>
                         <TabsContent value="actions">
                             <div className={`${isOpen ? 'block space-y-4' : 'hidden'}`}>
@@ -145,19 +218,21 @@ const Settings = () => {
                                     />
                                 </div>
 
-                                <div className='flex items-center gap-5 mt-5'>
-                                    <button
-                                        onClick={()=> setIsOpen(false)}
-                                        className='w-full md:w-36 h-9 rounded-md bg-[#CB1A14] text-sm text-white cursor-pointer'
-                                    >
-                                        Go back
-                                    </button>
-                                    <button
-                                        onClick={()=> setShowModal(true)}
-                                        className='w-full md:w-36 h-9 rounded-md border border-[#D0D5DD] text-sm cursor-pointer'
-                                    >
-                                        Delete
-                                    </button>
+                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                                    <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
+                                        <button
+                                            onClick={() => setIsOpen(false)}
+                                            className='w-full md:w-36 h-11 md:h-9 rounded-md bg-[#CB1A14] text-sm text-white cursor-pointer'
+                                        >
+                                            Go back
+                                        </button>
+                                        <button
+                                            onClick={() => setShowModal(true)}
+                                            className='w-full md:w-36 h-11 md:h-9 rounded-md border border-[#D0D5DD] text-sm cursor-pointer'
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -167,20 +242,23 @@ const Settings = () => {
                                     investments, loans, wallet balances, transaction histories and more.
                                     This is an irreversible action. Are you sure you want to proceed with this action?
                                 </p>
-                                <div className='flex items-center gap-5 mt-5'>
-                                    <button
-                                        onClick={()=> navigate('/dashboard')}
-                                        className='w-full md:w-36 h-9 rounded-md bg-[#CB1A14] text-sm text-white cursor-pointer'
-                                    >
-                                        No, return home
-                                    </button>
-                                    <button
-                                        type='button'
-                                        onClick={() => setIsOpen(true)}
-                                        className='w-full md:w-36 h-9 rounded-md border border-[#D0D5DD] text-sm cursor-pointer'
-                                    >
-                                        Yes, delete
-                                    </button>
+
+                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                                    <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
+                                        <button
+                                            onClick={() => navigate('/dashboard')}
+                                            className='w-full md:w-36 h-11 md:h-9 rounded-md bg-[#CB1A14] text-sm text-white cursor-pointer'
+                                        >
+                                            No, return home
+                                        </button>
+                                        <button
+                                            type='button'
+                                            onClick={() => setIsOpen(true)}
+                                            className='w-full md:w-36 h-11 md:h-9 rounded-md border border-[#D0D5DD] text-sm cursor-pointer'
+                                        >
+                                            Yes, delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </TabsContent>
