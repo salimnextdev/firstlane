@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Switch } from '@/components/ui/switch'; // Adjust based on your project structure
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState({
