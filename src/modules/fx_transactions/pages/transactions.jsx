@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { IoIosSearch } from 'react-icons/io';
+import { BsArrowRight } from 'react-icons/bs';
 
 import {
     Table,
@@ -11,15 +12,19 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Checkbox } from '@/components/ui/checkbox';
 
 import ConfirmModal from '@/modules/fx_transactions/components/confirmTransaction';
 import CountrySelect from '@/components/FormInputs/CountrySelect';
-import FilterDropdown from '@/components/FormInputs/filterDropdown';
-import { MoreVertical } from 'lucide-react';
-import TableDropdown from '@/components/FormInputs/tableDropdown';
+import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
+
 import TableFilter from '@/components/TableFilter';
-import { BsArrowRight } from 'react-icons/bs';
 
 const data = [
     [
@@ -53,24 +58,15 @@ const FXTransactions = () => {
     const navigate = useNavigate();
     const [option, setOption] = useState('Buy');
     const [isOpen, setIsOpen] = useState(false);
-    const [filter, setFilter] = useState('');
     const [currency, setCurrency] = useState('USD');
 
-    const handleFilterSelect = (value) => {
-        setFilter(value)
-    };
-
     const [filters, setFilters] = useState({
-        types: [],
         statuses: [],
-        datePeriod: [],
         currencyPairs: [],
     });
 
     const filterOptions = {
-        types: [],
-        statuses: ['Approved', 'Pending', 'Rejected'],
-        datePeriod: [],
+        statuses: ['Successful', 'Pending', 'Failed'],
         currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
     };
 
@@ -80,9 +76,7 @@ const FXTransactions = () => {
 
     const handleClearFilters = () => {
         setFilters({
-            types: [],
             statuses: [],
-            datePeriod: [],
             currencyPairs: [],
         });
     };
@@ -130,7 +124,7 @@ const FXTransactions = () => {
                         <div className='p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
                             <p className="text-sm text-secondary">{option === 'Buy' ? 'You buy' : 'You sell'}</p>
                             <div className='flex items-center justify-between'>
-                                <p className="text-2xl font-semibold text-secondary">
+                                <p className="text-2xl md:text-[28px] font-semibold text-secondary">
                                     <span className='mr-1 text-black'>₦</span>
                                     {1600.03.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
@@ -149,7 +143,7 @@ const FXTransactions = () => {
                         <div className='p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
                             <p className="text-sm text-secondary">{option === 'Buy' ? 'By selling' : 'To buy'}</p>
                             <div className='flex items-center justify-between'>
-                                <p className="text-2xl font-semibold text-secondary">
+                                <p className="text-2xl md:text-[28px] font-semibold text-secondary">
                                     <span className='mr-1 text-black'>$</span>
                                     {1.00.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
@@ -219,7 +213,7 @@ const FXTransactions = () => {
                             <TableHeader>
                                 <TableRow className="bg-[#F9FAFB] border-b border-[#E4E7EC]">
                                     <TableHead className="w-12 p-4">
-                                        <Checkbox className="!accent-[#3E4095]"/>
+                                        <Checkbox className="!accent-[#3E4095]" />
                                     </TableHead>
                                     <TableHead className="font-medium text-xs text-gray-600">Sell amount</TableHead>
                                     <TableHead className="font-medium text-xs text-gray-600">Buy amount</TableHead>
