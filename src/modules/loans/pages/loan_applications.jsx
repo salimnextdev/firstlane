@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
     Table,
@@ -8,7 +9,12 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-// import { ActionDialog } from '@/components/ActionDialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import BackButton from '@/components/BackButton';
 
 import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
@@ -17,7 +23,7 @@ import { MoreVertical } from 'lucide-react';
 import { IoIosSearch } from 'react-icons/io';
 
 import LoanCard from "@/modules/loans/components/LoanCard";
-import { useNavigate } from 'react-router-dom';
+import TableFilter from '@/components/TableFilter';
 
 const LoanApplications = () => {
     const navigate = useNavigate();
@@ -79,30 +85,48 @@ const LoanApplications = () => {
 
     const isAllSelected = investments.length > 0 && selectedInvestments.length === investments.length;
 
+    const [filters, setFilters] = useState({
+        types: [],
+        statuses: [],
+        datePeriod: '',
+        currencyPairs: [],
+    });
+
+    const filterOptions = {
+        types: ['Personal loan', 'Business loan', 'Employee loan', 'Asset finance loan'],
+        statuses: ['Successful', 'Pending', 'Failed'],
+        datePeriod: ['Today', 'Last 7 days', 'Last 30 days', 'Last 90 days', 'Last 360 days'],
+        currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
+    };
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const handleClearFilters = () => {
+        setFilters({
+            types: [],
+            statuses: [],
+            datePeriod: '',
+            currencyPairs: [],
+        });
+    };
+
     return (
         <div className="space-y-5">
             <BackButton />
 
             {/* DESKTOP ::::  Loan Application Table */}
             <div className="hidden md:block w-full overflow-x-auto border border-[#E4E7EC] rounded-lg">
-                <div className="flex items-center justify-between px-5 py-2">
+                <div className="flex items-center justify-between px-5 py-3">
                     <h2 className="md:text-[20px] font-medium text-[#475367]">Loan Applications</h2>
                     <div className="flex items-center space-x-2">
-                        <div className="relative w-full">
-                            <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
-                            <input
-                                type="text"
-                                placeholder="Search here..."
-                                className="w-full h-[40px] pl-10 pr-4 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
-                            />
-                        </div>
-                        {/* <Button
-                                variant="outline"
-                                className="flex items-center gap-2 h-9 px-4 border border-gray-200 rounded-lg"
-                            >
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Filter
-                            </Button> */}
+                        <TableFilter
+                            filterOptions={filterOptions}
+                            filters={filters}
+                            onFilterChange={handleFilterChange}
+                            onClearFilters={handleClearFilters}
+                        />
                     </div>
                 </div>
                 <Table className="w-full">
@@ -113,7 +137,7 @@ const LoanApplications = () => {
                                     type="checkbox"
                                     checked={isAllSelected}
                                     onChange={e => handleSelectAll(e.target.checked)}
-                                    className="h-4 w-4 rounded border border-gray-300 accent-[#64748B]"
+                                    className="h-4 w-4 accent-[#3E4095] rounded border border-gray-300 cursor-pointer"
                                 />
                             </TableHead>
                             <TableHead className="text-left px-6 py-3 text-xs font-normal">
@@ -142,7 +166,7 @@ const LoanApplications = () => {
                                         type="checkbox"
                                         checked={selectedInvestments.includes(investment.id)}
                                         onChange={e => handleSelectInvestment(investment.id, e.target.checked)}
-                                        className="h-4 w-4 rounded border-gray-300 accent-[#64748B]"
+                                        className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 cursor-pointer"
                                     />
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
@@ -177,18 +201,22 @@ const LoanApplications = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell className="px-6 py-4 relative">
-                                    <button
-                                        className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center"
-                                        onClick={() =>
-                                            setShowDropdown(showDropdown === investment.id ? null : investment.id)
-                                        }>
-                                        <Dot className="" />
-                                    </button>
-                                    {showDropdown === investment.id && (
-                                        <div className="absolute right-0 mt-1 p-2 z-10 w-48 bg-white rounded-md shadow-md border border-gray-200 cursor-pointer">
-                                            <span className='cursor-pointer'>View details</span>
-                                        </div>
-                                    )}
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <button
+                                                className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center
+                                                focus-visible:outline-none focus-visible:ring-0 cursor-pointer"
+                                                aria-label="Open menu" // Added for accessibility
+                                            >
+                                                <Dot className="" />
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-40 z-10 bg-white text-left rounded-xl border border-gray-200 cursor-pointer">
+                                            <DropdownMenuItem onClick={() => navigate(`/loans/applications/${investment.id}`)}>
+                                                <span className='font-light cursor-pointer'>View details</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -200,17 +228,23 @@ const LoanApplications = () => {
             <div className='md:hidden space-y-4'>
                 <div className='flex items-center justify-between'>
                     <p className='font-medium'>Loan Applications</p>
-                    <div className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center">
+                    {/* <div className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center">
                         <Filter className="" />
-                    </div>
+                    </div> */}
+                    <TableFilter
+                        filterOptions={filterOptions}
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onClearFilters={handleClearFilters}
+                    />
                 </div>
 
                 <div className='space-y-2' id='mobile_transaction_card'>
                     {investments.map((loan, index) => (
-                        <div key={index} onClick={()=> navigate(`/loans/applications/${index}`)}>
+                        <div key={index} onClick={() => navigate(`/loans/applications/${index}`)}>
                             <LoanCard loan={loan} />
                         </div>
-                        
+
                     ))}
                 </div>
             </div>
