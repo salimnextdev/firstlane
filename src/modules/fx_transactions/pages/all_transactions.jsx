@@ -1,27 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-
-import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
 import { ReactComponent as Filter } from '@/assets/icons/filter.svg';
-import { IoIosSearch } from 'react-icons/io';
 
 import BackButton from '@/components/BackButton';
-import MobileTransactionCard from '../components/MobileTransactionCard';
+import MobileTransactionCard from '@/modules/fx_transactions/components/MobileTransactionCard';
+import TableFilter from '@/components/TableFilter';
 
 const AllTransactions = () => {
     const navigate = useNavigate();
-    const [showDropdown, setShowDropdown] = useState(null);
-    const [selectedInvestments, setSelectedInvestments] = useState([]);
-    const [investments, setInvestments] = useState([
+    const [transactions, setTransactions] = useState([
         {
             id: '00001',
             amount: 10000.89,
@@ -58,7 +46,28 @@ const AllTransactions = () => {
             status: "approved"
         },
     ]);
-    
+
+    const [filters, setFilters] = useState({
+        statuses: [],
+        currencyPairs: [],
+    });
+
+    const filterOptions = {
+        statuses: ['Successful', 'Pending', 'Failed'],
+        currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
+    };
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const handleClearFilters = () => {
+        setFilters({
+            statuses: [],
+            currencyPairs: [],
+        });
+    };
+
     return (
         <div className="space-y-3">
             <BackButton />
@@ -67,17 +76,21 @@ const AllTransactions = () => {
             <div className='md:hidden space-y-3'>
                 <div className='flex items-center justify-between'>
                     <p className='font-medium'>FX transactions</p>
-                    <div className="border border-gray-200 p-1 rounded-lg w-8 h-8 flex items-center justify-center">
-                        <Filter className="" />
-                    </div>
+                    
+                    <TableFilter
+                        filterOptions={filterOptions}
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onClearFilters={handleClearFilters}
+                    />
                 </div>
 
                 <div className='space-y-2' id='mobile_transaction_card'>
-                    {investments.map((transaction, index) => (
-                        <div key={index} onClick={()=> navigate(`/fx-transactions/all/${index}`)}>
+                    {transactions.map((transaction, index) => (
+                        <div key={index}>
                             <MobileTransactionCard transaction={transaction} />
                         </div>
-                        
+
                     ))}
                 </div>
             </div>
