@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import onBoardingSlice from "@/slices/onBoarding";
+import { authSlice } from '@/modules/auth/state/authSlice';
 
 const store = configureStore({
   reducer: {
-    onBoarding: onBoardingSlice,
+    auth: authSlice,
   },
 });
 
