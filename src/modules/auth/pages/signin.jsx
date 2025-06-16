@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+
+import { useDispatch } from 'react-redux';
+import { loginUser } from '@/modules/auth/state/authSlice';
+import { getCookie } from '@/utils/cookieUtils';
+import { toast } from "sonner";
 
 import logo from '@/assets/images/logo.png';
 
@@ -11,7 +16,14 @@ import TextInput from '@/components/FormInputs/TextInput';
 import PasswordInput from '@/components/FormInputs/PasswordInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
 
+import { Loader } from 'lucide-react';
+
 const Signin = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    const [submitted, setSubmitted] = useState(false);
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -19,18 +31,66 @@ const Signin = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
+    // Redirect to dashboard, when user is loggedIn
+    const token = getCookie('token') || null;
+    if (token) {
+        return <Navigate to="/dashboard" />
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.email) errors.email = "Email is required";
+        if (!formData.password) errors.password = "Password is required";
+        return errors;
+    };
+
+    const login = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast(error);
+            });
+            setErrors(validationErrors);
+            return;
+        };
+
+        setSubmitted(true);
+
+        const data = {
+            "email": formData.email,
+            "password": formData.password,
+        };
+
+        try {
+            const resultAction = await dispatch(loginUser(data));
+            if (loginUser.fulfilled.match(resultAction)) {
+                toast("Welcome Back!!!");
+                navigate('/dashboard');
+            } else {
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast("An error occured", {
+                description: resultAction.payload.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
     return (
-        <div className="w-full h-screen flex items-center justify-center md:p-10 overflow-hidden">
+        <div className="w-full md:h-screen flex items-center justify-center md:p-10 overflow-hidden">
             <AuthImageContainer />
 
-            <div className="w-full md:w-1/2 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
+            <div className="w-full md:w-1/2 my-10 md:my-0 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
                 <div className='w-full lg:w-10/12'>
                     <div className="hidden md:flex items-center gap-2 mb-6">
                         <img className="w-7" alt="logo" src={logo} />
@@ -39,10 +99,10 @@ const Signin = () => {
                     <h2 className="text-xl md:text-4xl font-bold text-gray-900">
                         Welcome back!
                     </h2>
-                    <p className="mt-2 mb-6 text-sm text-secondary">
+                    <p className="mt-2 mb-6 text-sm text-secondary font-light">
                         Fill in your details to login to your account
                     </p>
-                    <form method="post" className="space-y-4 text-sm">
+                    <form onSubmit={login} method="post" className="space-y-4 text-sm">
                         <TextInput
                             label="Email Address"
                             name="email"
@@ -68,11 +128,14 @@ const Signin = () => {
                         <button
                             className="w-full h-11 mt-6 bg-[#3E4095] text-white font-normal rounded-md cursor-pointer hover:bg-opacity-90 transition"
                         >
-                            Login
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                'Login'
+                            }
                         </button>
                     </form>
                     <div className="mt-4 space-x-3 text-center text-sm">
-                        <span className="text-secondary">
+                        <span className="text-secondary font-light">
                             Don't have an account?
                         </span>
                         <Link to={'/signup'} className="text-primary font-medium">
@@ -82,7 +145,7 @@ const Signin = () => {
 
                     <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
                         <Separator className="flex-1 h-px bg-gray-200" />
-                        <span className="whitespace-nowrap">Or sign up with</span>
+                        <span className="whitespace-nowrap font-light">Or sign up with</span>
                         <Separator className="flex-1 h-px bg-gray-200" />
                     </div>
 
