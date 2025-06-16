@@ -22,7 +22,7 @@ const AccountSuccess = () => {
                         <h2 className="text-xl md:text-4xl font-bold text-gray-900">
                             Account created successfully
                         </h2>
-                        <p className="mt-3 mb-6 text-sm text-secondary">
+                        <p className="mt-3 mb-6 text-sm text-secondary font-light">
                             Welcome to FirstLane. You are in the best place to recieve and manage loans, invest and track
                             investments, and manage FX transactions.
                         </p>
