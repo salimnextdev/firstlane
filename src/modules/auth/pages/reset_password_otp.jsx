@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+
+import { useDispatch } from 'react-redux';
+import { sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
+import { getCookie, setCookie } from '@/utils/cookieUtils';
 
 import logo from '@/assets/images/logo.png';
 
 import OTPInput from '@/components/FormInputs/OTPInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
 
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+
 const ResetPasswordOTP = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const email = getCookie('email') || null;
+    const userID = getCookie('userID') || null;
+
+    const [submitted, setSubmitted] = useState(false);
     const [OTP, setOTP] = useState();
     const handleChange = (e) => {
         setOTP(e.target.value);
@@ -30,8 +43,64 @@ const ResetPasswordOTP = () => {
 
     const handleResend = () => {
         if (!resend) return;
+        resendOTP();
         setCountdown(50);
         setResend(false);
+    };
+
+    const email_verification = async (e) => {
+        e.preventDefault();
+        setSubmitted(true);
+
+        const data = {
+            userID: userID,
+            code: OTP.replace('-', ''),
+            type: "PasswordReset"
+        };
+
+        try {
+            const resultAction = await dispatch(verifyAuthentication(data));
+            if (verifyAuthentication.fulfilled.match(resultAction)) {
+                setCookie('OTP', OTP);
+                navigate('/reset-password');
+            } else {
+                setCountdown(0);
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
+    const resendOTP = async () => {
+        const data = {
+            userID: userID,
+            email: email || '',
+            type: "PasswordReset"
+        };
+
+        try {
+            const resultAction = await dispatch(sendCodeToEmail(data));
+            if (sendCodeToEmail.fulfilled.match(resultAction)) {
+                toast("OTP sent successfully!", {
+                    description: resultAction.payload.message,
+                });
+            } else {
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
     };
     return (
         <div className="w-full h-screen flex items-start justify-center md:p-10 overflow-hidden">
@@ -46,12 +115,12 @@ const ResetPasswordOTP = () => {
                     <h2 className="text-xl md:text-4xl font-bold text-gray-900">
                         Reset password
                     </h2>
-                    <p className="mt-2 mb-6 text-sm text-secondary">
+                    <p className="mt-2 mb-6 text-sm text-secondary font-light">
                         We have sent you an otp code to your email
                         <span className='mx-1 font-medium'>adam.john@mail.com</span>
                         to help you recover your password
                     </p>
-                    <form method="post" className="space-y-4 text-sm">
+                    <form onSubmit={email_verification} method="post" className="space-y-4 text-sm">
                         <OTPInput
                             label="OTP code"
                             name="otp"
@@ -78,7 +147,10 @@ const ResetPasswordOTP = () => {
                             className={`w-full h-11 mt-2 bg-[#3E4095] text-white font-normal rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
                             disabled={resend}
                         >
-                            Proceed to reset password
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                'Proceed to reset password'
+                            }
                         </button>
                     </form>
 
