@@ -121,7 +121,7 @@ const Signin = () => {
                         />
 
                         <Link to={'/forgot-password'}>
-                            <button className="text-primary text-sm font-medium cursor-pointer float-right">
+                            <button type="button" className="text-primary text-sm font-medium cursor-pointer float-right">
                                 Forgot Password
                             </button>
                         </Link>
