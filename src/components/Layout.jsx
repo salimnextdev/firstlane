@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { getCookie } from '@/utils/cookieUtils';
 
 import Sidebar from './Sidebar';
 import Header from './Header';
@@ -10,6 +11,12 @@ const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
   const pageName = path.split("/")[1]?.replace('-', ' ');
+  
+  // Redirect to signin, when user is loggedOut
+  const token = getCookie('token') || null;
+  if (!token) {
+      return <Navigate to={`/signin?redirect_url=${path}`} />
+  };
 
   const [isOpen, setIsOpen] = useState(false);
 
