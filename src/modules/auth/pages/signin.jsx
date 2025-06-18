@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { loginUser } from '@/modules/auth/state/authSlice';
@@ -21,6 +21,8 @@ import { Loader } from 'lucide-react';
 const Signin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [redirect_url] = useSearchParams();
+    const paramPath = redirect_url.get('redirect_url')
     
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState({});
@@ -71,8 +73,7 @@ const Signin = () => {
         try {
             const resultAction = await dispatch(loginUser(data));
             if (loginUser.fulfilled.match(resultAction)) {
-                toast("Welcome Back!!!");
-                navigate('/dashboard');
+                navigate(paramPath || '/dashboard');
             } else {
                 toast(resultAction.payload.message);
                 return;
