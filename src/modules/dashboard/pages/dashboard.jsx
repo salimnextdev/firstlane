@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCookie } from '@/utils/cookieUtils';
+import { fetchUserProfile } from '@/modules/auth/state/authSlice';
+
 import {
     Table,
     TableBody,
@@ -11,8 +15,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
-import { RiEyeCloseLine } from "react-icons/ri";
-import { IoIosArrowRoundForward, IoIosSearch, IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
+import { IoIosArrowRoundForward, IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
 
 import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
 import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
@@ -126,8 +129,25 @@ const KYCBanner = {
 }
 
 const Dashboard = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [kycStatus, setKycStatus] = useState('pending');
+    const user = JSON.parse(getCookie('user'));
+    const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch]);
+
+    const [kycStatus, setKycStatus] = useState('failed');
+    useEffect(()=> {
+        if (userProfile && userProfile?.verifications?.status === 'pending') {
+            setKycStatus('pending');
+        } else if (userProfile && userProfile?.verifications?.status === 'failed') {
+            setKycStatus('failed');
+        };
+    }, [userProfile]);
+    
     const [statsView, setStatsView] = useState({
         loan: true,
         investment: true,
@@ -162,7 +182,7 @@ const Dashboard = () => {
         <div className="relative space-y-4 md:space-y-6">
             <div className='flex flex-col lg:flex-row md:items-center justify-between'>
                 <div>
-                    <h2 className="text-base md:text-[28px] font-bold">Welcome back, Olivia</h2>
+                    <h2 className="text-base md:text-[28px] font-bold">Welcome back, {userProfile?.firstname || 'Guest'}</h2>
                     <p className="text-sm text-gray-500 my-1 font-light">Track, manage and invest your finances properly 💰</p>
                 </div>
                 <div className='hidden md:flex items-center gap-3 text-sm font-medium'>
