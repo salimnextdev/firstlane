@@ -25,7 +25,7 @@ const ResetPasswordOTP = () => {
         setOTP(e.target.value);
     };
 
-    const [countdown, setCountdown] = useState(50);
+    const [countdown, setCountdown] = useState(0);
     const [resend, setResend] = useState(false);
 
     useEffect(() => {
@@ -144,8 +144,8 @@ const ResetPasswordOTP = () => {
                         </div>
 
                         <button
-                            className={`w-full h-11 mt-2 bg-[#3E4095] text-white font-normal rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
-                            disabled={resend}
+                            className={`w-full h-11 mt-2 bg-[#3E4095] text-white font-normal rounded-md cursor-pointer hover:bg-opacity-90 transition`}
+                            // disabled={resend}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
