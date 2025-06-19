@@ -1,14 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchKycStatus } from '@/modules/auth/state/kycSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import KYCStep1 from '@/modules/kyc/pages/kyc_step_1';
 import KYCStep2 from '@/modules/kyc/pages/kyc_step_2';
 import KYCStep3 from '@/modules/kyc/pages/kyc_step_3';
 import KYCStep4 from '@/modules/kyc/pages/kyc_step_4';
+
 import BackButton from '@/components/BackButton';
-import ScrollToTop from '@/components/ScrollToTop';
+import FullscreenLoader from '@/components/FullscreenLoader';
 
 const KYCVerification = () => {
+    const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
+
+    const { kycStatus: kycStatus, loading: kyc_loading, error: kyc_error } = useSelector((state) => state.kyc);
+    useEffect(() => {
+        if (!kyc_loading) {
+            dispatch(fetchKycStatus(user._id));
+        }
+    }, [dispatch]);
+
+    const [isOpen, setIsOpen] = useState(true);
     const [step, setStep] = useState(1);
+    useEffect(() => {
+        if (kycStatus) {
+            const level = parseInt(kycStatus?.level?.split('level')[1] || 0);
+            setStep(level + 1);
+            setIsOpen(false);
+        }
+    }, [kycStatus])
 
     const nextStep = () => setStep((prevStep) => prevStep + 1);
     const prevStep = () => setStep((prevStep) => prevStep - 1);
@@ -22,13 +44,16 @@ const KYCVerification = () => {
 
     return (
         <div className="">
-            <ScrollToTop />
+            <FullscreenLoader
+                isOpen={isOpen}
+                onClose={setIsOpen}
+            />
+
             <div className="space-y-4">
                 <BackButton />
-
                 <div className='mb-5 space-y-1'>
                     <h2 className="text-base md:text-2xl font-medium">KYC Verification</h2>
-                    <p className="text-xs md:text-sm text-secondary">{mapper[step]} &nbsp;|&nbsp; Step {step}/4</p>
+                    <p className="text-xs md:text-sm text-secondary font-light">{mapper[step]} &nbsp;|&nbsp; Step {step}/4</p>
                 </div>
 
                 {step === 1 && <KYCStep1 nextStep={nextStep} />}
