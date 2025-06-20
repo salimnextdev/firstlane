@@ -24,7 +24,7 @@ const OTPInput = ({
 
   return (
     <div className="">
-      <label htmlFor={name} className="block text-sm font-medium">
+      <label htmlFor={name} className="block text-sm">
         {label}
       </label>
       <input

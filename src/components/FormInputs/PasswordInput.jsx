@@ -13,7 +13,7 @@ const PasswordInput = ({
 
     return (
         <div className="relative">
-            <label htmlFor={name} className="block text-sm font-medium">
+            <label htmlFor={name} className="block text-sm">
                 {label}
             </label>
             <input
@@ -23,7 +23,7 @@ const PasswordInput = ({
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className={`w-full h-12 mt-1 px-5 border border-gray-200 focus:outline-none rounded ${className}`}
+                className={`w-full h-12 mt-1 px-5 font-light border border-gray-200 focus:outline-none rounded ${className}`}
             /> 
             {/* Add pr-12 to input className to create space for your custom preview  */}
             {/* <span

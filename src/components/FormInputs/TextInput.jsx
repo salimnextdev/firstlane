@@ -10,7 +10,7 @@ const TextInput = ({
 }) => {
   return (
     <div className="w-full">
-      <label htmlFor={name} className="block text-sm font-medium">
+      <label htmlFor={name} className="block text-sm">
         {label}
       </label>
       <input
@@ -18,7 +18,7 @@ const TextInput = ({
         name={name}
         id={name}
         placeholder={placeholder}
-        className={`w-full h-12 mt-1 px-5 border border-gray-200 focus:outline-none rounded ${className}`}
+        className={`w-full h-12 mt-1 px-5 font-light border border-gray-200 focus:outline-none rounded ${className}`}
         {...rest}
       />
     </div>

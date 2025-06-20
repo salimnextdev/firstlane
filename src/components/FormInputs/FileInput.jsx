@@ -15,7 +15,7 @@ const FileInput = ({
             {label && (
                 <label
                     htmlFor={name}
-                    className="block text-sm font-medium mb-1"
+                    className="block text-sm mb-1"
                 >
                     {label}
                 </label>
@@ -49,7 +49,7 @@ const FileInput = ({
                             <path d="M14.6668 10.75C14.6668 12.8183 14.2352 13.25 12.1668 13.25H3.8335C1.76516 13.25 1.3335 12.8183 1.3335 10.75" stroke="#667185" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     }
-                    <span className='w-10/12 truncate'>{fileName || 'Upload document'}</span>
+                    <span className='w-10/12 font-light truncate'>{fileName || 'Upload document'}</span>
                 </div>
             </div>
         </div>
