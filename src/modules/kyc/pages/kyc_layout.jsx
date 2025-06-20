@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchKycStatus } from '@/modules/auth/state/kycSlice';
+import { fetchKycStatus } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import KYCStep1 from '@/modules/kyc/pages/kyc_step_1';
@@ -30,7 +30,7 @@ const KYCVerification = () => {
             setStep(level + 1);
             setIsOpen(false);
         }
-    }, [kycStatus])
+    }, [kycStatus]);
 
     const nextStep = () => setStep((prevStep) => prevStep + 1);
     const prevStep = () => setStep((prevStep) => prevStep - 1);
