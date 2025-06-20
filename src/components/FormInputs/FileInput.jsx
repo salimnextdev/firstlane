@@ -1,24 +1,14 @@
-import React, { useState } from 'react';
-import { FiUpload } from 'react-icons/fi';
+import React from 'react';
 
 const FileInput = ({
     label,
     name,
     className,
-    onFileChange = () => { },
+    onChange,
+    value,
     ...rest
 }) => {
-    const [fileName, setFileName] = useState('');
-    const [selectedFile, setSelectedFile] = useState(null);
-
-    const handleChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-            setFileName(file.name);
-            onFileChange(file); // pass single file to parent
-        }
-    };
+    const fileName = value ? value.file.name : ''; // Derive filename from the passed 'value' (File object)
 
     return (
         <div className="w-full">
@@ -35,13 +25,17 @@ const FileInput = ({
                     type="file"
                     id={name}
                     name={name}
-                    onChange={handleChange}
+                    onChange={onChange}
                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    // Important: Do NOT set 'value' directly on type="file" inputs.
+                    // It's a controlled component anti-pattern for files.
+                    // The 'value' prop here is just for this custom component's logic.
                     {...rest}
                 />
                 <div
                     className={`w-full h-full px-5 flex items-center justify-center gap-2 border border-gray-200 rounded text-sm text-gray-500 pointer-events-none ${className}`}
                 >
+                    {/* Use the derived fileName */}
                     {fileName ?
                         <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M0.916504 8.33334C0.916504 5.19064 0.916504 3.61929 1.95383 2.64298C2.99116 1.66667 4.66072 1.66667 7.99984 1.66667H8.64378C11.3614 1.66667 12.7203 1.66667 13.6639 2.33153C13.9343 2.52203 14.1744 2.74794 14.3768 3.00241C15.0832 3.89057 15.0832 5.16947 15.0832 7.72728V9.84849C15.0832 12.3178 15.0832 13.5525 14.6924 14.5385C14.0642 16.1238 12.7356 17.3743 11.0512 17.9655C10.0035 18.3333 8.69166 18.3333 6.06802 18.3333C4.5688 18.3333 3.81918 18.3333 3.22048 18.1232C2.258 17.7853 1.4988 17.0708 1.13981 16.1649C0.916504 15.6014 0.916504 14.8959 0.916504 13.4849V8.33334Z" stroke="#667185" stroke-width="1.5" stroke-linejoin="round" />
