@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePassword } from '@/modules/auth/state/authSlice';
+import { removeCookie } from '@/utils/cookieUtils';
 
-import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
-
-import TextInput from '@/components/FormInputs/TextInput';
 import PasswordInput from '@/components/FormInputs/PasswordInput';
 import OTPInput from '@/components/FormInputs/OTPInput';
 
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+
 const ChangePassword = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [isOpen, setIsOpen] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         old_password: "",
         new_password: "",
@@ -15,17 +23,63 @@ const ChangePassword = () => {
     });
 
     const handleChange = (e) => {
-        const { name, type, files, value } = e.target;
-
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'file' ? { file: files[0] } : value,
+            [name]: value,
         }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.old_password) errors.old_password = "Old password is required";
+        if (!formData.new_password) errors.new_password = "New password is required";
+        if (formData.old_password === formData.new_password) errors.message = "Please make sure both passwords are not identical";
+        return errors;
+    };
+
+    const resetPassword = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        const data = {
+            currentPassword: formData.old_password,
+            newPassword: formData.new_password
+        };
+
+        try {
+            const resultAction = await dispatch(changePassword(data));
+            if (changePassword.fulfilled.match(resultAction)) {
+                // Remove all cookies used for the reset password flow to log the user out.
+                removeCookie('token');
+                removeCookie('user');
+
+                toast("Password successfully reset!", {
+                    description: "Your password has been successfully reset. You can now log in with your new password.",
+                });
+                navigate('/signin');
+            } else {
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
     };
 
     const [countdown, setCountdown] = useState(50);
     const [resend, setResend] = useState(false);
-
     useEffect(() => {
         if (countdown === 0) {
             setResend(true);
@@ -47,7 +101,7 @@ const ChangePassword = () => {
 
     return (
         <div className='space-y-4'>
-            <form method='post' className={`w-full space-y-4 ${isOpen ? 'hidden' : 'block'}`}>
+            <form onSubmit={resetPassword} method='post' className={`w-full space-y-4 ${isOpen ? 'hidden' : 'block'}`}>
                 <PasswordInput
                     label="Old Password"
                     name="old_password"
@@ -68,11 +122,14 @@ const ChangePassword = () => {
 
                 <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
                     <button
-                        type='button'
-                        onClick={() => setIsOpen(true)}
+                        // type='button'
+                        // onClick={() => setIsOpen(true)}
                         className='w-full md:w-20 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
-                        Proceed
+                        {submitted ?
+                            <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                            'Proceed'
+                        }
                     </button>
                 </div>
             </form>
@@ -108,12 +165,12 @@ const ChangePassword = () => {
                     </div>
 
                     <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
-                    <button
+                        <button
                             className={`w-full md:w-16 h-11 md:h-9 mt-2 bg-primary text-sm rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
-                        disabled={resend}
-                    >
-                        Verify
-                    </button>
+                            disabled={resend}
+                        >
+                            Verify
+                        </button>
                     </div>
                 </form>
             </div>
