@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
-import { FaTachometerAlt, FaMoneyCheckAlt, FaChartLine, FaExchangeAlt, FaWallet, FaHeadset, FaCog } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-
-import { LuLayoutDashboard } from "react-icons/lu";
-import { IoWalletOutline, IoSettingsOutline } from "react-icons/io5";
-import { HiOutlineCash } from "react-icons/hi";
-import { BsDatabaseUp } from "react-icons/bs";
-import { AiOutlineTransaction } from "react-icons/ai";
-import { FaHeadphonesAlt } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '@/modules/auth/state/authSlice';
 
 import { ReactComponent as Dashboard } from '@/assets/icons/dashboard.svg';
 import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
@@ -24,6 +17,14 @@ import CouponModal from '@/modules/investments/components/couponModal';
 import LogoutModal from '@/components/LogoutModal';
 
 const Sidebar = () => {
+    const dispatch = useDispatch();
+    const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!loading || !userProfile) {
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch]);
+
     const [isOpen, setIsOpen] = useState(false);
     const [isLogout, setIsLogout] = useState(false);
 
@@ -114,15 +115,16 @@ const Sidebar = () => {
                     <div className="w-10/12 flex items-center gap-3">
                         <div className='relative w-[40px] h-[40px] bg-gray-300 rounded-full'>
                             <img
-                                src=""
+                                src={userProfile?.profileImage}
                                 alt=""
                                 className="w-full h-full rounded-full"
+                                crossOrigin='anonymous'
                             />
-                            <span className='absolute bottom-1 right-0 w-3 h-3 bg-green-500 border border-white rounded-full'></span>
+                            <span className='absolute bottom-1 right-0 w-2.5 h-2.5 bg-green-500 border border-gray-200 rounded-full'></span>
                         </div>
                         <div className="w-8/12 text-sm">
-                            <p className="font-medium">Alison Eyo</p>
-                            <p className="text-secondary truncate">alison.e@rayna.ui</p>
+                            <p className="font-medium">{userProfile?.fullname}</p>
+                            <p className="text-secondary font-light truncate">{userProfile?.email}</p>
                         </div>
                     </div>
                     <p onClick={()=> setIsLogout(true)} className='w-2/12 cursor-pointer'>
