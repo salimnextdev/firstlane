@@ -1,41 +1,164 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile, updateUserProfile } from '@/modules/auth/state/authSlice';
+import { uploadFile } from '@/modules/kyc/state/kycSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
+import PlacesInput from '@/components/FormInputs/PlacesInput';
+import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
+
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 const Profile = () => {
+    const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
+    const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!userProfile) {
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch]);
 
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
+        profile_image: null,
+        title: "",
+        firstname: "",
+        lastname: "",
         email: "",
-        password: "",
-        profile: null,
+        phone: "",
+        date_of_birth: "",
+        gender: "",
+        marital_status: "",
+        address: "",
+        state: "",
+        lga: "",
     });
+
+    useEffect(() => {
+        setFormData({
+            profile_image: userProfile?.profileImage,
+            title: userProfile?.title || "",
+            firstname: userProfile?.firstname || "",
+            lastname: userProfile?.lastname || "",
+            email: userProfile?.email || "",
+            phone: userProfile?.phone || "",
+            date_of_birth: userProfile?.dob || "",
+            gender: userProfile?.gender || "",
+            marital_status: userProfile?.maritalStatus || "",
+            address: userProfile?.residentialAddress || "",
+            nationality: userProfile?.country || "",
+            state: userProfile?.state || "",
+            lga: userProfile?.localGovernmentArea || "",
+        })
+    }, [userProfile]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
+    const handleDateOfBirthChange = (date) => {
+        setFormData((prev) => ({
+            ...prev,
+            date_of_birth: date,
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.profile_image) errors.profile_image = "Profile Image is required";
+        if (!formData.phone) errors.phone = "Phonoe is required";
+        if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.date_of_birth) errors.date_of_birth = "Date of Birth is required";
+        if (!formData.marital_status) errors.marital_status = " is required";
+        if (!formData.address) errors.address = "Residential address is required";
+        // if (!formData.nationality) errors.nationality = "Nationality is required";
+        // if (!formData.state) errors.state = "State is required";
+        // if (!formData.lga) errors.lga = "LGA is required";
+        return errors;
+    };
+
+    const submitProfile = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        try {
+            let profileUpload;
+            if (formData.profile_image && formData.profile_image.file instanceof File) {
+                profileUpload = await dispatch(uploadFile({ files: formData.profile_image.file }));
+
+                if (!uploadFile.fulfilled.match(profileUpload)) {
+                    toast('Profile Upload Failed',
+                        { description: profileUpload.payload.message }
+                    );
+                    return;
+                }
+            } else { profileUpload = formData.profile_image };
+
+            const data = {
+                profileImage: profileUpload?.payload?.data[0]?.url || profileUpload, // Should be a link of the profile
+                title: formData.title,
+                firstname: formData.firstname,
+                lastname: formData.lastname,
+                email: formData.email,
+                phone: formData.phone, 
+                gender: formData.gender,
+                dob: formData.date_of_birth,
+                state: formData.state,
+                country: formData.nationality,
+                localGovernmentArea: formData.lga,
+                maritalStatus: formData.marital_status,
+                residentialAddress: formData.address?.display_name || formData.address
+            };
+
+            const resultAction = await dispatch(updateUserProfile(data));
+            if (updateUserProfile.fulfilled.match(resultAction)) {
+                toast("Profile updated successfully!");
+            } else {
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
 
     return (
         <div className="space-y-4 pb-20 md:pb-0">
-            <p className='hidden px-3 py-1 md:inline-block text-xs bg-success rounded-full'>KYC verified</p>
-            <form method='post' className='w-full space-y-4'>
+            <p className={`hidden px-3 py-1 md:inline-block text-xs ${userProfile?.verifications?.status === 'pending' ? 'bg-warning' : 'bg-success'} rounded-full`}>
+                {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
+            </p>
+            <form onSubmit={submitProfile} method='post' className='w-full space-y-4'>
                 <div className='space-y-1'>
                     <p className='text-sm font-normal'>Profile Picture</p>
                     <div className='flex items-center gap-5'>
                         <div className='w-[64px] h-[64px] flex items-center justify-center bg-[#F0F2F5] border border-[#E4E7EC] overflow-hidden rounded-lg'>
-                            {formData.profile && formData.profile.file ? (
+                            {formData.profile_image ? (
                                 <img
-                                    src={typeof formData.profile.file === 'string' ? formData.profile.file : URL.createObjectURL(formData.profile.file)}
+                                    src={typeof formData.profile_image === 'string' ? formData.profile_image : URL.createObjectURL(formData.profile_image.file)}
                                     alt="Profile Preview"
                                     className='w-full h-full object-cover'
+                                    crossOrigin='anonymous'
                                 />
                             ) : (
                                 <KYC_Upload />
@@ -45,14 +168,14 @@ const Profile = () => {
                         <div className='w-[122px] h-[36px] flex items-center justify-center border border-[#D0D5DD] rounded-lg'>
                             <input
                                 type="file"
-                                id="profile"
-                                name="profile"
+                                id="profile_image"
+                                name="profile_image"
                                 accept="image/*"
                                 onChange={handleChange}
                                 className="top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 hidden
                             />
-                            <label htmlFor="profile" className='text-sm cursor-pointer'>Upload profile</label>
+                            <label htmlFor="profile_image" className='text-sm cursor-pointer'>Upload profile</label>
                         </div>
                     </div>
                 </div>
@@ -65,12 +188,7 @@ const Profile = () => {
                                 className='w-full text-sm'
                                 value={formData.title}
                                 onChange={handleChange}
-                                options={[
-                                    { label: "Mr", value: "Mr" },
-                                    { label: "Mrs", value: "Mrs" },
-                                    { label: "Sir", value: "Sir" },
-                                    { label: "Miss", value: "Miss" },
-                                ]}
+                                options={titleOptions}
                                 placeholder="Mr"
                             />
                         </div>
@@ -107,7 +225,7 @@ const Profile = () => {
                         label="Phone"
                         name="phone"
                         className='text-sm'
-                        value={formData.email}
+                        value={formData.phone}
                         onChange={handleChange}
                         placeholder="08000000000"
                     />
@@ -117,7 +235,9 @@ const Profile = () => {
                     <div className='w-full flex items-center gap-3'>
                         <DateInput
                             label="Date of Birth"
-                            name="dob"
+                            name="date_of_birth"
+                            value={formData.date_of_birth}
+                            onChange={handleDateOfBirthChange}
                             placeholder='DD / MM / YY'
                         />
                         <SelectInput
@@ -126,12 +246,7 @@ const Profile = () => {
                             className='text-sm'
                             value={formData.gender}
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
+                            options={genderOptions}
                             placeholder="Select Gender"
                         />
                     </div>
@@ -142,22 +257,19 @@ const Profile = () => {
                         className='text-sm'
                         value={formData.marital_status}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
+                        options={maritalStatusOptions}
                         placeholder="Select Marital Status"
                     />
                 </div>
 
-                <TextInput
+                <PlacesInput
                     label="Residential address"
                     name="address"
                     className='text-sm'
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={formData.address}
+                    onChange={(address) => {
+                        setFormData({ ...formData, ['address']: address });
+                    }}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
@@ -214,7 +326,10 @@ const Profile = () => {
                     <button
                         className='w-full md:w-36 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
-                        Save and continue
+                        {submitted ?
+                            <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                            'Save and continue'
+                        }
                     </button>
                 </div>
             </form>
