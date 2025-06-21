@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInvestmentPlans } from '@/modules/investments/state/investmentSlice';
 
-import { RiEyeCloseLine } from "react-icons/ri";
 import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as InvestmentIcon } from '@/assets/icons/investment.svg';
 import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
 import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
+import InvestmentSkeletonCard from '../components/investmentSkeletonCard';
 
 const data = [
     {
@@ -43,6 +45,14 @@ const data = [
 ]
 
 const Investment = () => {
+    const dispatch = useDispatch();
+    const { investment_plans: investment_plans, loading: loading, error: error } = useSelector((state) => state.investment);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchInvestmentPlans());
+        }
+    }, [dispatch]);
+
     const [isOpen, setIsOpen] = useState(false);
     const [statsView, setStatsView] = useState(true);
 
@@ -116,36 +126,46 @@ const Investment = () => {
             <div className="mt-6 md:mt-0">
                 <h2 className="text-base md:text-xl font-medium">Available Investment</h2>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
-                    {data.map((item, index) => (
-                        <div key={index} className='p-3 md:p-5 bg-[#F9FAFB] md:bg-white text-sm border border-[#E4E7EC] rounded-xl'>
-                            <p className='text-xs text-secondary'>Investment Duration</p>
-                            <p className='text-xl font-medium space-x-1'>
-                                <span>{item.days} days</span>
-                                <span className='text-sm text-secondary font-light'>({item.months} months)</span>
-                            </p>
+                    {loading ? (
+                        // Render 6 skeleton cards when loading is true
+                        Array.from({ length: 6 }).map((_, index) => (
+                            <InvestmentSkeletonCard key={index} />
+                        ))
+                    ) : (investment_plans.map((item, index) => {
+                        const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
+                        return (
+                            <div key={index} className='p-3 md:p-5 bg-[#F9FAFB] md:bg-white text-sm border border-[#E4E7EC] rounded-xl'>
+                                <p className='text-xs text-secondary'>Investment Duration</p>
+                                <p className='text-xl font-medium space-x-1'>
+                                    <span>{item?.duration[0]}</span>
+                                    <span className='text-sm text-secondary font-light'>
+                                        ({duration + ` month${duration > 1 ? 's' : ''}`})
+                                    </span>
+                                </p>
 
-                            <div className='flex gap-10 my-4'>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Investment starts at</p>
-                                    <p className='text-base font-medium'>₦{item.investment.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })}</p>
+                                <div className='flex gap-10 my-4'>
+                                    <div className='space-y-1 text-xs'>
+                                        <p className='text-secondary'>Investment starts at</p>
+                                        <p className='text-base font-medium'>₦{item?.minAmount?.toLocaleString(undefined, {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}</p>
+                                    </div>
+                                    <div className='space-y-1 text-xs'>
+                                        <p className='text-secondary'>Interest starts at</p>
+                                        <p className='text-base font-medium'>{item?.interestRate}%</p>
+                                    </div>
                                 </div>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Interest starts at</p>
-                                    <p className='text-base font-medium'>{item.interest}%</p>
-                                </div>
+
+                                <Link
+                                    to={`/investment/make-investment/${item?.id}`}
+                                    className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                    <span>Invest</span>
+                                    <BsArrowRight className="w-4 h-4" />
+                                </Link>
                             </div>
-
-                            <Link
-                                to={'/investment/make-investment'}
-                                className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
-                                <span>Invest</span>
-                                <BsArrowRight className="w-4 h-4" />
-                            </Link>
-                        </div>
-                    ))}
+                        )
+                    }))}
                 </div>
             </div>
         </div>
