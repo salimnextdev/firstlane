@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '@/modules/auth/state/authSlice';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -19,12 +21,20 @@ import Terms from '../tabs/terms';
 import TextInput from '@/components/FormInputs/TextInput';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
 import BackButton from '@/components/BackButton';
+import FullscreenLoader from '@/components/FullscreenLoader';
 
 const Settings = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch]);
+
     const [searchParams, setSearchParams] = useSearchParams();
     const param = searchParams.get('tab');
-
     useEffect(() => {
         if (param) {
             setCurrentTab(param);
@@ -32,7 +42,15 @@ const Settings = () => {
         }
     }, [param]);
 
-    const [isOpen, setIsOpen] = useState(false);
+    // Mangage Fullscreen Loader State
+    const [isLoaderOpen, setIsLoaderOpen] = useState(true);
+    useEffect(() => {
+        if (userProfile) {
+            setIsLoaderOpen(false);
+        }
+    }, [userProfile]);
+
+    const [isOpen, setIsOpen] = useState(true);
     const [showModal, setShowModal] = useState(false);
 
     const [selected, setSelected] = useState(false);
@@ -62,6 +80,11 @@ const Settings = () => {
 
     return (
         <div className="space-y-3">
+            <FullscreenLoader
+                isOpen={isLoaderOpen}
+                onClose={setIsLoaderOpen}
+            />
+
             <DeleteAccountModal
                 isOpen={showModal}
                 onClose={setShowModal}
@@ -96,8 +119,8 @@ const Settings = () => {
                                     className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
                                 >
                                     <p>Profile</p>
-                                    <span className='px-3 py-1 md:hidden inline-block text-xs bg-success rounded-full'>
-                                        KYC verified
+                                    <span className={`md:hidden px-3 py-1 text-xs ${userProfile?.verifications?.status === 'pending' ? 'bg-warning' : 'bg-success'} rounded-full`}>
+                                        {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
                                     </span>
                                 </TabsTrigger>
                             </div>
