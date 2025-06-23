@@ -1,29 +1,107 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { kycLevel2, uploadFile } from '@/modules/kyc/state/kycSlice';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import FileInput from '@/components/FormInputs/FileInput';
-import { IoIosArrowRoundBack, IoIosArrowRoundForward } from 'react-icons/io';
+import { IoIosArrowRoundBack } from 'react-icons/io';
+
+import { IDTypeOptions } from '@/utils/dropdownOptions';
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 const KYCStep2 = ({ prevStep, nextStep }) => {
+    const dispatch = useDispatch();
 
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        email: "",
-        password: ""
+        id_type: "",
+        id_number: "",
+        issue_date: "",
+        expiry_date: "",
+        bvn: "",
+        document: null,
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-
+        const { name, type, files, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
+
+    const handleDateChange = (name, date) => {
+        setFormData((prev) => ({
+            ...prev,
+            [name]: date,
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.id_type) errors.id_type = "ID type is required";
+        if (!formData.id_number) errors.id_number = "ID number is required";
+        if (!formData.issue_date) errors.issue_date = "Issue date is required";
+        if (!formData.expiry_date) errors.expiry_date = "Expiry date is required";
+        if (!formData.bvn) errors.bvn = "BVN is required";
+        if (!formData.document) errors.document = "Document is required";
+        return errors;
+    };
+
+    const submitKYC = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        try {
+            let documentUpload;
+            if (formData.document && formData.document.file instanceof File) {
+                documentUpload = await dispatch(uploadFile({ files: formData.document.file }));
+
+                if (!uploadFile.fulfilled.match(documentUpload)) {
+                    toast.error('Document Upload Failed',
+                        { description: documentUpload.payload.message }
+                    );
+                    return;
+                }
+            } else { documentUpload = formData.document };
+
+            const data = {
+                idType: formData.id_type,
+                idNumber: formData.id_number,
+                issueDate: formData.issue_date,
+                expiryDate: formData.expiry_date,
+                bvn: formData.bvn,
+                documentUrl: documentUpload.payload?.data[0]?.url || documentUpload,
+            };
+            const resultAction = await dispatch(kycLevel2(data));
+            if (kycLevel2.fulfilled.match(resultAction)) {
+                nextStep();
+            } else {
+                toast.error(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
     return (
         <div className="space-y-4">
-            <form method='post' className='w-full space-y-4'>
+            <form onSubmit={submitKYC} method='post' className='w-full space-y-4'>
                 <div className='flex flex-col md:flex-row items-center gap-3'>
                     <SelectInput
                         label="ID Type"
@@ -31,12 +109,7 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                         className='text-sm'
                         value={formData.id_type}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
+                        options={IDTypeOptions}
                         placeholder="Select ID Type"
                     />
                     <TextInput
@@ -53,11 +126,15 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                     <DateInput
                         label="Issue Date"
                         name="issue_date"
+                        value={formData.issue_date}
+                        onChange={(date) => handleDateChange('issue_date', date)}
                         placeholder='DD / MM / YY'
                     />
                     <DateInput
                         label="Expiry Date"
                         name="expiry_date"
+                        value={formData.expiry_date}
+                        onChange={(date) => handleDateChange('expiry_date', date)}
                         placeholder='DD / MM / YY'
                     />
                 </div>
@@ -74,7 +151,9 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                     <FileInput
                         label='Upload document'
                         name='document'
-                        onFileChange={handleChange}
+                        value={formData.document}
+                        onChange={handleChange}
+                        accept=".pdf,image/*"
                     />
                 </div>
 
@@ -89,10 +168,13 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
                         </button>
 
                         <button
-                            onClick={nextStep}
+                            // onClick={nextStep}
                             className="w-8/12 md:w-36 h-11 md:h-9 flex items-center justify-center px-3 rounded-md bg-primary text-white text-sm cursor-pointer"
                         >
-                            Save and continue
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                'Save and continue'
+                            }
                         </button>
                     </div>
                 </div>
