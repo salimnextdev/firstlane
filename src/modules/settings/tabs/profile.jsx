@@ -165,7 +165,7 @@ const Profile = () => {
 
     return (
         <div className="space-y-4 pb-20 md:pb-0">
-            <p className={`hidden px-3 py-1 md:inline-block text-xs ${userProfile?.verifications?.status === 'pending' ? 'bg-warning' : 'bg-success'} rounded-full`}>
+            <p className={`hidden px-3 py-1 md:inline-block text-xs ${userProfile?.verifications?.status === 'verified' ? 'bg-success' : 'bg-warning'} rounded-full`}>
                 {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
             </p>
             <form onSubmit={submitProfile} method='post' className='w-full space-y-4'>

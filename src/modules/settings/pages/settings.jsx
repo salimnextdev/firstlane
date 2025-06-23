@@ -119,7 +119,7 @@ const Settings = () => {
                                     className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
                                 >
                                     <p>Profile</p>
-                                    <span className={`md:hidden px-3 py-1 text-xs ${userProfile?.verifications?.status === 'pending' ? 'bg-warning' : 'bg-success'} rounded-full`}>
+                                    <span className={`md:hidden px-3 py-1 text-xs ${userProfile?.verifications?.status === 'verified' ? 'bg-success' : 'bg-warning'} rounded-full`}>
                                         {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
                                     </span>
                                 </TabsTrigger>
