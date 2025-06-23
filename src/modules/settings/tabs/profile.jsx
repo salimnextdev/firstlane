@@ -10,10 +10,13 @@ import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
+import SearchInput from '@/components/FormInputs/searchInput';
 import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+
+import { GetCountries, GetState } from 'react-country-state-city';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -58,6 +61,23 @@ const Profile = () => {
             lga: userProfile?.localGovernmentArea || "",
         })
     }, [userProfile]);
+
+    const [countriesList, setCountriesList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    useEffect(() => {
+        GetCountries().then((result) => {
+            // format coutries list to match my SearchInput data format
+            setCountriesList(result.map(item => ({...item, label: item.name, value: item.name})));
+        });
+    }, [dispatch]);
+    useEffect(() => {
+        const countryID = formData.nationality && countriesList.find(item => item.name === formData.nationality);
+        if (countryID) {
+            GetState(parseInt(countryID.id)).then((result) => {
+                setStateList(result.map(item => ({...item, label: item.name, value: item.name})));
+            });
+        };
+    }, [dispatch, formData.nationality]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
@@ -274,34 +294,24 @@ const Profile = () => {
                 />
 
                 <div className='w-full flex flex-col md:flex-row items-center gap-3'>
-                    <SelectInput
+                    <SearchInput
                         label="Nationality"
                         name="nationality"
                         className='text-sm'
                         value={formData.nationality}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
+                        data={countriesList || []}
                         placeholder="Select Nationality"
                     />
 
                     <div className='w-full flex items-center gap-3'>
-                        <SelectInput
+                        <SearchInput
                             label="State"
                             name="state"
                             className='text-sm'
                             value={formData.state}
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
+                            data={stateList || []}
                             placeholder="Select State"
                         />
 
