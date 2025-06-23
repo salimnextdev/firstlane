@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
@@ -21,9 +21,9 @@ import { Loader } from 'lucide-react';
 const Signin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [redirect_url] = useSearchParams();
-    const paramPath = redirect_url.get('redirect_url')
-    
+    const [redirectParam] = useSearchParams();
+    const redirectUrl = redirectParam.get('redirect_url')
+
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -40,10 +40,18 @@ const Signin = () => {
     };
 
     // Redirect to dashboard, when user is loggedIn
-    const token = getCookie('token') || null;
-    if (token) {
-        return <Navigate to="/dashboard" />
-    };
+    // Use useEffect to handle side effects for redirection
+    useEffect(() => {
+        const token = getCookie('token');
+        if (token) {
+            // If a redirectUrl exists and is valid, navigate there. Otherwise, navigate to dashboard.
+            if (redirectUrl) {
+                navigate(redirectUrl, { replace: true }); // Use replace to avoid adding sign-in to history
+            } else {
+                navigate("/dashboard", { replace: true });
+            }
+        }
+    }, [redirectUrl, navigate]);
 
     const validateForm = () => {
         const errors = {};
@@ -73,7 +81,7 @@ const Signin = () => {
         try {
             const resultAction = await dispatch(loginUser(data));
             if (loginUser.fulfilled.match(resultAction)) {
-                navigate(paramPath || '/dashboard');
+                navigate(redirectUrl || '/dashboard', { replace: true });
             } else {
                 toast(resultAction.payload.message);
                 return;
