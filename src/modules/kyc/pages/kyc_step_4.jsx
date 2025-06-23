@@ -1,25 +1,117 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { kycLevel4, uploadFile } from '@/modules/kyc/state/kycSlice';
 
 import FileInput from '@/components/FormInputs/FileInput';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 
-const KYCStep4 = ({ prevStep, nextStep }) => {
+import SuccessModal from '@/modules/kyc/components/successModal';
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
+const KYCStep4 = ({ prevStep }) => {
+    const dispatch = useDispatch();
+
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        account1: null,
-        account2: null
+        document1: null,
+        document2: null,
+        document3: null,
     });
 
     const handleChange = (e) => {
         const { name, files } = e.target;
-
         setFormData((prev) => ({
             ...prev,
-            [name]: files[0],
+            [name]: { file: files[0] },
         }));
     };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.document1) errors.document1 = "State of account is required";
+        return errors;
+    };
+
+    const submitKYC = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast.error(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        let finalDocumentUrls = [];
+
+        try {
+            const documentFilesToUpload = [];
+            const documentPreExistingUrls = [];
+
+            // --- Simplified: Iterate directly over formData keys ---
+            for (const docKey of Object.keys(formData)) { // This is the key change!
+                const documentEntry = formData[docKey]?.file;
+
+                if (documentEntry instanceof File) {
+                    documentFilesToUpload.push(documentEntry);
+                } else if (typeof documentEntry === 'string' && documentEntry.startsWith('http')) {
+                    documentPreExistingUrls.push(documentEntry);
+                }
+            }
+
+            if (documentFilesToUpload.length > 0) {
+                // Creates an array of file objects for upload
+                const uploadFormData = new FormData();
+                documentFilesToUpload.forEach(file => {
+                    uploadFormData.append('files', file);
+                });
+
+                const uploadResult = await dispatch(uploadFile(uploadFormData));
+
+                if (uploadFile.fulfilled.match(uploadResult)) {
+                    finalDocumentUrls = [...documentPreExistingUrls, ...uploadResult.payload.data?.map(file => file?.url || '')];
+                } else {
+                    toast.error('Document Upload Failed', {
+                        description: uploadResult.payload?.message || 'Upload error',
+                    });
+                    setSubmitted(false);
+                    return;
+                }
+            } else {
+                finalDocumentUrls = [...documentPreExistingUrls];
+            }
+
+            // Assuming all collected documents become bankStatements
+            const data = {
+                bankStatements: finalDocumentUrls.map(url => ({ documentUrl: url })),
+            };
+            
+            const resultAction = await dispatch(kycLevel4(data));
+            if (kycLevel4.fulfilled.match(resultAction)) {
+                setModalOpen(true);
+            } else {
+                toast(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
     return (
         <div className="space-y-4">
+            <SuccessModal
+                isOpen={isModalOpen}
+                onClose={setModalOpen}
+            />
+
             {/* KYC Verification Banner */}
             <div className="mb-6 bg-[#EBEBEB] border-[1.5px] border-[#D0D5DD] p-4 rounded-xl">
                 <div className='w-10 h-10 flex items-center justify-center bg-[#D8D8D8] rounded-full'>
@@ -29,42 +121,33 @@ const KYCStep4 = ({ prevStep, nextStep }) => {
                         <path d="M10 10.8333L10 7.49998" stroke="#1B1B1B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
-                <p className="text-sm text-[#667085] text-wrap leading-relaxed">
+                <p className="text-sm text-[#667085] text-wrap font-light leading-relaxed">
                     We would be requesting for your statements of account for the last 6 months
                 </p>
             </div>
 
-            <form method='post' className='w-full space-y-4'>
+            <form onSubmit={submitKYC} method='post' className='w-full space-y-4'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
                     <FileInput
-                        label='Statement of account 1'
-                        name='account1'
-                        onFileChange={handleChange}
+                        label='Statement of account'
+                        name='document1'
+                        accept='.pdf'
+                        value={formData.document1}
+                        onChange={handleChange}
                     />
                     <FileInput
-                        label='Statement of account 2'
-                        name='account2'
-                        onFileChange={handleChange}
+                        label='Supporting document 1'
+                        name='document2'
+                        accept='.pdf'
+                        value={formData.document2}
+                        onChange={handleChange}
                     />
                     <FileInput
-                        label='Statement of account 3'
-                        name='account3'
-                        onFileChange={handleChange}
-                    />
-                    <FileInput
-                        label='Statement of account 4'
-                        name='account4'
-                        onFileChange={handleChange}
-                    />
-                    <FileInput
-                        label='Statement of account 5'
-                        name='account5'
-                        onFileChange={handleChange}
-                    />
-                    <FileInput
-                        label='Statement of account 6'
-                        name='account6'
-                        onFileChange={handleChange}
+                        label='Supporting document 2'
+                        name='document3'
+                        accept='.pdf'
+                        value={formData.document3}
+                        onChange={handleChange}
                     />
                 </div>
 
@@ -79,10 +162,13 @@ const KYCStep4 = ({ prevStep, nextStep }) => {
                         </button>
 
                         <button
-                            onClick={nextStep}
+                            // onClick={nextStep}
                             className="w-8/12 md:w-44 h-11 md:h-9 flex items-center justify-center px-3 rounded-md bg-primary text-white text-sm cursor-pointer"
                         >
-                            Submit for verification
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                'Submit for verification'
+                            }
                         </button>
                     </div>
                 </div>
