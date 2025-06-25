@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserProfile } from '@/modules/auth/state/authSlice';
+import { fetchUserProfile, deleteAccount } from '@/modules/auth/state/authSlice';
+import { removeCookie } from '@/utils/cookieUtils';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -22,6 +23,9 @@ import TextInput from '@/components/FormInputs/TextInput';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
 import BackButton from '@/components/BackButton';
 import FullscreenLoader from '@/components/FullscreenLoader';
+
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -65,9 +69,10 @@ const Settings = () => {
         "actions": "Delete account",
     };
 
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        first_name: "",
-        last_name: ""
+        email: "",
+        reason: ""
     });
 
     const handleChange = (e) => {
@@ -76,6 +81,42 @@ const Settings = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.email) errors.email = "Email is required";
+        return errors;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast.warning(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        try {
+            const resultAction = await dispatch(deleteAccount(formData));
+            if (deleteAccount.fulfilled.match(resultAction)) {
+                removeCookie("token");
+                removeCookie("user");
+                setShowModal(true);
+            } else {
+                toast.error(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
     };
 
     return (
@@ -120,7 +161,7 @@ const Settings = () => {
                                 >
                                     <p>Profile</p>
                                     <span className={`md:hidden px-3 py-1 text-xs ${userProfile?.verifications?.status === 'verified' ? 'bg-success' : 'bg-warning'} rounded-full`}>
-                                        {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
+                                        {userProfile?.verifications?.status === 'verified' ? 'KYC verified' : 'KYC pending'}
                                     </span>
                                 </TabsTrigger>
                             </div>
@@ -216,48 +257,52 @@ const Settings = () => {
                             <Terms />
                         </TabsContent>
                         <TabsContent value="actions">
-                            <div className={`${isOpen ? 'block space-y-4' : 'hidden'}`}>
+                            <form onSubmit={handleSubmit} className={`${isOpen ? 'block space-y-4' : 'hidden'}`}>
                                 <p className='text-base font-light text-justify'>
-                                    To delete, enter your first name and last name accurately to complete process
+                                    To delete, enter your email and reason accurately to complete process
                                 </p>
 
                                 <div className='flex flex-col md:flex-row items-center gap-5'>
                                     <TextInput
-                                        label="First name"
-                                        name="first_name"
+                                        label="Email"
+                                        name="email"
+                                        type='email'
                                         className='w-full text-sm'
-                                        value={formData.first_name}
+                                        value={formData.email}
                                         onChange={handleChange}
-                                        placeholder="Adam"
+                                        placeholder="Adam@gmail.com"
                                     />
 
                                     <TextInput
-                                        label="Last name"
-                                        name="last_name"
+                                        label="Reason (optional)"
+                                        name="reason"
                                         className='w-full text-sm'
-                                        value={formData.last_name}
+                                        value={formData.reason}
                                         onChange={handleChange}
-                                        placeholder="Jude"
+                                        placeholder="Reason for deleting account"
                                     />
                                 </div>
 
                                 <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
                                     <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
                                         <button
+                                            type='button'
                                             onClick={() => setIsOpen(false)}
                                             className='w-full md:w-36 h-11 md:h-9 rounded-md bg-[#CB1A14] text-sm text-white cursor-pointer'
                                         >
                                             Go back
                                         </button>
                                         <button
-                                            onClick={() => setShowModal(true)}
                                             className='w-full md:w-36 h-11 md:h-9 rounded-md border border-[#D0D5DD] text-sm cursor-pointer'
                                         >
-                                            Delete
+                                            {submitted ?
+                                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                                'Delete'
+                                            }
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
 
                             <div className={`${isOpen ? 'hidden' : 'block space-y-4'}`}>
                                 <p className='md:w-11/12 text-base font-light text-justify'>
