@@ -77,7 +77,7 @@ const Profile = () => {
                 setStateList(result.map(item => ({...item, label: item.name, value: item.name})));
             });
         };
-    }, [dispatch, formData.nationality]);
+    }, [dispatch, userProfile, formData.nationality]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
@@ -166,7 +166,7 @@ const Profile = () => {
     return (
         <div className="space-y-4 pb-20 md:pb-0">
             <p className={`hidden px-3 py-1 md:inline-block text-xs ${userProfile?.verifications?.status === 'verified' ? 'bg-success' : 'bg-warning'} rounded-full`}>
-                {userProfile?.verifications?.status === 'pending' ? 'KYC pending' : 'KYC verified'}
+                {userProfile?.verifications?.status === 'verified' ? 'KYC verified' : 'KYC pending'}
             </p>
             <form onSubmit={submitProfile} method='post' className='w-full space-y-4'>
                 <div className='space-y-1'>
