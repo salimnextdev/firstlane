@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInvestmentPlans } from '@/modules/investments/state/investmentSlice';
+import { fetchInvestments, fetchInvestmentPlans } from '@/modules/investments/state/investmentSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as InvestmentIcon } from '@/assets/icons/investment.svg';
@@ -46,9 +47,16 @@ const data = [
 
 const Investment = () => {
     const dispatch = useDispatch();
-    const { investment_plans: investment_plans, loading: loading, error: error } = useSelector((state) => state.investment);
+    const user = JSON.parse(getCookie('user') || null);
+    const { 
+        investments: investments, 
+        investment_plans: investment_plans, 
+        loading: loading, error: error 
+    } = useSelector((state) => state.investment);
+
     useEffect(() => {
         if (!loading) {
+            dispatch(fetchInvestments());
             dispatch(fetchInvestmentPlans());
         }
     }, [dispatch]);
@@ -106,10 +114,10 @@ const Investment = () => {
                 <div className="flex justify-between bg-[#F9FAFB] p-2 px-3 md:p-4 rounded-lg md:rounded-xl border border-[#E4E7EC]">
                     <div className='w-full md:w-10/12 flex md:flex-col items-center md:items-start justify-between'>
                         <p className="hidden md:block text-base text-[#667085] md:mb-2 font-light">Investment count</p>
-                        <p className="md:my-3 text-base md:text-2xl font-semibold">{'14'.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })} <span className='text-sm text-secondary font-light'>investments</span></p>
+                        <p className="md:my-3 text-base md:text-2xl font-semibold">
+                            {investments.length.toLocaleString()} 
+                            <span className='ml-1 text-sm text-secondary font-light'>investments</span>
+                        </p>
 
                         <Link to={'/investment/all'} className='flex items-center gap-2 text-sm'>
                             <span className='hidden md:inline-block font-medium'>View my investments</span>
