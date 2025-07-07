@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { IoIosSearch } from 'react-icons/io';
+import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
 
 import { ReactComponent as Logo } from '@/assets/icons/logo.svg';
 import { ReactComponent as Dashboard } from '@/assets/icons/dashboard.svg';
@@ -36,17 +37,51 @@ const Header = ({ isOpen, onClose }) => {
 
     const Icon = () => {
         const IconComponent = mapper[pageName];
-        return <IconComponent color="#000" className="w-5 h-5 text-black" />;
+        return <IconComponent color={theme === 'light' ? '#000' : '#fff'} className="w-5 h-5 text-black" />;
     };
 
     const [notificationOpen, setNotificationOpen] = useState(false);
 
+    // State to manage the current theme: 'light' or 'dark'
+    const [theme, setTheme] = useState(() => {
+        // 1. Initialize theme from localStorage
+        const savedTheme = localStorage.getItem('theme');
+
+        if (savedTheme) {
+            return savedTheme; // Use saved theme if available
+        } else {
+            // 2. If no saved theme, check for system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return prefersDark ? 'dark' : 'light'; // Use system preference
+        }
+    });
+
+    // useEffect hook to apply or remove the 'dark' class on the HTML element
+    // and save the theme preference to localStorage
+    useEffect(() => {
+        const htmlElement = document.documentElement; // Get the <html> element
+
+        if (theme === 'dark') {
+            htmlElement.classList.add('dark'); // Add 'dark' class for dark mode
+        } else {
+            htmlElement.classList.remove('dark'); // Remove 'dark' class for light mode
+        }
+
+        // Save the current theme to localStorage
+        localStorage.setItem('theme', theme);
+    }, [theme]); // Re-run this effect whenever the 'theme' state changes
+
+    // Function to toggle between light and dark themes
+    const toggleTheme = () => {
+        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    };
+
     return (
         <header className="sticky top-0 z-10 bg-white border-b border-gray-200 rounded-t-3xl">
             <NotificationPanel isOpen={notificationOpen} onClose={setNotificationOpen} />
-            
+
             <div className='w-full h-[64px] px-5 flex items-center justify-between'>
-                <div onClick={()=> navigate('/dashboard')} className='md:hidden flex items-center gap-2 select-none'>
+                <div onClick={() => navigate('/dashboard')} className='md:hidden flex items-center gap-2 select-none'>
                     <Logo />
                     <p className='text-[18px] text-primary font-medium'>FirstLane</p>
                 </div>
@@ -64,6 +99,10 @@ const Header = ({ isOpen, onClose }) => {
                         />
                     </div>
                     <Bell onClick={() => setNotificationOpen(true)} className="cursor-pointer" />
+                    {theme === 'light' ?
+                        <MdOutlineLightMode onClick={toggleTheme} className="w-6 h-6 text-gray-500 cursor-pointer" /> :
+                        <MdLightMode onClick={toggleTheme} className="w-6 h-6 text-gray-300 cursor-pointer" />
+                    }
                     <Menu onClick={() => onClose(!isOpen)} className="md:hidden cursor-pointer" />
                 </div>
             </div>
