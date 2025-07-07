@@ -41,7 +41,7 @@ const Layout = () => {
       <div className="flex-1 flex flex-col md:m-1 md:mb-0 h-screen overflow-auto md:border border-gray-200 rounded-t-3xl">
         <Header isOpen={isOpen} onClose={setIsOpen} />
 
-        <main className="flex-1 px-5 pb-24 md:pb-4 py-4 bg-[#FDFDFD]">
+        <main className="flex-1 px-5 pb-24 md:pb-4 py-4 bg-[var(--cave-bg)]">
           <Outlet />
         </main>
       </div>
