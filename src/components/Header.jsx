@@ -91,11 +91,11 @@ const Header = ({ isOpen, onClose }) => {
                 </div>
                 <div className='md:w-7/12 flex items-center gap-5 md:gap-10'>
                     <div className="relative w-full hidden md:block">
-                        <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
+                        <IoIosSearch className="w-5 h-5 absolute top-2 left-3" />
                         <input
                             type="text"
                             placeholder="Search here..."
-                            className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
+                            className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-gray text-sm focus:outline-none"
                         />
                     </div>
                     <Bell onClick={() => setNotificationOpen(true)} className="cursor-pointer" />
