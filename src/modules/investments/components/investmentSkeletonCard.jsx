@@ -2,7 +2,7 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const InvestmentSkeletonCard = () => (
-    <div className='p-3 md:p-5 bg-[#F9FAFB] md:bg-white text-sm border border-[#E4E7EC] rounded-xl'>
+    <div className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
         {/* Investment Duration Skeleton */}
         <Skeleton className='h-3 w-28 mb-1 bg-gray-200 md:bg-gray-100 rounded-md' /> {/* Placeholder for "Investment Duration" label */}
         <Skeleton className='h-6 w-3/4 bg-gray-200 md:bg-gray-100 rounded-md' /> {/* Placeholder for "XX days (YY months)" */}

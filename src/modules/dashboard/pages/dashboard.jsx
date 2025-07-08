@@ -131,7 +131,6 @@ const KYCBanner = {
 const Dashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = JSON.parse(getCookie('user'));
     const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
     useEffect(() => {
         if (!loading) {
@@ -140,14 +139,14 @@ const Dashboard = () => {
     }, [dispatch]);
 
     const [kycStatus, setKycStatus] = useState('failed');
-    useEffect(()=> {
+    useEffect(() => {
         if (userProfile && userProfile?.verifications?.status === 'pending') {
             setKycStatus('pending');
         } else if (userProfile && userProfile?.verifications?.status === 'failed') {
             setKycStatus('failed');
         };
     }, [userProfile]);
-    
+
     const [statsView, setStatsView] = useState({
         loan: true,
         investment: true,
@@ -187,7 +186,7 @@ const Dashboard = () => {
                 </div>
                 <div className='hidden md:flex items-center gap-3 text-sm font-medium'>
                     <Link to={'/loans'}>
-                        <button className='w-28 h-8 rounded-lg border border-[#E4E7EC] cursor-pointer'>
+                        <button className='w-28 h-8 rounded-lg border border-gray cursor-pointer'>
                             Apply for Loan
                         </button>
                     </Link>
@@ -200,31 +199,37 @@ const Dashboard = () => {
             </div>
 
             {/* KYC Verification Banner */}
-            <div className={`flex flex-col lg:flex-row justify-between ${KYCBanner[kycStatus].bg} border md:border-[1.5px] ${KYCBanner[kycStatus].border} p-4 rounded-xl`}>
-                <div className='w-full flex flex-row gap-3'>
-                    <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
-                        <HiOutlineBuildingOffice2 className={`w-5 h-5 ${KYCBanner[kycStatus].text}`} />
+            {userProfile?.verifications?.status !== 'verified' &&
+                <div className={`flex flex-col lg:flex-row justify-between ${KYCBanner[kycStatus].bg} border md:border-[1.5px] ${KYCBanner[kycStatus].border} p-4 rounded-xl`}>
+                    <div className='w-full flex flex-row gap-3'>
+                        <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
+                            <HiOutlineBuildingOffice2 className={`w-5 h-5 ${KYCBanner[kycStatus].text}`} />
+                        </div>
+                        <div className='w-10/12 leading-relaxed'>
+                            <p className="text-sm md:text-base font-medium">{KYCBanner[kycStatus].title}</p>
+                            {kycStatus === 'failed' ?
+                                <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
+                                    <p className='text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
+                                    <IoIosArrowRoundForward className="w-5 h-5 text-gray-500" />
+                                </div> :
+                                <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
+                            }
+                            <p className="hidden md:block text-sm text-[#667085] text-wrap font-light leading-relaxed">
+                                {KYCBanner[kycStatus].description}
+                            </p>
+                        </div>
                     </div>
-                    <div className='w-10/12 leading-relaxed'>
-                        <p className="text-sm md:text-base font-medium">{KYCBanner[kycStatus].title}</p>
-                        {kycStatus === 'failed' ?
-                            <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
-                                <p className='text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
-                                <IoIosArrowRoundForward className="w-5 h-5 text-gray-500" />
-                            </div> :
-                            <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
-                        }
-                        <p className="hidden md:block text-sm text-[#667085] text-wrap font-light leading-relaxed">
-                            {KYCBanner[kycStatus].description}
-                        </p>
+                    <div className='hidden md:w-36 md:flex md:justify-end'>
+                        <button
+                            onClick={() => navigate('/kyc-verification')}
+                            className="h-8 px-4 text-sm font-medium bg-white border border-gray-200 rounded-lg cursor-pointer"
+                            disabled={userProfile?.verifications?.isKycComplete}
+                        >
+                            {KYCBanner[kycStatus].buttonText}
+                        </button>
                     </div>
                 </div>
-                <div className='hidden md:w-36 md:flex md:justify-end'>
-                    <button onClick={() => navigate('/kyc-verification')} className="h-8 px-4 text-sm font-medium bg-white border border-gray-200 rounded-lg cursor-pointer">
-                        {KYCBanner[kycStatus].buttonText}
-                    </button>
-                </div>
-            </div>
+            }
 
             {/* Stat Cards */}
             <div className="relative hide-scrollbar">
@@ -237,7 +242,7 @@ const Dashboard = () => {
                     {cardData.map((card, index) => (
                         <div
                             key={card.key}
-                            className="min-w-[85%] md:min-w-0 md:flex-1 snap-start flex justify-between bg-[#F9FAFB] md:h-[149px] p-5 rounded-xl border border-[#E4E7EC]"
+                            className="min-w-[85%] md:min-w-0 md:flex-1 snap-start flex justify-between bg-light md:h-[149px] p-5 rounded-xl border border-gray"
                         >
                             <div>
                                 <p className="text-sm md:text-base text-secondary mb-2 font-light">{card.label}</p>
@@ -271,7 +276,7 @@ const Dashboard = () => {
                                     <span className="text-[#667085]">vs last month</span>
                                 </div>
                             </div>
-                            <div className="w-[40px] h-[40px] hidden md:flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full">
+                            <div className="w-[40px] h-[40px] hidden md:flex items-center justify-center bg-white border border-gray rounded-full">
                                 {card.icon}
                             </div>
                         </div>
@@ -300,7 +305,7 @@ const Dashboard = () => {
                     <div className="overflow-x-auto text-secondary">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-[#F9FAFB] border-b border-gray-200">
+                                <TableRow className="bg-light border-b border-gray-200">
                                     <TableHead className="w-12 p-4">
                                         <Checkbox />
                                     </TableHead>
@@ -314,7 +319,7 @@ const Dashboard = () => {
                             </TableHeader>
                             <TableBody className='text-sm text-secondary font-light'>
                                 {transactions.map((transaction) => (
-                                    <TableRow key={transaction.id} className="border-b border-gray-100">
+                                    <TableRow key={transaction.id} className="border-b border-gray">
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>
@@ -335,7 +340,7 @@ const Dashboard = () => {
                                                 {transaction.paymentType}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-gray-600">{transaction.dateTime}</TableCell>
+                                        <TableCell className="text-gray-800">{transaction.dateTime}</TableCell>
                                         <TableCell>
                                             <span
                                                 className={`px-3 py-1 text-xs font-normal capitalize rounded-full

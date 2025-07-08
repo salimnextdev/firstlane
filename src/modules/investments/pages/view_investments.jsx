@@ -98,13 +98,13 @@ const ViewInvestment = () => {
                 <TabsList className='w-full md:w-4/12 lg:!grid grid-cols-2 gap-3 md:gap-5 md:mb-4'>
                     <TabsTrigger
                         value="active_investment"
-                        className={`h-10 text-sm font-light ${currentTab === 'active_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
+                        className={`h-10 text-sm font-light ${currentTab === 'active_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-gray !shadow-none cursor-pointer`}
                     >
                         Active investment
                     </TabsTrigger>
                     <TabsTrigger
                         value="past_investment"
-                        className={`h-10 text-sm font-light ${currentTab === 'past_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-[#E4E7EC] !shadow-none cursor-pointer`}
+                        className={`h-10 text-sm font-light ${currentTab === 'past_investment' && 'bg-[#D8D9EA] text-primary border-0'} border border-gray !shadow-none cursor-pointer`}
                     >
                         Past investment
                     </TabsTrigger>

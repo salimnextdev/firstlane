@@ -104,13 +104,13 @@ const FXTransactions = () => {
                 <div className='flex items-center gap-3'>
                     <button
                         onClick={() => setOption('Buy')}
-                        className={`w-16 h-9 ${option === 'Buy' ? 'bg-[#D8D9EA] text-primary' : 'border border-[#E4E7EC]'} text-sm rounded-md cursor-pointer`}
+                        className={`w-16 h-9 ${option === 'Buy' ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
                     >
                         Buy
                     </button>
                     <button
                         onClick={() => setOption('Sell')}
-                        className={`w-16 h-9 ${option === 'Sell' ? 'bg-[#D8D9EA] text-primary' : 'border border-[#E4E7EC]'} text-sm rounded-md cursor-pointer`}
+                        className={`w-16 h-9 ${option === 'Sell' ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
                     >
                         Sell
                     </button>
@@ -121,16 +121,16 @@ const FXTransactions = () => {
                 {/* Stat Cards */}
                 <div className='space-y-2 md:space-y-3'>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        <div className='p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
+                        <div className='p-5 space-y-3 bg-white border border-gray rounded-xl'>
                             <p className="text-sm text-secondary">{option === 'Buy' ? 'You buy' : 'You sell'}</p>
                             <div className='flex items-center justify-between'>
                                 <p className="text-2xl md:text-[28px] font-semibold text-secondary">
-                                    <span className='mr-1 text-black'>₦</span>
+                                    <span className='mr-1 text-black dark:text-gray-500'>₦</span>
                                     {1600.03.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
                                     })}</p>
-                                <div className='w-[82px] h-[40px] flex items-center justify-between px-2 bg-[#F0F2F5] rounded-3xl cursor-pointer'>
+                                <div className='w-[82px] h-[40px] flex items-center justify-between px-2 bg-currency rounded-3xl cursor-pointer'>
                                     <img
                                         src={`https://flagcdn.com/w40/${'ng'}.png`}
                                         alt={'ng'}
@@ -140,11 +140,11 @@ const FXTransactions = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
+                        <div className='p-5 space-y-3 bg-white border border-gray rounded-xl'>
                             <p className="text-sm text-secondary">{option === 'Buy' ? 'By selling' : 'To buy'}</p>
                             <div className='flex items-center justify-between'>
                                 <p className="text-2xl md:text-[28px] font-semibold text-secondary">
-                                    <span className='mr-1 text-black'>$</span>
+                                    <span className='mr-1 text-black dark:text-gray-500'>$</span>
                                     {1.00.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
@@ -161,7 +161,7 @@ const FXTransactions = () => {
                     </button>
                 </div>
 
-                <div className='px-5 py-3 space-y-3 bg-[#F0F2F5] border border-[#E4E7EC] rounded-xl'>
+                <div className='px-5 py-3 space-y-3 bg-currency border border-gray rounded-xl'>
                     <p className='text-sm text-secondary font-light'>Current exchange rates</p>
                     <div className='flex items-center gap-2 md:gap-10 font-medium overflow-auto'>
                         {data.map((item, index) => (
@@ -179,13 +179,13 @@ const FXTransactions = () => {
                 </div>
             </div>
 
-            <Link to={'/fx-transactions/all'} className='md:hidden flex items-center gap-2 text-sm bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC]'>
+            <Link to={'/fx-transactions/all'} className='md:hidden flex items-center gap-2 text-sm bg-light p-2 px-3 rounded-lg border border-gray'>
                 <span className='font-medium'>View all FX Transactions</span>
                 <BsArrowRight className='w-4 h-4 text-secondary' />
             </Link>
 
             {/* Recent Transactions Table */}
-            <div className="hidden md:block w-full rounded-lg border border-[#E4E7EC] bg-white">
+            <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
                         <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent FX Transactions</h2>
@@ -195,7 +195,7 @@ const FXTransactions = () => {
                                 <input
                                     type="text"
                                     placeholder="Search here..."
-                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
+                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
                                 />
                             </div>
 
@@ -211,16 +211,16 @@ const FXTransactions = () => {
                     <div className="overflow-x-auto text-secondary">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-[#F9FAFB] border-b border-[#E4E7EC]">
+                                <TableRow className="bg-light border-b border-gray">
                                     <TableHead className="w-12 p-4">
-                                        <Checkbox className="!accent-[#3E4095]" />
+                                        <Checkbox className="!accent-[var(--firstlane-primary)]" />
                                     </TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Sell amount</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Buy amount</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Currency pair</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Exchange rate</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Date & time</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Status</TableHead>
+                                    <TableHead className="font-medium text-xs">Sell amount</TableHead>
+                                    <TableHead className="font-medium text-xs">Buy amount</TableHead>
+                                    <TableHead className="font-medium text-xs">Currency pair</TableHead>
+                                    <TableHead className="font-medium text-xs">Exchange rate</TableHead>
+                                    <TableHead className="font-medium text-xs">Date & time</TableHead>
+                                    <TableHead className="font-medium text-xs">Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody className='text-sm text-secondary'>

@@ -165,13 +165,13 @@ const Wallets = () => {
                 <div className='hidden md:block border-l-3 border-[#344054]'>
                     <div className='flex items-center justify-between md:px-32'>
                         <div onClick={() => openModal("fund_wallet")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
-                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-white rounded-full'>
+                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-gray-50 rounded-full'>
                                 <WalletPlus />
                             </div>
                             <p className='cursor-pointer'>Fund wallet</p>
                         </div>
                         <div onClick={() => openModal("send_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
-                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-white rounded-full'>
+                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-gray-50 rounded-full'>
                                 <Money />
                             </div>
                             <p className='cursor-pointer'>Send money</p>
@@ -184,14 +184,14 @@ const Wallets = () => {
             <div className='w-full md:hidden flex items-center gap-3 text-sm'>
                 <div
                     onClick={() => openModal("fund_wallet")}
-                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC] select-none'
+                    className='w-full flex items-center justify-center gap-2 bg-light p-2 px-3 rounded-lg border border-gray select-none'
                 >
                     <WalletPlus />
                     <p>Fund wallet</p>
                 </div>
                 <div
                     onClick={() => openModal("send_money")}
-                    className='w-full flex items-center justify-center gap-2 bg-[#F9FAFB] p-2 px-3 rounded-lg border border-[#E4E7EC] select-none'
+                    className='w-full flex items-center justify-center gap-2 bg-light p-2 px-3 rounded-lg border border-gray select-none'
                 >
                     <Money />
                     <p>Send money</p>
@@ -199,7 +199,7 @@ const Wallets = () => {
             </div>
 
             {/* Recent Transactions Table */}
-            <div className="hidden md:block w-full rounded-lg border border-[#E4E7EC] bg-white">
+            <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
                         <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent Wallet Transactions</h2>
@@ -209,7 +209,7 @@ const Wallets = () => {
                                 <input
                                     type="text"
                                     placeholder="Search here..."
-                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-[#E4E7EC] text-sm focus:outline-gray-200"
+                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
                                 />
                             </div>
 
@@ -225,20 +225,20 @@ const Wallets = () => {
                     <div className="overflow-x-auto text-secondary">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-[#F9FAFB] border-b border-[#E4E7EC]">
+                                <TableRow className="bg-light border-b border-gray">
                                     <TableHead className="w-12 p-4">
-                                        <Checkbox className="!accent-[#3E4095]" />
+                                        <Checkbox className="!accent-[var(--firstlane-primary)]" />
                                     </TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Amount</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Payment type</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Date & time</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600">Status</TableHead>
-                                    <TableHead className="font-medium text-xs text-gray-600"></TableHead>
+                                    <TableHead className="font-medium text-xs">Amount</TableHead>
+                                    <TableHead className="font-medium text-xs">Payment type</TableHead>
+                                    <TableHead className="font-medium text-xs">Date & time</TableHead>
+                                    <TableHead className="font-medium text-xs">Status</TableHead>
+                                    <TableHead className="font-medium text-xs"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody className='text-sm text-secondary'>
                                 {transactions.map((transaction) => (
-                                    <TableRow key={transaction.id} className="text-sm border-b border-gray-100">
+                                    <TableRow key={transaction.id} className="text-sm border-b border-gray">
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>

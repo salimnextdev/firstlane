@@ -21,8 +21,8 @@ const ActiveInvestmentTab = ({ data }) => {
             <div>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
                     {data.map((item, index) => (
-                        <div key={index} className='p-5 bg-[#F9FAFB] md:bg-white text-sm border border-[#E4E7EC] rounded-xl'>
-                            <p className='text-xs md:text-base text-secondary'>Investment Duration</p>
+                        <div key={index} className='p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
+                            <p className='text-xs md:text-sm text-secondary'>Investment Duration</p>
                             <p className='text-lg font-medium space-x-1'>
                                 <span>{item.days} days</span>
                                 <span className='text-sm text-secondary font-light'>({item.months} months)</span>

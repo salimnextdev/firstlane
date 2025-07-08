@@ -111,9 +111,9 @@ const Investment = () => {
                         Fund wallet
                     </button>
                 </div>
-                <div className="flex justify-between bg-[#F9FAFB] p-2 px-3 md:p-4 rounded-lg md:rounded-xl border border-[#E4E7EC]">
+                <div className="flex justify-between bg-light p-2 px-3 md:p-4 rounded-lg md:rounded-xl border border-gray">
                     <div className='w-full md:w-10/12 flex md:flex-col items-center md:items-start justify-between'>
-                        <p className="hidden md:block text-base text-[#667085] md:mb-2 font-light">Investment count</p>
+                        <p className="hidden md:block text-base text-secondary md:mb-2 font-light">Investment count</p>
                         <p className="md:my-3 text-base md:text-2xl font-semibold">
                             {investments.length.toLocaleString()} 
                             <span className='ml-1 text-sm text-secondary font-light'>investments</span>
@@ -125,7 +125,7 @@ const Investment = () => {
                             <BsArrowRight className='w-4 h-4 text-secondary' />
                         </Link>
                     </div>
-                    <div className='w-[40px] h-[40px] hidden md:flex items-center justify-center bg-white border border-[#E4E7EC] rounded-full'>
+                    <div className='w-[40px] h-[40px] hidden md:flex items-center justify-center bg-white border border-gray rounded-full'>
                         <InvestmentIcon className="" />
                     </div>
                 </div>
@@ -142,7 +142,7 @@ const Investment = () => {
                     ) : (investment_plans.map((item, index) => {
                         const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
                         return (
-                            <div key={index} className='p-3 md:p-5 bg-[#F9FAFB] md:bg-white text-sm border border-[#E4E7EC] rounded-xl'>
+                            <div key={index} className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
                                 <p className='text-xs text-secondary'>Investment Duration</p>
                                 <p className='text-xl font-medium space-x-1'>
                                     <span>{item?.duration[0]}</span>
