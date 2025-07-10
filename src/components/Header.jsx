@@ -37,7 +37,7 @@ const Header = ({ isOpen, onClose }) => {
 
     const Icon = () => {
         const IconComponent = mapper[pageName];
-        return <IconComponent color={theme === 'light' ? '#000' : '#fff'} className="w-5 h-5 text-black" />;
+        return <IconComponent className="w-5 h-5 text-black dark:text-white" />;
     };
 
     const [notificationOpen, setNotificationOpen] = useState(false);
@@ -91,7 +91,7 @@ const Header = ({ isOpen, onClose }) => {
                 </div>
                 <div className='md:w-7/12 flex items-center gap-5 md:gap-10'>
                     <div className="relative w-full hidden md:block">
-                        <IoIosSearch className="w-5 h-5 absolute top-2 left-3" />
+                        <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
                         <input
                             type="text"
                             placeholder="Search here..."

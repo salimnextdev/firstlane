@@ -191,7 +191,7 @@ const FXTransactions = () => {
                         <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent FX Transactions</h2>
                         <div className="w-full flex items-center justify-end gap-2">
                             <div className="w-4/12 relative">
-                                <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
+                                <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
                                 <input
                                     type="text"
                                     placeholder="Search here..."
