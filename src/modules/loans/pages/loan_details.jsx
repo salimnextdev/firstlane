@@ -26,7 +26,7 @@ const LoanDetails = () => {
         <div className="space-y-5">
             <BackButton />
 
-            <div className='p-5 border border-[#E4E7EC] rounded-xl'>
+            <div className='p-5 border border-gray rounded-xl'>
                 <span className="px-3 py-1 text-xs rounded-full bg-warning">
                     Pending
                 </span>

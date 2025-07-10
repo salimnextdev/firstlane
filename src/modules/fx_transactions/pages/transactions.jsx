@@ -188,7 +188,7 @@ const FXTransactions = () => {
             <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent FX Transactions</h2>
+                        <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent FX Transactions</h2>
                         <div className="w-full flex items-center justify-end gap-2">
                             <div className="w-4/12 relative">
                                 <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
@@ -225,7 +225,7 @@ const FXTransactions = () => {
                             </TableHeader>
                             <TableBody className='text-sm text-secondary'>
                                 {transactions.map((transaction) => (
-                                    <TableRow key={transaction.id} className="text-sm border-b border-gray-100">
+                                    <TableRow key={transaction.id} className="text-sm border-b border-gray-200">
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>

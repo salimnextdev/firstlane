@@ -189,7 +189,7 @@ const Loans = () => {
             </div>
 
             <div>
-                <h2 className="text-base md:text-lg md:text-[#475367] ">Loan Types</h2>
+                <h2 className="text-base md:text-lg md:text-tertiary">Loan Types</h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mt-2'>
                     {data.map((item, index) => (
                         <div key={index} className='px-5 py-3 space-y-3 bg-light text-sm border border-gray rounded-xl'>

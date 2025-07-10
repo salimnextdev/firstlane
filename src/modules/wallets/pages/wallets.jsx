@@ -165,13 +165,13 @@ const Wallets = () => {
                 <div className='hidden md:block border-l-3 border-[#344054]'>
                     <div className='flex items-center justify-between md:px-32'>
                         <div onClick={() => openModal("fund_wallet")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
-                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-gray-50 rounded-full'>
+                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-light !text-black rounded-full'>
                                 <WalletPlus />
                             </div>
                             <p className='cursor-pointer'>Fund wallet</p>
                         </div>
                         <div onClick={() => openModal("send_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
-                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-gray-50 rounded-full'>
+                            <div className='w-[48px] h-[48px] flex items-center justify-center bg-light !text-black rounded-full'>
                                 <Money />
                             </div>
                             <p className='cursor-pointer'>Send money</p>
@@ -202,7 +202,7 @@ const Wallets = () => {
             <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="text-nowrap text-xl font-medium text-[#475367]">Recent Wallet Transactions</h2>
+                        <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent Wallet Transactions</h2>
                         <div className="w-full flex items-center justify-end gap-2">
                             <div className="w-4/12 relative">
                                 <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />

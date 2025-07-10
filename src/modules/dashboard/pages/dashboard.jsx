@@ -205,7 +205,7 @@ const Dashboard = () => {
                         <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
                             <HiOutlineBuildingOffice2 className={`w-5 h-5 ${KYCBanner[kycStatus].text}`} />
                         </div>
-                        <div className='w-10/12 leading-relaxed'>
+                        <div className='w-10/12 text-black leading-relaxed'>
                             <p className="text-sm md:text-base font-medium">{KYCBanner[kycStatus].title}</p>
                             {kycStatus === 'failed' ?
                                 <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
@@ -299,7 +299,7 @@ const Dashboard = () => {
             <div className="hidden md:block w-full rounded-lg border border-gray-200 bg-white">
                 <div className="">
                     <div className="flex items-center justify-between p-4">
-                        <h2 className="text-[20px] font-medium text-[#475367]">Transactions</h2>
+                        <h2 className="text-[20px] font-medium text-tertiary">Transactions</h2>
                     </div>
 
                     <div className="overflow-x-auto text-secondary">
