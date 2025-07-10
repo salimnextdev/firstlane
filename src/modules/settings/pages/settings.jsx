@@ -145,14 +145,14 @@ const Settings = () => {
                 <p className="hidden md:block text-sm text-gray-500 font-light my-1">Make changes to your Firstlane experience</p>
             </div>
 
-            <div className='h-screen md:border border-[#E4E7EC] rounded-xl'>
+            <div className='h-screen md:border border-gray rounded-xl'>
                 <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full h-full flex flex-col md:flex-row">
-                    <div className={`${selected && 'hidden md:block'} md:border-r border-[#E4E7EC]`}>
+                    <div className={`${selected && 'hidden md:block'} md:border-r border-gray`}>
                         <TabsList className="w-full md:w-[384px] h-full md:h-1/2 flex flex-col gap-2 md:px-5">
                             {/* Profile Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`w-full flex items-center ${currentTab === 'profile' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`w-full flex items-center ${currentTab === 'profile' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <User />
                                 <TabsTrigger
@@ -169,7 +169,7 @@ const Settings = () => {
                             {/* Change Password Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`w-full flex items-center ${currentTab === 'password' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`w-full flex items-center ${currentTab === 'password' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <ShieldX />
                                 <TabsTrigger
@@ -183,7 +183,7 @@ const Settings = () => {
                             {/* Notifications Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`w-full flex items-center ${currentTab === 'notifications' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`w-full flex items-center ${currentTab === 'notifications' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <Bell />
                                 <TabsTrigger
@@ -197,7 +197,7 @@ const Settings = () => {
                             {/* Bank Details Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`w-full flex items-center ${currentTab === 'bank_details' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`w-full flex items-center ${currentTab === 'bank_details' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <Bank />
                                 <TabsTrigger
@@ -211,7 +211,7 @@ const Settings = () => {
                             {/* Terms & Privacy Policy Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`hidden w-full md:flex items-center ${currentTab === 'terms' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`hidden w-full md:flex items-center ${currentTab === 'terms' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <License />
                                 <TabsTrigger
@@ -226,7 +226,7 @@ const Settings = () => {
                             {/* Delete Account Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`hidden w-full md:flex items-center ${currentTab === 'actions' && 'md:bg-[#F0F2F5]'} md:px-2 rounded-md`}
+                                className={`hidden w-full md:flex items-center ${currentTab === 'actions' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
                                 <Trash />
                                 <TabsTrigger
@@ -283,7 +283,7 @@ const Settings = () => {
                                     />
                                 </div>
 
-                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-gray">
                                     <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
                                         <button
                                             type='button'
@@ -311,7 +311,7 @@ const Settings = () => {
                                     This is an irreversible action. Are you sure you want to proceed with this action?
                                 </p>
 
-                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-gray">
                                     <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
                                         <button
                                             onClick={() => navigate('/dashboard')}

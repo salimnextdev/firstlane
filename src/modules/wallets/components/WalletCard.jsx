@@ -2,7 +2,7 @@ import React from "react";
 
 const WalletCard = ({ wallet }) => {
     return (
-        <div key={wallet.name} className='p-3 flex items-end justify-between border border-[#E4E7EC] rounded-xl'>
+        <div key={wallet.name} className='p-3 flex items-end justify-between border border-gray rounded-xl'>
             <div className="space-y-1">
                 <p className="text-sm md:text-base font-normal text-gray-800">
                     ₦{wallet.amount.toLocaleString(undefined, {

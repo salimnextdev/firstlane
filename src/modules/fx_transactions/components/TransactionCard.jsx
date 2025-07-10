@@ -2,7 +2,7 @@ import React from "react";
 
 const TransactionCard = ({ transaction }) => {
     return (
-        <div key={transaction.name} className='p-3 flex items-center justify-between bg-light border border-gray rounded-xl'>
+        <div key={transaction.name} className='p-3 flex items-center justify-between border border-gray rounded-xl'>
             <div className="flex items-center gap-2">
                 <div className="w-[36px] h-[36px] rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
                     <img src="/api/placeholder/40/40" alt="User avatar" className="w-full h-full object-cover" />
