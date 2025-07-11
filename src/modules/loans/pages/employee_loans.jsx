@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import BackButton from '@/components/BackButton';
+import { loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
 
 const EmployeeLoans = () => {
     const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const EmployeeLoans = () => {
             </div>
 
 
-            <div className='md:bg-[#F9FAFB] md:p-5 space-y-3 md:border border-[#E4E7EC] rounded-xl'>
+            <div className='md:bg-gray md:p-5 space-y-3 md:border border-gray rounded-xl'>
                 <div className='flex flex-col md:flex-row items-center gap-3'>
                     <TextInput
                         label="How much do you want?"
@@ -52,12 +53,7 @@ const EmployeeLoans = () => {
                         className='text-sm'
                         value={formData.loan_reason}
                         onChange={handleChange}
-                        options={[
-                            { label: "Equipment financing", value: "Equipment financing" },
-                            { label: "Working capital", value: "Working capital" },
-                            { label: "Business expansion", value: "Business expansion" },
-                            { label: "Invoice financing", value: "Invoice financing" },
-                        ]}
+                        options={loanReasons}
                         placeholder="Select purpose"
                     />
                 </div>
@@ -69,12 +65,7 @@ const EmployeeLoans = () => {
                         className='text-sm'
                         value={formData.duration}
                         onChange={handleChange}
-                        options={[
-                            { label: "3 months", value: "3 months" },
-                            { label: "6 months", value: "6 months" },
-                            { label: "9 months", value: "9 months" },
-                            { label: "12 months", value: "12 months" },
-                        ]}
+                        options={loanDurations}
                         placeholder="Select tenure"
                     />
                     <SelectInput
@@ -83,12 +74,7 @@ const EmployeeLoans = () => {
                         className='text-sm'
                         value={formData.interval}
                         onChange={handleChange}
-                        options={[
-                            { label: "Weekly", value: "Weekly" },
-                            { label: "Monthly", value: "Monthly" },
-                            { label: "Quarterly", value: "Quarterly" },
-                            { label: "Yearly", value: "Yearly" },
-                        ]}
+                        options={loanIntervals}
                         placeholder="Select repayment"
                     />
                 </div>
@@ -174,7 +160,7 @@ const EmployeeLoans = () => {
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>
-                <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095]' />
+                <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
 
