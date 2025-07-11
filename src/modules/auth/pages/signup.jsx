@@ -118,7 +118,7 @@ const Signup = () => {
                         <img className="w-7" alt="logo" src={logo} />
                         <h1 className="text-lg font-medium text-primary">FirstLane</h1>
                     </div>
-                    <h2 className="text-xl md:text-4xl font-bold text-gray-900">
+                    <h2 className="text-xl md:text-4xl font-bold text-gray-800">
                         Create account
                     </h2>
                     <p className="mt-2 mb-6 text-sm text-secondary font-light">
@@ -206,17 +206,17 @@ const Signup = () => {
                     </div>
 
                     <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
-                        <Separator className="flex-1 h-px bg-gray-200" />
+                        <Separator className="flex-1 h-px bg-gray-300" />
                         <span className="whitespace-nowrap font-light">Or continue with</span>
-                        <Separator className="flex-1 h-px bg-gray-200" />
+                        <Separator className="flex-1 h-px bg-gray-300" />
                     </div>
 
                     <div className='flex items-center justify-center gap-3 text-sm font-normal'>
-                        <div className='w-full h-12 flex items-center justify-center gap-2 border-[1.5px] border-gray-300 py-2 rounded-lg cursor-pointer'>
+                        <div className='w-full h-12 flex items-center justify-center gap-2 border-[1.5px] border-gray-200 py-2 rounded-lg cursor-pointer'>
                             <FcGoogle className='text-2xl lg:text-2xl' />
                             <span>Google</span>
                         </div>
-                        <div className='w-full h-12 flex items-center justify-center gap-2 border-[1.5px] border-gray-300 py-2 rounded-lg cursor-pointer'>
+                        <div className='w-full h-12 flex items-center justify-center gap-2 border-[1.5px] border-gray-200 py-2 rounded-lg cursor-pointer'>
                             <FaFacebook className='text-xl text-[#1877F2]' />
                             <span>Facebook</span>
                         </div>
