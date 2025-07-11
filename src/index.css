@@ -31,11 +31,15 @@
 }
 
 :root {
+  --firstlane-bg: #FDFDFD;
+  --firstlane-bg-light: #F9FAFB;
+  --firstlane-bg-currency: #F0F2F5;
   --firstlane-primary: #3E4095;
   --firstlane-primary-hover: #3a3b92;
   --firstlane-secondary: #05B1F3;
   --firstlane-secondary-hover: #06adef;
   --firstlane-tertiary: #D8D9EA;
+  --firstlane-text-tertiary: #475367;
   --firstlane-gray: #667185; /* #667085 */ /* #667185*/
   --firstlane-success: #15803D;
   --firstlane-success-light:#F0FDF4;
@@ -45,6 +49,8 @@
   --firstlane-warning-light:#FEFCE8;
   --firstlane-danger:#DC2626;
   --firstlane-danger-light:#FEF2F2;
+  --firstlane-border: #E4E7EC;
+  --firstlane-color: #000;
   --radius-lg: 8px;
   --radius-xl: 12px;
 
@@ -53,13 +59,66 @@
   /* font-weight: 400; */
 
   /* color-scheme: light dark; */
-  color: #101928;
-  /* background-color: #FFFFFF; */
+  /* color: #101928; */
+  background-color: var(--firstlane-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Define CSS variables for dark mode */
+/* These styles apply when the 'dark' class is present on the html element */
+.dark {
+  --firstlane-bg: #1A202C; /* <-- CORRECT THIS TO A DARK COLOR */
+  --firstlane-bg-light: #374151;
+  --firstlane-bg-currency: #374151;
+  --firtlane-primary: #3E4095;
+  --firstlane-gray: #D8D9EA;
+  --firstlane-border: #374151;
+  --firstlane-text-tertiary: #c8c9d8;
+  --firstlane-color: #fff;
+  color: #F0F9FF;
+
+  /* Your existing Oklch dark variables */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  /* ... rest of your dark mode Oklch variables */
+}
+
+html.dark .bg-white {
+  background-color: #000000;
+}
+html.dark .bg-gray-300 {
+  background-color: #374151;
+}
+html.dark .border-gray-200 {
+  border-color: #374151;
+}
+html.dark .text-gray-800, .text-gray-900 {
+  color: var(--firstlane-gray);
+}
+
+.border-gray {
+  border-color: var(--firstlane-border);
+}
+
+.bg-light {
+  background-color: var(--firstlane-bg-light);
+}
+
+.bg-currency {
+  background-color: var(--firstlane-bg-currency);
+}
+
+@media (min-width: 768px) {
+  .md\:bg-currency {
+    background-color: var(--firstlane-bg-currency);
+  }
+  .md\:bg-light {
+    background-color: var(--firstlane-bg-light);
+  }
 }
 
 .bg-primary {
@@ -114,6 +173,9 @@
 .text-secondary {
   color: var(--firstlane-gray);
 }
+.text-tertiary {
+  color: var(--firstlane-text-tertiary);
+}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -124,5 +186,19 @@
 }
 ::-webkit-scrollbar-thumb {
   background-color: var(--firstlane-tertiary);
+  background-color: var(--firstlane-text-tertiary);
   border-radius: 4px;
+}
+
+/* In your global CSS file (e.g., globals.css or main.css) */
+
+/* Hide the visual "Month" and "Year" labels */
+.rdp-vhidden, .rdp-dropdown_month > div , .rdp-dropdown_year > div {
+  display: none !important; /* Use !important if other styles are overriding */
+}
+
+/* Optional: Adjust spacing if hiding labels makes it look off */
+.rdp-caption_dropdowns {
+  margin-top: 0 !important; /* Adjust as needed */
+  margin-bottom: 0 !important; /* Adjust as needed */
 }
