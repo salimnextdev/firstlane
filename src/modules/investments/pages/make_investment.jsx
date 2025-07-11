@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
-import { addInvestments } from '../state/investmentSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addInvestments, fetchInvestmentPlanByID } from '../state/investmentSlice';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
@@ -12,10 +12,17 @@ import ConfirmModal from '@/modules/investments/components/confirmModal';
 import CustomInvestmentModal from '@/modules/investments/components/customInvestmentModal';
 
 import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 const MakeInvestment = () => {
     const dispatch = useDispatch();
     const { ID } = useParams();
+    const { investment_plan: investment_plan, loading: loading, error: error } = useSelector((state) => state.investment);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchInvestmentPlanByID({ key: 'id', value: ID }));
+        }
+    }, [dispatch]);
 
     const [balance, setBalance] = useState(1000000.00);
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -23,9 +30,15 @@ const MakeInvestment = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        amount: "",
+        amount: 0.00,
         interval: "",
     });
+    useEffect(()=> {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            amount: investment_plan?.minAmount || 0.00,
+        }));
+    }, [investment_plan]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,15 +60,16 @@ const MakeInvestment = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             Object.values(validationErrors).map(error => {
-                toast(error);
+                toast.error(error);
             });
             return;
         };
 
         setSubmitted(true);
         const data = {
-            investmentID: ID,
+            investmentID: investment_plan?._id,
             amount: formData.amount,
+            repaymentInterval: formData.interval
         };
 
         try {
@@ -63,11 +77,11 @@ const MakeInvestment = () => {
             if (addInvestments.fulfilled.match(resultAction)) {
                 setConfirmOpen(true);
             } else {
-                toast(resultAction.payload.message);
+                toast.warning(resultAction.payload.message);
                 return;
             };
         } catch (error) {
-            toast("An error occured", {
+            toast.error("An error occured", {
                 description: error.message,
             });
         } finally {
@@ -112,11 +126,14 @@ const MakeInvestment = () => {
                 </div>
 
                 <div className='relative'>
-                    <span className='absolute top-5.5 left-4 text-secondary'>₦</span>
+                    <span className='absolute top-4 md:top-5.5 left-4 text-secondary'>₦</span>
                     <TextInput
                         label=''
                         name='amount'
-                        className='md:h-15 pl-7 pr-36 font-medium'
+                        type='number'
+                        min={investment_plan?.minAmount}
+                        max={investment_plan?.maxAmount}
+                        className='md:h-15 pl-7 pr-36 font-medium no-spinner'
                         value={formData.amount}
                         onChange={handleChange}
                         placeholder='10,000.00'
@@ -134,21 +151,21 @@ const MakeInvestment = () => {
 
                 <p className="mt-2 mb-5 text-sm text-secondary font-light space-x-1">
                     <span>Minimum amount that can be invested is</span>
-                    <span className='font-medium'>₦{10000.00.toLocaleString(undefined, {
+                    <span className='font-medium'>₦{investment_plan?.minAmount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}</span>
                 </p>
                 
                 {balance > 25000000.00 &&
-                    <div className='mb-3 p-3 bg-gray-100 text-sm text-secondary font-light border border-[#E4E7EC] rounded-lg'>
+                    <div className='mb-3 p-3 bg-gray-100 text-sm text-secondary font-light border border-gray rounded-lg'>
                         <p>We noticed that your investment amount is more than
                             <span className='font-medium mx-1'>₦25 million</span>
                             You can get a custom interest rate for your investment.
                             Do you want a custom investment rate?
                         </p>
                         <div className='flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mt-3 text-sm font-medium'>
-                            <button className='h-9 md:h-8 px-2 bg-white text-black rounded-md md:border border-[#E4E7EC] cursor-pointer'>
+                            <button className='h-9 md:h-8 px-2 bg-white text-black rounded-md md:border border-gray cursor-pointer'>
                                 No, continue with the standard rate
                             </button>
                             <button type='button' onClick={() => setCustomOpen(true)} className='h-9 md:h-8 px-2 rounded-md bg-secondary cursor-pointer'>
@@ -176,7 +193,7 @@ const MakeInvestment = () => {
                     This is the time period it would take to keep getting part of your interest until your investment is fully mature
                 </p>
 
-                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         // type='button'
                         // onClick={() => setConfirmOpen(true)}
