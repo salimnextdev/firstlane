@@ -199,7 +199,8 @@ const Dashboard = () => {
             </div>
 
             {/* KYC Verification Banner */}
-            {userProfile?.verifications?.status !== 'verified' &&
+            {userProfile?.verifications?.status &&
+                userProfile?.verifications?.status !== 'verified' &&
                 <div className={`flex flex-col lg:flex-row justify-between ${KYCBanner[kycStatus].bg} border md:border-[1.5px] ${KYCBanner[kycStatus].border} p-4 rounded-xl`}>
                     <div className='w-full flex flex-row gap-3'>
                         <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
