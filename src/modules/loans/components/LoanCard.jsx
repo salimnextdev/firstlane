@@ -2,7 +2,7 @@ import React from "react";
 
 const LoadCard = ({ loan }) => {
     return (
-        <div key={loan.name} className='p-3 flex items-end justify-between border border-[#E4E7EC] rounded-xl'>
+        <div key={loan.name} className='p-3 flex items-end justify-between border border-gray rounded-xl'>
             <div className="space-y-1">
                 <p
                     className={`inline-block mb-2 px-3 py-1 text-xs font-normal capitalize rounded-full

@@ -30,6 +30,7 @@ import SendMoneyModal from '@/modules/wallets/components/sendWithdrawModal';
 import FundAccountModal from '@/modules/investments/components/fundAccountModal';
 import WalletCard from '@/modules/wallets/components/WalletCard';
 import TableFilter from '@/components/TableFilter';
+import Pagination from '@/components/Pagination';
 
 const Wallets = () => {
     const navigate = useNavigate();
@@ -104,6 +105,13 @@ const Wallets = () => {
             statuses: [],
             currencyPairs: [],
         });
+    };
+
+    const [totalPages, setTotalPages] = useState(20);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     return (
@@ -205,7 +213,7 @@ const Wallets = () => {
                         <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent Wallet Transactions</h2>
                         <div className="w-full flex items-center justify-end gap-2">
                             <div className="w-4/12 relative">
-                                <IoIosSearch className="w-5 h-5 absolute top-2 left-3 text-gray-600" />
+                                <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
                                 <input
                                     type="text"
                                     placeholder="Search here..."
@@ -305,6 +313,14 @@ const Wallets = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                className={'flex'}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+            />
         </div>
     );
 };

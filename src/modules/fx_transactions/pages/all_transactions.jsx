@@ -6,6 +6,7 @@ import { ReactComponent as Filter } from '@/assets/icons/filter.svg';
 import BackButton from '@/components/BackButton';
 import MobileTransactionCard from '@/modules/fx_transactions/components/MobileTransactionCard';
 import TableFilter from '@/components/TableFilter';
+import Pagination from '@/components/Pagination';
 
 const AllTransactions = () => {
     const navigate = useNavigate();
@@ -68,6 +69,13 @@ const AllTransactions = () => {
         });
     };
 
+    const [totalPages, setTotalPages] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <div className="space-y-3">
             <BackButton />
@@ -76,7 +84,7 @@ const AllTransactions = () => {
             <div className='md:hidden space-y-3'>
                 <div className='flex items-center justify-between'>
                     <p className='font-medium'>FX transactions</p>
-                    
+
                     <TableFilter
                         filterOptions={filterOptions}
                         filters={filters}
@@ -93,6 +101,14 @@ const AllTransactions = () => {
 
                     ))}
                 </div>
+
+                {/* Pagination */}
+                <Pagination
+                    className={'flex'}
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                />
             </div>
         </div>
     );

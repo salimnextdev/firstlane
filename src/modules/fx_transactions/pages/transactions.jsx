@@ -25,6 +25,7 @@ import CountrySelect from '@/components/FormInputs/CountrySelect';
 import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
 
 import TableFilter from '@/components/TableFilter';
+import Pagination from '@/components/Pagination';
 
 const data = [
     [
@@ -79,6 +80,13 @@ const FXTransactions = () => {
             statuses: [],
             currencyPairs: [],
         });
+    };
+
+    const [totalPages, setTotalPages] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     return (
@@ -252,6 +260,14 @@ const FXTransactions = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                className={'hidden md:flex'}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+            />
         </div>
     );
 };

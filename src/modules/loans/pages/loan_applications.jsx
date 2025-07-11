@@ -24,6 +24,7 @@ import { IoIosSearch } from 'react-icons/io';
 
 import LoanCard from "@/modules/loans/components/LoanCard";
 import TableFilter from '@/components/TableFilter';
+import Pagination from '@/components/Pagination';
 
 const LoanApplications = () => {
     const navigate = useNavigate();
@@ -112,14 +113,21 @@ const LoanApplications = () => {
         });
     };
 
+    const [totalPages, setTotalPages] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <div className="space-y-5">
             <BackButton />
 
             {/* DESKTOP ::::  Loan Application Table */}
-            <div className="hidden md:block w-full overflow-x-auto border border-[#E4E7EC] rounded-lg">
+            <div className="hidden md:block w-full overflow-x-auto border border-gray rounded-lg">
                 <div className="flex items-center justify-between px-5 py-3">
-                    <h2 className="md:text-[20px] font-medium text-[#475367]">Loan Applications</h2>
+                    <h2 className="md:text-[20px] font-medium text-tertiary">Loan Applications</h2>
                     <div className="flex items-center space-x-2">
                         <TableFilter
                             filterOptions={filterOptions}
@@ -130,8 +138,8 @@ const LoanApplications = () => {
                     </div>
                 </div>
                 <Table className="w-full">
-                    <TableHeader className="bg-gray-50">
-                        <TableRow className="border-b border-gray-100">
+                    <TableHeader className="bg-light">
+                        <TableRow className="border-b border-gray">
                             <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                 <input
                                     type="checkbox"
@@ -160,7 +168,7 @@ const LoanApplications = () => {
                     </TableHeader>
                     <TableBody className="">
                         {investments.map(investment => (
-                            <TableRow key={investment.id} className="text-sm font-light border-b border-gray-100 last:border-b-0">
+                            <TableRow key={investment.id} className="text-sm font-light border-b border-gray-200 last:border-b-0">
                                 <TableCell className="px-6 py-4">
                                     <input
                                         type="checkbox"
@@ -248,6 +256,14 @@ const LoanApplications = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                className={'flex'}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+            />
         </div>
     );
 };
