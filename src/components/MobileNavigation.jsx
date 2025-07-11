@@ -9,8 +9,8 @@ import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
 
 const MobileNavigation = () => {
     return (
-        <div className="fixed bottom-0 z-10 md:hidden w-full h-[71px] bg-white">
-            <nav className="flex items-center justify-between px-4 py-2 text-xs border-t border-[#E4E7EC]">
+        <div className="fixed bottom-0 z-10 md:hidden w-full h-[71px] bg-gray-50 dark:bg-[var(--firstlane-bg)]">
+            <nav className="flex items-center justify-between px-4 py-2 text-xs border-t border-gray">
                 <NavLink to="/dashboard" className={({ isActive, isPending }) =>
                     `flex flex-col items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : 'text-secondary'}`}
                 >
