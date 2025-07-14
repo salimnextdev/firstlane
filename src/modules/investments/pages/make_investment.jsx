@@ -158,14 +158,14 @@ const MakeInvestment = () => {
                 </p>
                 
                 {balance > 25000000.00 &&
-                    <div className='mb-3 p-3 bg-gray-100 text-sm text-secondary font-light border border-gray rounded-lg'>
+                    <div className='mb-3 p-3 bg-light text-sm text-secondary font-light border border-gray rounded-lg'>
                         <p>We noticed that your investment amount is more than
                             <span className='font-medium mx-1'>₦25 million</span>
                             You can get a custom interest rate for your investment.
                             Do you want a custom investment rate?
                         </p>
                         <div className='flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mt-3 text-sm font-medium'>
-                            <button className='h-9 md:h-8 px-2 bg-white text-black rounded-md md:border border-gray cursor-pointer'>
+                            <button className='h-9 md:h-8 px-2 bg-gray-50 dark:bg-[var(--firstlane-bg)] rounded-md md:border border-gray cursor-pointer'>
                                 No, continue with the standard rate
                             </button>
                             <button type='button' onClick={() => setCustomOpen(true)} className='h-9 md:h-8 px-2 rounded-md bg-secondary cursor-pointer'>
