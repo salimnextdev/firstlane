@@ -86,19 +86,25 @@ const SearchInput = ({
                 styles={{
                     control: (provided, state) => ({
                         ...provided,
-                        minHeight: '48px', // Equivalent to h-12 (12 * 4 = 48px)
-                        height: 'auto', // Allow height to adjust if content wraps
-                        borderColor: '#e5e5e5', // Focus border and default border
-                        boxShadow: 'none', // Remove default react-select shadow
-                        borderRadius: '0.25rem', // Equivalent to rounded
-                        padding: '0 8px', // Adjust padding to mimic px-5 from TextInput, but for select's internal structure
+                        minHeight: '48px',
+                        height: 'auto',
+                        backgroundColor: 'transparent',
+                        borderColor: 'var(--firstlane-border)',
+                        boxShadow: 'none',
+                        borderRadius: '0.25rem',
+                        padding: '0 8px',
                         '&:hover': {
-                            borderColor: '#e5e5e5', // Keep border consistent on hover
+                            borderColor: 'var(--firstlane-border)',
                         }
+                    }),
+                    menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: 'var(--firstlane-bg-currency)',
                     }),
                     valueContainer: (provided) => ({
                         ...provided,
-                        padding: '0 8px', // Adjust internal padding
+                        padding: '0 8px',
+                        backgroundColor: 'var(--fistlane-bg-currency)',
                     }),
                     input: (provided) => ({
                         ...provided,
@@ -112,6 +118,7 @@ const SearchInput = ({
                     singleValue: (provided) => ({
                         ...provided,
                         margin: '0',
+                        color: 'var(--fistlane-color) !important',
                     }),
                     option: (provided, state) => ({
                         ...provided,

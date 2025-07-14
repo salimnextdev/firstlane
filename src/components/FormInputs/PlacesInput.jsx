@@ -26,11 +26,11 @@ const CustomLoader = (props) => {
 
 // NoOptionsMessage component (can be customized if needed)
 const NoOptionsMessage = (props) => {
-    return (
-        <div {...props.innerProps} style={{ padding: '8px 12px', textAlign: 'center', color: '#999' }}>
-            No matching options
-        </div>
-    );
+  return (
+    <div {...props.innerProps} style={{ padding: '8px 12px', textAlign: 'center', color: '#999' }}>
+      No matching options
+    </div>
+  );
 };
 
 
@@ -85,13 +85,13 @@ const PlacesInput = ({
   const handleInputChange = useCallback((input) => {
     // Always use Nominatim for searching
     if (input) {
-        // Only set loading state if there's actual input to search for.
-        // The fetchPlaces function will handle setting/clearing isLoading internally.
-        setIsLoading(true);
+      // Only set loading state if there's actual input to search for.
+      // The fetchPlaces function will handle setting/clearing isLoading internally.
+      setIsLoading(true);
     } else {
-        // If input is cleared, clear loading state and options.
-        setIsLoading(false);
-        setOptions([]);
+      // If input is cleared, clear loading state and options.
+      setIsLoading(false);
+      setOptions([]);
     }
     fetchPlaces(input);
   }, [fetchPlaces]);
@@ -137,30 +137,38 @@ const PlacesInput = ({
             ...provided,
             minHeight: '48px',
             height: 'auto',
-            borderColor: '#e5e5e5',
+            backgroundColor: 'transparent',
+            borderColor: 'var(--firstlane-border)',
             boxShadow: 'none',
             borderRadius: '0.25rem',
             padding: '0 8px',
             '&:hover': {
-                borderColor: '#e5e5e5',
+              borderColor: 'var(--firstlane-border)',
             }
+          }),
+          menu: (provided) => ({
+            ...provided,
+            backgroundColor: 'var(--firstlane-bg-currency)',
           }),
           valueContainer: (provided) => ({
             ...provided,
             padding: '0 8px',
           }),
-          input: (provided) => ({
+          input: (provided, state) => ({
             ...provided,
             margin: '0',
             padding: '0',
+            color: state.isSelected && 'var(--fistlane-text-color)',
           }),
-          placeholder: (provided) => ({
+          placeholder: (provided, state) => ({
             ...provided,
             margin: '0',
+            color: state.isSelected && 'var(--fistlane-text-color)',
           }),
           singleValue: (provided) => ({
             ...provided,
             margin: '0',
+            color: 'var(--fistlane-color) !important',
           }),
         }}
         value={selectedPlace}
@@ -171,8 +179,8 @@ const PlacesInput = ({
         placeholder={placeholder}
         isLoading={isLoading} // Tell react-select that we are loading
         components={{
-            LoadingMessage: CustomLoader, // Use the custom Lucide Loader component
-            NoOptionsMessage: NoOptionsMessage, // Show "No matching options" when not loading and no results
+          LoadingMessage: CustomLoader, // Use the custom Lucide Loader component
+          NoOptionsMessage: NoOptionsMessage, // Show "No matching options" when not loading and no results
         }}
         {...rest}
       />
