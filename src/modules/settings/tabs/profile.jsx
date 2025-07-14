@@ -5,6 +5,7 @@ import { uploadFile } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
+import Avatar from '@/assets/images/avatar.png';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
@@ -172,10 +173,10 @@ const Profile = () => {
                 <div className='space-y-1'>
                     <p className='text-sm font-normal'>Profile Picture</p>
                     <div className='flex items-center gap-5'>
-                        <div className='w-[64px] h-[64px] flex items-center justify-center bg-[#F0F2F5] border border-[#E4E7EC] overflow-hidden rounded-lg'>
+                        <div className='w-[64px] h-[64px] flex items-center justify-center bg-currency border border-gray overflow-hidden rounded-lg'>
                             {formData.profile_image ? (
                                 <img
-                                    src={typeof formData.profile_image === 'string' ? formData.profile_image : URL.createObjectURL(formData.profile_image.file)}
+                                    src={typeof formData.profile_image === 'string' ? formData.profile_image : URL.createObjectURL(formData.profile_image.file) || Avatar}
                                     alt="Profile Preview"
                                     className='w-full h-full object-cover'
                                     crossOrigin='anonymous'
@@ -185,7 +186,7 @@ const Profile = () => {
                             )}
                         </div>
 
-                        <div className='w-[122px] h-[36px] flex items-center justify-center border border-[#D0D5DD] rounded-lg'>
+                        <div className='w-[122px] h-[36px] flex items-center justify-center border border-gray rounded-lg'>
                             <input
                                 type="file"
                                 id="profile_image"
@@ -332,7 +333,7 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         className='w-full md:w-36 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
