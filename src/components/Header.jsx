@@ -37,7 +37,7 @@ const Header = ({ isOpen, onClose }) => {
 
     const Icon = () => {
         const IconComponent = mapper[pageName];
-        return <IconComponent className="w-5 h-5 text-black dark:text-white" />;
+        return <IconComponent className="w-5 h-5" />;
     };
 
     const [notificationOpen, setNotificationOpen] = useState(false);
