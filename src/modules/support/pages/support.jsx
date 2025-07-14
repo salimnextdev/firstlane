@@ -56,17 +56,17 @@ const Support = () => {
                 </button>
             </div>
 
-            <div className='h-[80vh] flex flex-col md:flex-row md:border border-[#E4E7EC] rounded-xl'>
+            <div className='h-[80vh] flex flex-col md:flex-row md:border border-gray rounded-xl'>
 
-                <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto space-y-2 md:p-3 md:border-r border-[#E4E7EC]`}>
+                <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto space-y-2 md:p-3 md:border-r border-gray`}>
                     {data.map((item, index) => (
                         <div
                             key={item + index}
                             onClick={() => setSelected(item)}
-                            className={`flex items-center justify-between py-2 md:p-3 ${item.id === selected?.id && 'bg-[#F0F2F5]'} hover:bg-gray-100 rounded-md cursor-pointer`}
+                            className={`flex items-center justify-between py-2 md:p-3 ${item.id === selected?.id && 'bg-currency'} md:hover:bg-gray-100 rounded-md cursor-pointer`}
                         >
                             <div className='flex items-center gap-3'>
-                                <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
+                                <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                                     <p className='capitalize'>A</p>
                                 </div>
                                 <div className='text-sm font-light'>
@@ -90,7 +90,7 @@ const Support = () => {
                     {/* Chat Header */}
                     <div className='flex items-center gap-3'>
                         <ArrowLeft onClick={() => setSelected(null)} className='md:hidden cursor-pointer' />
-                        <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
+                        <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                             <p className='capitalize'>A</p>
                         </div>
                         <div className='flex md:flex-col items-center md:items-start gap-3 md:gap-0 text-sm'>
@@ -107,7 +107,7 @@ const Support = () => {
                     <div className={`mt-5 w-full space-y-5 h-[65vh] md:h-[60vh] overflow-y-auto cursor-pointer`}>
                         {/* Center */}
                         <div className='flex items-center justify-center font-light'>
-                            <p className="inline-block px-2 py-1 text-xs text-center rounded-full bg-[#F0F2F5] text-secondary">
+                            <p className="inline-block px-2 py-1 text-xs text-center rounded-full bg-currency text-secondary">
                                 Today
                             </p>
                         </div>
@@ -116,12 +116,12 @@ const Support = () => {
                         <div className='w-full flex justify-start'>
                             <div className='w-11/12 lg:w-8/12 flex items-start gap-2'>
                                 <div className='w-1/12 hidden md:block'>
-                                    <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
+                                    <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                                         <p className='capitalize'>A</p>
                                     </div>
                                 </div>
                                 <div className='w-full space-y-1 font-light'>
-                                    <div className={`w-full flex items-center justify-between p-3 bg-[#F1F1F2] rounded-xl md:rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                    <div className={`w-full flex items-center justify-between p-3 bg-currency rounded-xl md:rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
                                         <div className='flex items-center gap-3 text-sm'>
                                             <File />
                                             <div className='space-y-1 text-sm'>
@@ -131,7 +131,7 @@ const Support = () => {
                                         </div>
                                         <Upload className="w-1/12" />
                                     </div>
-                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-gray-500'>
                                         <p>Admin • 4:59PM</p>
                                     </div>
                                 </div>
@@ -141,17 +141,17 @@ const Support = () => {
                         <div className='w-full flex justify-start'>
                             <div className='w-11/12 lg:w-8/12 flex items-start gap-2'>
                                 <div className='w-1/12 hidden md:block'>
-                                    <div className='w-[40px] h-[40px] flex items-center justify-center bg-[#D6D7E5] border border-[#F9FAFB] rounded-full'>
+                                    <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                                         <p className='capitalize'>A</p>
                                     </div>
                                 </div>
                                 <div className='w-full space-y-1 font-light'>
-                                    <div className={`w-full p-3 bg-[#F1F1F2] rounded-xl md:rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                    <div className={`w-full p-3 bg-currency rounded-xl md:rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
                                         <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-start text-xs text-[#344054]'>
+                                    <div className='flex items-center justify-start text-xs text-gray-500'>
                                         <p>Admin • 4:59PM</p>
                                     </div>
                                 </div>
@@ -162,12 +162,12 @@ const Support = () => {
                         <div className='w-full flex justify-end'>
                             <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1 font-light'>
-                                    <div className={`w-full p-3 bg-[#A9E7FF] rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
+                                    <div className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
                                         <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-end text-xs text-[#344054]'>
+                                    <div className='flex items-center justify-end text-xs text-gray-500'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -179,12 +179,12 @@ const Support = () => {
                         <div className='w-full flex justify-end'>
                             <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1 font-light'>
-                                    <div className={`w-full p-3 bg-[#A9E7FF] rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
+                                    <div className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
                                         <div className='text-sm leading-relaxed'>
                                             In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
                                         </div>
                                     </div>
-                                    <div className='flex items-center justify-end text-xs text-[#344054]'>
+                                    <div className='flex items-center justify-end text-xs text-gray-500'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -196,17 +196,17 @@ const Support = () => {
                         <div className='w-full flex justify-end'>
                             <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
                                 <div className='w-full space-y-1 font-light'>
-                                    <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                    <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
                                         <div className='flex items-center gap-3 text-sm'>
                                             <File />
                                             <div className='space-y-1 text-sm'>
                                                 <p>Filename.pdf</p>
-                                                <p className='text-xs text-secondary'>1 page • PDF • 4mb</p>
+                                                <p className='text-xs text-gray-700'>1 page • PDF • 4mb</p>
                                             </div>
                                         </div>
                                         <Upload className="w-1/12" />
                                     </div>
-                                    <div className='flex items-center justify-end text-xs text-[#344054]'>
+                                    <div className='flex items-center justify-end text-xs text-gray-500'>
                                         <p>You • 4:59PM</p>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@ const Support = () => {
                         <div className='w-[90%] relative mt-1'>
                             <textarea
                                 name="message"
-                                className={`w-full text-sm font-light h-12 px-4 pt-4 py-2 pr-10 border border-[#D0D5DD] rounded-xl focus:outline-none resize-none`}
+                                className={`w-full text-sm font-light h-12 px-4 pt-4 py-2 pr-10 border border-gray rounded-xl focus:outline-none resize-none`}
                                 placeholder='Write your message'
                             />
                             <input
