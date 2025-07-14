@@ -41,6 +41,18 @@ export const verifyAuthentication = createAsyncThunk(
   }
 );
 
+export const verifyCode = createAsyncThunk(
+  'auth/verifyCode',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/verify-code`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const sendCodeToEmail = createAsyncThunk(
   'auth/sendCodeToEmail',
   async (credentials, { rejectWithValue }) => {

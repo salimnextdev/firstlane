@@ -68,7 +68,7 @@ const ResetPassword = () => {
                 });
                 navigate('/signin');
             } else {
-                toast(OTP.replace('-', '') + ' ' + resultAction.payload.message);
+                toast(resultAction.payload.message);
                 return;
             };
         } catch (error) {

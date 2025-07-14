@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
+import { sendCodeToEmail, verifyCode } from '@/modules/auth/state/authSlice';
 import { getCookie, setCookie } from '@/utils/cookieUtils';
 
 import logo from '@/assets/images/logo.png';
@@ -53,14 +53,14 @@ const ResetPasswordOTP = () => {
         setSubmitted(true);
 
         const data = {
-            userID: userID,
+            // userID: userID,
             code: OTP.replace('-', ''),
             type: "PasswordReset"
         };
 
         try {
-            const resultAction = await dispatch(verifyAuthentication(data));
-            if (verifyAuthentication.fulfilled.match(resultAction)) {
+            const resultAction = await dispatch(verifyCode(data));
+            if (verifyCode.fulfilled.match(resultAction)) {
                 setCookie('OTP', OTP);
                 navigate('/reset-password');
             } else {
