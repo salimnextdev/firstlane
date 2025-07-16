@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLoans } from '@/modules/loans/state/loanSlice';
 
 import {
     Table,
@@ -18,16 +20,25 @@ import {
 import BackButton from '@/components/BackButton';
 
 import { ReactComponent as Dot } from '@/assets/icons/dot.svg';
-import { ReactComponent as Filter } from '@/assets/icons/filter.svg';
-import { MoreVertical } from 'lucide-react';
-import { IoIosSearch } from 'react-icons/io';
 
 import LoanCard from "@/modules/loans/components/LoanCard";
 import TableFilter from '@/components/TableFilter';
 import Pagination from '@/components/Pagination';
+import LoanSkeletonCard from '../components/loanSkeletonCard';
+import LoanSkeletonTable from '../components/loanSkeletonTable';
+
+import { formatDateTime } from '@/utils/datetimeFormats';
 
 const LoanApplications = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { loans: loans, loading: loading, error: error } = useSelector((state) => state.loan);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchLoans());
+        }
+    }, [dispatch]);
+
     const [showDropdown, setShowDropdown] = useState(null);
     const [selectedInvestments, setSelectedInvestments] = useState([]);
     const [investments, setInvestments] = useState([
@@ -167,45 +178,44 @@ const LoanApplications = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody className="">
-                        {investments.map(investment => (
-                            <TableRow key={investment.id} className="text-sm font-light border-b border-gray-200 last:border-b-0">
+                        {loading ? (
+                            // Render 6 skeleton table rows when loading is true
+                            Array.from({ length: 6 }).map((_, index) => (
+                                <LoanSkeletonTable key={index} />
+                            ))
+                        ) : loans.map(loan => (
+                            <TableRow key={loan._id} className="text-sm font-light border-b border-gray-200 last:border-b-0">
                                 <TableCell className="px-6 py-4">
                                     <input
                                         type="checkbox"
-                                        checked={selectedInvestments.includes(investment.id)}
-                                        onChange={e => handleSelectInvestment(investment.id, e.target.checked)}
+                                        checked={selectedInvestments.includes(loan._id)}
+                                        onChange={e => handleSelectInvestment(loan._id, e.target.checked)}
                                         className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 cursor-pointer"
                                     />
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
-                                    ₦{investment.amount.toLocaleString(undefined, {
+                                    ₦{loan?.amountRequested?.toLocaleString(undefined, {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
                                     })}
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
                                     <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
-                                        {investment.type}
+                                        {loan?.loanType}
                                     </span>
                                 </TableCell>
-                                <TableCell className="px-6 py-4">{investment.type}</TableCell>
-                                <TableCell className="px-6 py-4">
-                                    ₦
-                                    {investment.amount.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
-                                </TableCell>
+                                <TableCell className="px-6 py-4">{loan?.purpose}</TableCell>
+                                <TableCell className="px-6 py-4">{formatDateTime(loan?.createdAt)}</TableCell>
                                 <TableCell className="px-6 py-4">
                                     <span
                                         className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${investment.status === 'successful' ? 'bg-success' :
-                                                investment.status === 'pre-approved' ? 'bg-neutral' :
-                                                    investment.status === 'pending' ? 'bg-warning' :
+                                                ${loan?.status === 'approved' ? 'bg-success' :
+                                                loan?.status === 'pre-approved' ? 'bg-neutral' :
+                                                    loan?.status === 'pending' ? 'bg-warning' :
                                                         'bg-danger'
                                             }`}
                                     >
-                                        {investment.status}
+                                        {loan?.status}
                                     </span>
                                 </TableCell>
                                 <TableCell className="px-6 py-4 relative">
@@ -220,7 +230,7 @@ const LoanApplications = () => {
                                             </button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-40 z-10 bg-white text-left rounded-xl border border-gray-200 cursor-pointer">
-                                            <DropdownMenuItem onClick={() => navigate(`/loans/applications/${investment.id}`)}>
+                                            <DropdownMenuItem onClick={() => navigate(`/loans/applications/${loan.id}`)}>
                                                 <span className='font-light cursor-pointer'>View details</span>
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -248,8 +258,13 @@ const LoanApplications = () => {
                 </div>
 
                 <div className='space-y-2' id='mobile_transaction_card'>
-                    {investments.map((loan, index) => (
-                        <div key={index} onClick={() => navigate(`/loans/applications/${index}`)}>
+                    {loading ? (
+                        // Render 6 skeleton cards when loading is true
+                        Array.from({ length: 6 }).map((_, index) => (
+                            <LoanSkeletonCard key={index} />
+                        ))
+                    ) : loans.map((loan, index) => (
+                        <div key={index} onClick={() => navigate(`/loans/applications/${loan.id}`)}>
                             <LoanCard loan={loan} />
                         </div>
 
@@ -259,7 +274,7 @@ const LoanApplications = () => {
 
             {/* Pagination */}
             <Pagination
-                className={'flex'}
+                className={`flex ${loading && 'hidden'}`}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
