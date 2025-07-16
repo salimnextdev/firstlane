@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBalance } from '@/modules/wallets/state/walletSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import {
     Table,
@@ -31,9 +35,20 @@ import FundAccountModal from '@/modules/investments/components/fundAccountModal'
 import WalletCard from '@/modules/wallets/components/WalletCard';
 import TableFilter from '@/components/TableFilter';
 import Pagination from '@/components/Pagination';
+import { Loader } from 'lucide-react';
 
 const Wallets = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
+
+    const { balance: balance, loading: loading, error: error } = useSelector((state) => state.wallet);
+    useEffect(() => {
+        if (!balance) {
+            dispatch(fetchBalance(user._id));
+        }
+    }, [dispatch]);
+
     const [statsView, setStatsView] = useState(true);
     const [modal, setModal] = useState('');
     const [isOpen, setIsOpen] = useState(true);
@@ -148,16 +163,23 @@ const Wallets = () => {
                         <p className="text-sm text-gray-300 mb-2">Wallet balance</p>
                         <div className='flex items-center gap-5 justify-between mt-5'>
                             <p className="text-xl md:text-2xl font-semibold">
-                                {statsView
-                                    ? '₦' +
-                                    140000.00.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })
-                                    : '*************'
-                                }
+                                {statsView ? (
+                                    loading ? (
+                                        <Loader rotate={360} className='w-8 h-8 animate-spin mx-auto' />
+                                    ) : (
+                                        // Add an explicit check if balance?.available_balance is NOT a number
+                                        typeof balance?.available_balance === 'number'
+                                            ? '₦' + (balance.available_balance ?? 0.00).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '₦0.00' // Or '₦...' or another temporary placeholder
+                                    )
+                                ) : (
+                                    '*************'
+                                )}
                             </p>
-                            {statsView ?
+                            {loading ? null : statsView ?
                                 <EyeClose
                                     onClick={() => setStatsView(!statsView)}
                                     className="text-secondary cursor-pointer"
