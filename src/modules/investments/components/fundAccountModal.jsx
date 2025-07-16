@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { useSelector } from 'react-redux';
+
 import { RiEyeCloseLine } from 'react-icons/ri';
 import { ReactComponent as Copy } from '@/assets/icons/copy.svg';
 import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
@@ -20,6 +22,9 @@ const FundAccountModal = ({
     onClose,
     data
 }) => {
+
+    const { balance: balance, loading: balance_loading, error: balance_error } = useSelector((state) => state.wallet);
+
     const [statsView, setStatsView] = useState(true);
 
     return (
@@ -30,28 +35,35 @@ const FundAccountModal = ({
                         <DialogTitle className="text-xl md:text-2xl text-left">Fund Account</DialogTitle>
                     </DialogHeader>
 
-                    <div className='bg-black text-white p-5 rounded-xl'>
+                    <div className='dark:bg-[var(--firstlane-bg-currency)] bg-[#000] p-5 rounded-xl'>
                         <p className="text-sm text-gray-300 mb-2 font-light">Available balance</p>
                         <div className='flex items-center gap-5'>
                             <p className="text-xl md:text-[32px] font-semibold">
-                                {statsView
-                                    ? '₦' +
-                                    data.amount.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })
-                                    : '*************'
-                                }
+                                {statsView ? (
+                                    balance_loading ? (
+                                        <Loader rotate={360} className='w-12 h-12 animate-spin mx-auto' />
+                                    ) : (
+                                        typeof balance?.available_balance === 'number'
+                                            ? '₦' + (balance.available_balance ?? 0.00).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '₦0.00'
+                                    )
+                                ) : (
+                                    '*************'
+                                )}
                             </p>
-                            {statsView ?
-                                <EyeClose
-                                    onClick={() => setStatsView(!statsView)}
-                                    className="text-secondary cursor-pointer"
-                                /> :
-                                <EyeOpen
-                                    onClick={() => setStatsView(!statsView)}
-                                    className="text-secondary cursor-pointer"
-                                />
+                            {balance_loading ? null :
+                                statsView ?
+                                    <EyeClose
+                                        onClick={() => setStatsView(!statsView)}
+                                        className="text-secondary cursor-pointer"
+                                    /> :
+                                    <EyeOpen
+                                        onClick={() => setStatsView(!statsView)}
+                                        className="text-secondary cursor-pointer"
+                                    />
                             }
                         </div>
                     </div>
@@ -60,24 +72,24 @@ const FundAccountModal = ({
                         <div className='flex items-center justify-between'>
                             <div className='space-y-1'>
                                 <p>Account number</p>
-                                <p className='text-base text-black font-medium'>{data.acc_number}</p>
+                                <p className='text-base font-medium'>{balance?.wallet?.accountNumber}</p>
                             </div>
-                            <Copy onClick={()=> copyToClipboard(data.acc_number)} className="cursor-pointer" />
+                            <Copy onClick={() => copyToClipboard(balance?.wallet?.accountNumber)} className="cursor-pointer" />
                         </div>
                         <div className='flex items-center justify-between'>
                             <div className='space-y-1'>
                                 <p>Bank name</p>
-                                <p className='text-base text-black font-medium'>{data.bank_name}</p>
+                                <p className='text-base font-medium'>{balance?.wallet?.bankName}</p>
                             </div>
-                            <Copy onClick={()=> copyToClipboard(data.bank_name)} className="cursor-pointer" />
+                            <Copy onClick={() => copyToClipboard(balance?.wallet?.bankName)} className="cursor-pointer" />
                         </div>
                         <div className='space-y-1'>
                             <p>Account name</p>
-                            <p className='text-base text-black font-medium'>{data.acc_name}</p>
+                            <p className='text-base font-medium'>{balance?.wallet?.accountName}</p>
                         </div>
-                        <div className='flex items-center gap-2 text-black'>
+                        <div className='flex items-center gap-2'>
                             <p>Copy all</p>
-                            <Copy onClick={()=> copyToClipboard(data)} className="cursor-pointer" />
+                            <Copy onClick={() => copyToClipboard(balance?.wallet)} className="cursor-pointer" />
                         </div>
                     </div>
                     <DialogClose className="w-full h-11 bg-primary text-sm my-3 px-8 py-3 cursor-pointer rounded-md">
