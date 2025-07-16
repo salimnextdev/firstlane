@@ -25,6 +25,11 @@ const DateInput = ({
     setOpen(false);
   };
 
+  // Define your date range for the year dropdown
+  // Adjust these years to fit your application's requirements
+  const minDate = new Date(1950, 0, 1); // January 1, 1950
+  const maxDate = new Date(2070, 11, 31); // December 31, 2070
+
   return (
     <div className="w-full">
       {label && (
@@ -60,7 +65,14 @@ const DateInput = ({
             mode="single"
             selected={value}
             onSelect={handleSelect}
+            className={"w-full font-light"}
+            captionLayout="dropdown-buttons"
             initialFocus
+            fromDate={minDate}
+            toDate={maxDate} 
+            classNames={{
+              month: "text-sm font-light"
+            }}
           />
         </PopoverContent>
       </Popover>

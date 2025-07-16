@@ -110,6 +110,7 @@ const SearchInput = ({
                         ...provided,
                         margin: '0',
                         padding: '0',
+                        color: 'var(--fistlane-color) !important',
                     }),
                     placeholder: (provided) => ({
                         ...provided,
