@@ -1,28 +1,93 @@
 import React, { useState } from 'react';
 
+import { useDispatch } from 'react-redux';
+import { addLoan } from '@/modules/loans/state/loanSlice';
+import { getCookie } from '@/utils/cookieUtils';
+
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import BackButton from '@/components/BackButton';
 import { loanCollaterals, loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
 
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+
 const BusinessLoans = () => {
+    const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user'));
+
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        email: "",
-        password: ""
+        amount: "",
+        loan_reason: "",
+        duration: "",
+        interval: "",
+        collateral: "",
+        others: "",
     });
+
+    const [checked, setChecked] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
+    const validateForm = () => {
+        const errors = {};
+        if (!checked) errors.checked = "Please check the consent box";
+        if (!formData.amount) errors.amount = "Loan amount is required";
+        if (!formData.loan_reason) errors.loan_reason = "Loan reason is required";
+        if (!formData.duration) errors.duration = "Loan duration is required";
+        if (!formData.interval) errors.interval = "Loan interval is required";
+        if (!formData.collateral) errors.collateral = "Loan collateral is required";
+        return errors;
+    };
+
+    const submitLoan = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast.warning(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        const loanData = {
+            amountRequested: formData.amount,
+            purpose: formData.loan_reason,
+            tenure: formData.duration,
+            repaymentInterval: formData.interval,
+            collateral: formData.collateral,
+            loanType: "business",
+            userID: user._id,
+        };
+
+        try {
+            const resultAction = await dispatch(addLoan(loanData));
+            if (addLoan.fulfilled.match(resultAction)) {
+                toast.success("Loan application submitted successfully");
+            } else {
+                toast.error(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
     return (
-        <form method='post' className="space-y-5">
+        <form onSubmit={submitLoan} method='post' className="space-y-5">
             <BackButton />
 
             <div className="w-full flex items-center justify-between gap-4">
@@ -30,9 +95,12 @@ const BusinessLoans = () => {
                     Apply for a business loan
                 </h2>
 
-                <div className="fixed md:static bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto pr-10 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                <div className="fixed md:static bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto pr-10 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer">
-                        Submit application
+                        {submitted ?
+                            <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                            'Submit application'
+                        }
                     </button>
                 </div>
             </div>
@@ -101,7 +169,7 @@ const BusinessLoans = () => {
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>
-                <input type="checkbox" name="" id="" className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
+                <input onChange={()=> setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
 
