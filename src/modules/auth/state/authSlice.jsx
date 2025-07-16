@@ -101,11 +101,47 @@ export const deleteAccount = createAsyncThunk(
   }
 );
 
-export const addBank = createAsyncThunk(
-  'auth/addBank',
+export const addBankAccount = createAsyncThunk(
+  'auth/addBankAccount',
   async (data, { rejectWithValue }) => {
     try {
       const response = await api.post(`${API_BASE_URL}/auth/add-bank-account`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateBankAccount = createAsyncThunk(
+  'auth/updateBankAccount',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`${API_BASE_URL}/auth/edit-bank-account`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const removeBankAccount = createAsyncThunk(
+  'auth/removeBankAccount',
+  async (accountNumber, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/auth/remove-bank-account/${accountNumber}`, {});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchBankAccounts = createAsyncThunk(
+  'auth/fetchBankAccounts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/auth/get-bank-account`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -143,6 +179,7 @@ export const authSlice = createSlice({
     user: null,
     token: getCookie('token') || null,
     userProfile: null,
+    bankAccounts: [],
     isAuthenticated: false,
     loading: false,
     error: null,
@@ -196,6 +233,19 @@ export const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchBankAccounts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBankAccounts.fulfilled, (state, action) => {
+        state.bankAccounts = action.payload.data; // Retrieve the user bank accounts from the response
+        state.loading = false;
+      })
+      .addCase(fetchBankAccounts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
