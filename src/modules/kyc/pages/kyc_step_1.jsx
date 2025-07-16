@@ -1,39 +1,172 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '@/modules/auth/state/authSlice';
+import { uploadFile, kycLevel1 } from '@/modules/kyc/state/kycSlice';
 
 import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
-import { IoIosArrowRoundBack } from 'react-icons/io';
+import PlacesInput from '@/components/FormInputs/PlacesInput';
+import SearchInput from '@/components/FormInputs/searchInput';
+import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
+
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+
+import { GetCountries, GetState } from 'react-country-state-city';
 
 const KYCStep1 = ({ nextStep }) => {
+    const dispatch = useDispatch();
+    const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch]);
 
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
+        profile_image: null,
+        title: "",
+        firstname: "",
+        lastname: "",
         email: "",
-        password: "",
-        profile: null,
+        phone: "",
+        date_of_birth: new Date(),
+        gender: "",
+        marital_status: "",
+        address: "",
+        state: "",
+        lga: "",
     });
+
+    useEffect(() => {
+        setFormData({
+            profile_image: userProfile?.profileImage,
+            title: userProfile?.title || "",
+            firstname: userProfile?.firstname || "",
+            lastname: userProfile?.lastname || "",
+            email: userProfile?.email || "",
+            phone: userProfile?.phone || "",
+            date_of_birth: userProfile?.dob || new Date(),
+            gender: userProfile?.gender || "",
+            marital_status: userProfile?.maritalStatus || "",
+            address: userProfile?.residentialAddress || "",
+            nationality: userProfile?.country || "",
+            state: userProfile?.state || "",
+            lga: userProfile?.localGovernmentArea || "",
+        })
+    }, [userProfile]);
+
+    const [countriesList, setCountriesList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    useEffect(() => {
+        GetCountries().then((result) => {
+            // format coutries list to match my SearchInput data format
+            setCountriesList(result.map(item => ({...item, label: item.name, value: item.name})));
+        });
+    }, [dispatch]);
+    useEffect(() => {
+        const countryID = formData.nationality && countriesList.find(item => item.name === formData.nationality);
+        if (countryID) {
+            GetState(parseInt(countryID.id)).then((result) => {
+                setStateList(result.map(item => ({...item, label: item.name, value: item.name})));
+            });
+        };
+    }, [dispatch, formData.nationality]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
+    const handleDateOfBirthChange = (date) => {
+        setFormData((prev) => ({
+            ...prev,
+            date_of_birth: date,
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.profile_image) errors.profile_image = "Profile Image is required";
+        if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.date_of_birth) errors.date_of_birth = "Date of Birth is required";
+        if (!formData.marital_status) errors.marital_status = " is required";
+        if (!formData.address) errors.address = "Residential address is required";
+        if (!formData.nationality) errors.nationality = "Nationality is required";
+        if (!formData.state) errors.state = "State is required";
+        if (!formData.lga) errors.lga = "LGA is required";
+        return errors;
+    };
+
+    const submitKYC = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        try {
+            let profileUpload;
+            if (formData.profile_image && formData.profile_image.file instanceof File) {
+                profileUpload = await dispatch(uploadFile({ files: formData.profile_image.file }));
+
+                if (!uploadFile.fulfilled.match(profileUpload)) {
+                    toast('Profile Upload Failed',
+                        { description: profileUpload.payload.message }
+                    );
+                    return;
+                }
+            } else { profileUpload = formData.profile_image };
+
+            const data = {
+                profileImage: profileUpload.payload?.data[0]?.url || profileUpload, // Should be a link of the profile image
+                gender: formData.gender,
+                dob: formData.date_of_birth,
+                state: formData.state,
+                country: formData.nationality,
+                localGovernmentArea: formData.lga,
+                maritalStatus: formData.marital_status,
+                residentialAddress: formData.address?.display_name || formData.address
+            };
+
+            const resultAction = await dispatch(kycLevel1(data));
+            if (kycLevel1.fulfilled.match(resultAction)) {
+                nextStep();
+            } else {
+                toast.error(resultAction.payload.message);
+                return;
+            };
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
 
     return (
-        <div className="space-y-4 overflow-hidden">
-            <form method='post' className='w-full space-y-4'>
+        <div className="space-y-4">
+            <form onSubmit={submitKYC} method='post' className='w-full space-y-4'>
                 <div className='flex items-center gap-5'>
                     <div className='w-[64px] h-[64px] flex items-center justify-center bg-[#F0F2F5] border border-[#E4E7EC] overflow-hidden rounded-lg'>
-                        {formData.profile && formData.profile.file ? (
+                        {formData.profile_image ? (
                             <img
-                                src={typeof formData.profile.file === 'string' ? formData.profile.file : URL.createObjectURL(formData.profile.file)}
+                                src={typeof formData.profile_image === 'string' ? formData.profile_image : URL.createObjectURL(formData.profile_image.file)}
                                 alt="Profile Preview"
                                 className='w-full h-full object-cover'
+                                crossOrigin='anonymous'
                             />
                         ) : (
                             <KYC_Upload />
@@ -43,14 +176,14 @@ const KYCStep1 = ({ nextStep }) => {
                     <div className='w-[122px] h-[36px] flex items-center justify-center border border-[#D0D5DD] rounded-lg'>
                         <input
                             type="file"
-                            id="profile"
-                            name="profile"
+                            id="profile_image"
+                            name="profile_image"
                             accept="image/*"
                             onChange={handleChange}
                             className="top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
                             hidden
                         />
-                        <label htmlFor="profile" className='text-sm font-normal cursor-pointer'>Upload profile</label>
+                        <label htmlFor="profile_image" className='text-sm font-normal cursor-pointer'>Upload profile</label>
                     </div>
                 </div>
                 <div className='flex flex-col md:flex-row items-center gap-3'>
@@ -62,13 +195,9 @@ const KYCStep1 = ({ nextStep }) => {
                                 className='w-full text-sm'
                                 value={formData.title}
                                 onChange={handleChange}
-                                options={[
-                                    { label: "Mr", value: "Mr" },
-                                    { label: "Mrs", value: "Mrs" },
-                                    { label: "Sir", value: "Sir" },
-                                    { label: "Miss", value: "Miss" },
-                                ]}
+                                options={titleOptions}
                                 placeholder="Mr"
+                                disabled
                             />
                         </div>
                         <TextInput
@@ -78,6 +207,7 @@ const KYCStep1 = ({ nextStep }) => {
                             value={formData.firstname}
                             onChange={handleChange}
                             placeholder="Adam"
+                            disabled
                         />
                     </div>
                     <TextInput
@@ -87,6 +217,7 @@ const KYCStep1 = ({ nextStep }) => {
                         value={formData.lastname}
                         onChange={handleChange}
                         placeholder="Jude"
+                        disabled
                     />
                 </div>
 
@@ -99,14 +230,16 @@ const KYCStep1 = ({ nextStep }) => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="adam.jude@mail.com"
+                        disabled
                     />
                     <TextInput
                         label="Phone"
                         name="phone"
                         className='text-sm'
-                        value={formData.email}
+                        value={formData.phone}
                         onChange={handleChange}
                         placeholder="08000000000"
+                        disabled
                     />
                 </div>
 
@@ -114,7 +247,9 @@ const KYCStep1 = ({ nextStep }) => {
                     <div className='w-full flex items-center gap-3'>
                         <DateInput
                             label="Date of Birth"
-                            name="dob"
+                            name="date_of_birth"
+                            value={formData.date_of_birth}
+                            onChange={handleDateOfBirthChange}
                             placeholder='DD / MM / YY'
                         />
                         <SelectInput
@@ -123,12 +258,7 @@ const KYCStep1 = ({ nextStep }) => {
                             className='text-sm'
                             value={formData.gender}
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
+                            options={genderOptions}
                             placeholder="Select Gender"
                         />
                     </div>
@@ -139,54 +269,41 @@ const KYCStep1 = ({ nextStep }) => {
                         className='text-sm'
                         value={formData.marital_status}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
+                        options={maritalStatusOptions}
                         placeholder="Select Marital Status"
                     />
                 </div>
 
-                <TextInput
+                <PlacesInput
                     label="Residential address"
                     name="address"
                     className='text-sm'
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={formData.address}
+                    onChange={(address) => {
+                        setFormData({ ...formData, ['address']: address });
+                    }}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
                 <div className='w-full flex flex-col md:flex-row items-center gap-3'>
-                    <SelectInput
+                    <SearchInput
                         label="Nationality"
                         name="nationality"
                         className='text-sm'
                         value={formData.nationality}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
+                        data={countriesList || []}
                         placeholder="Select Nationality"
                     />
 
                     <div className='w-full flex items-center gap-3'>
-                        <SelectInput
+                        <SearchInput
                             label="State"
                             name="state"
                             className='text-sm'
                             value={formData.state}
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
+                            data={stateList || []}
                             placeholder="Select State"
                         />
 
@@ -197,22 +314,25 @@ const KYCStep1 = ({ nextStep }) => {
                             value={formData.lga}
                             onChange={handleChange}
                             options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
+                                { label: "Agenebode", value: "agenebode" },
+                                { label: "Oredo", value: "oredo" },
+                                { label: "Etsako East", value: "etsako east" },
+                                { label: "Etsako West", value: "etsako west" },
                             ]}
                             placeholder="Select LGA"
                         />
                     </div>
                 </div>
 
-                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-white md:bg-transparent border-t md:border-0 border-[#E4E7EC]">
+                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
-                        onClick={nextStep}
+                        // onClick={nextStep}
                         className='w-full md:w-36 h-11 md:h-9 mt-3 px-3 text-sm rounded-md bg-primary cursor-pointer'
                     >
-                        Save and continue
+                        {submitted ?
+                            <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                            'Save and continue'
+                        }
                     </button>
                 </div>
             </form>

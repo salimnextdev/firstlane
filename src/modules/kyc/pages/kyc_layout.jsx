@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchKycStatus } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
@@ -12,6 +13,7 @@ import BackButton from '@/components/BackButton';
 import FullscreenLoader from '@/components/FullscreenLoader';
 
 const KYCVerification = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
 
@@ -22,12 +24,12 @@ const KYCVerification = () => {
         }
     }, [dispatch]);
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(1);
     useEffect(() => {
         if (kycStatus) {
             const level = parseInt(kycStatus?.level?.split('level')[1] || 0);
-            setStep(level + 1);
+            {level >= 4 ? navigate('/dashboard') : setStep(level + 1)};
             setIsOpen(false);
         }
     }, [kycStatus]);
