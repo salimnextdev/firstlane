@@ -45,7 +45,7 @@ const Wallets = () => {
     const { balance: balance, loading: loading, error: error } = useSelector((state) => state.wallet);
     useEffect(() => {
         if (!balance) {
-            dispatch(fetchBalance(user._id));
+            dispatch(fetchBalance(user?._id));
         }
     }, [dispatch]);
 
@@ -135,12 +135,6 @@ const Wallets = () => {
                 <FundAccountModal
                     isOpen={isOpen}
                     onClose={setIsOpen}
-                    data={{
-                        amount: 140000.00,
-                        acc_number: "0123456789",
-                        acc_name: "Alison Eyo",
-                        bank_name: "Paystack Titan",
-                    }}
                 />
             }
             {modal === "send_money" &&
@@ -194,18 +188,26 @@ const Wallets = () => {
                 </div>
                 <div className='hidden md:block border-l-3 border-[#344054]'>
                     <div className='flex items-center justify-between md:px-32'>
-                        <div onClick={() => openModal("fund_wallet")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
+                        <button
+                            onClick={() => openModal("fund_wallet")}
+                            className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'
+                            disabled={loading}
+                        >
                             <div className='w-[48px] h-[48px] flex items-center justify-center bg-light !text-black rounded-full'>
                                 <WalletPlus />
                             </div>
                             <p className='cursor-pointer'>Fund wallet</p>
-                        </div>
-                        <div onClick={() => openModal("send_money")} className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'>
+                        </button>
+                        <button
+                            onClick={() => openModal("send_money")}
+                            className='space-y-2 flex flex-col items-center text-sm text-white cursor-pointer select-none'
+                            disabled={loading}
+                        >
                             <div className='w-[48px] h-[48px] flex items-center justify-center bg-light !text-black rounded-full'>
                                 <Money />
                             </div>
                             <p className='cursor-pointer'>Send money</p>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
