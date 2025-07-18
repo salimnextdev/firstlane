@@ -42,26 +42,67 @@ export const formatDateTime = (isoString) => {
 
 export const formatDateShort = (isoString) => {
     if (!isoString) {
-      return '';
+        return '';
     }
-  
+
     const date = new Date(isoString);
-  
+
     if (isNaN(date.getTime())) {
-      return 'Invalid Date';
+        return 'Invalid Date';
     }
-  
+
     const day = date.getDate();
     const month = date.getMonth() + 1; // getMonth() is 0-indexed
     const hours = date.getHours();
     const minutes = date.getMinutes();
-  
+
     const formattedDay = day < 10 ? `0${day}` : day;
     const formattedMonth = month < 10 ? `0${month}` : month;
-  
+
     const ampm = hours >= 12 ? 'pm' : 'am';
     const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  
+
     return `${formattedDay}/${formattedMonth} at ${formattedHours}:${formattedMinutes}${ampm}`;
-  };
+};
+
+
+export const formatDateToday = (isoString) => {
+    if (!isoString) {
+        return '';
+    }
+
+    const date = new Date(isoString);
+    const today = new Date();
+
+    if (isNaN(date.getTime())) {
+        console.error("Invalid date string provided:", isoString);
+        return 'Invalid Date';
+    }
+
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const timeString = `${formattedHours}:${formattedMinutes}${ampm}`;
+
+    // Check if the date is today
+    const isToday = date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
+
+    if (isToday) {
+        return `Today, ${timeString}`;
+    } else {
+        // If not today, format as DD/MM/YYYY, HH:MMam/pm
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+
+        return `${formattedDay}/${formattedMonth}/${year}, ${timeString}`;
+    }
+};
