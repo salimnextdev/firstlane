@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchInvestments, fetchInvestmentPlans } from '@/modules/investments/state/investmentSlice';
+import { fetchBalance } from '@/modules/wallets/state/walletSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { BsArrowRight } from 'react-icons/bs';
@@ -11,52 +12,22 @@ import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 import InvestmentSkeletonCard from '../components/investmentSkeletonCard';
-
-const data = [
-    {
-        days: 90,
-        months: 3,
-        investment: 10000.00,
-        interest: 3
-    },
-    {
-        days: 180,
-        months: 6,
-        investment: 10000.00,
-        interest: 3
-    },
-    {
-        days: 360,
-        months: 12,
-        investment: 10000.00,
-        interest: 3
-    },
-    {
-        days: 540,
-        months: 18,
-        investment: 10000.00,
-        interest: 3
-    },
-    {
-        days: 720,
-        months: 24,
-        investment: 10000.00,
-        interest: 3
-    },
-]
+import { Loader } from 'lucide-react';
 
 const Investment = () => {
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
-    const { 
-        investments: investments, 
-        investment_plans: investment_plans, 
-        loading: loading, error: error 
+    const {
+        investments: investments,
+        investment_plans: investment_plans,
+        loading: loading, error: error
     } = useSelector((state) => state.investment);
+    const { balance: balance, loading: balance_loading, error: balance_error } = useSelector((state) => state.wallet);
 
     useEffect(() => {
         if (!loading) {
-            dispatch(fetchInvestments());
+            !balance && dispatch(fetchBalance(user?._id));
+            dispatch(fetchInvestments(user?._id));
             dispatch(fetchInvestmentPlans());
         }
     }, [dispatch]);
@@ -83,16 +54,23 @@ const Investment = () => {
                         <p className="text-sm text-gray-300 md:mb-2">Available balance</p>
                         <div className='flex items-center gap-5 justify-between md:mt-10'>
                             <p className="text-xl md:text-[32px] font-semibold">
-                                {statsView
-                                    ? '₦' +
-                                    1400000.00.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })
-                                    : '*************'
-                                }
+                                {statsView ? (
+                                    balance_loading ? (
+                                        <Loader rotate={360} className='w-8 h-8 md:w-12 md:h-12 animate-spin mx-auto' />
+                                    ) : (
+                                        // Add an explicit check if balance?.available_balance is NOT a number
+                                        typeof balance?.available_balance === 'number'
+                                            ? '₦' + (balance.available_balance ?? 0.00).toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })
+                                            : '₦0.00' // Or '₦...' or another temporary placeholder
+                                    )
+                                ) : (
+                                    '*************'
+                                )}
                             </p>
-                            {statsView ?
+                            {balance_loading ? null : statsView ?
                                 <EyeClose
                                     onClick={() => setStatsView(!statsView)}
                                     className="text-secondary cursor-pointer"
@@ -103,11 +81,19 @@ const Investment = () => {
                                 />
                             }
                         </div>
-                        <button onClick={() => setIsOpen(true)} className='block md:hidden h-8 px-4 text-sm rounded-md bg-secondary cursor-pointer'>
+                        <button
+                            onClick={() => setIsOpen(true)}
+                            className='block md:hidden h-8 px-4 text-sm rounded-md bg-secondary cursor-pointer'
+                            disabled={balance_loading}
+                        >
                             Fund wallet
                         </button>
                     </div>
-                    <button onClick={() => setIsOpen(true)} className='hidden md:block h-8 px-2 text-sm rounded-md bg-secondary cursor-pointer'>
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className='hidden md:block h-8 px-2 text-sm rounded-md bg-secondary cursor-pointer'
+                        disabled={balance_loading}
+                    >
                         Fund wallet
                     </button>
                 </div>
@@ -115,8 +101,10 @@ const Investment = () => {
                     <div className='w-full md:w-10/12 flex md:flex-col items-center md:items-start justify-between'>
                         <p className="hidden md:block text-base text-secondary md:mb-2 font-light">Investment count</p>
                         <p className="md:my-3 text-base md:text-2xl font-semibold">
-                            {investments.length.toLocaleString()} 
-                            <span className='ml-1 text-sm text-secondary font-light'>investments</span>
+                            {investments?.length?.toLocaleString()}
+                            <span className='ml-1 text-sm text-secondary font-light'>
+                                {investments?.length === 1 ? ' investment' : ' investments'}
+                            </span>
                         </p>
 
                         <Link to={'/investment/all'} className='flex items-center gap-2 text-sm'>
