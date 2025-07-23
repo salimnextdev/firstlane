@@ -10,15 +10,19 @@ import {
 } from "@/components/ui/dialog";
 
 import InvestmentModal from '@/modules/investments/components/investmentModal';
+import { Loader } from 'lucide-react';
 
 const ConfirmModal = ({
     isOpen,
     onClose,
+    submitted,
+    setSubmitted,
     data,
     title = "Success!",
     description = "Operation completed successfully.",
     buttonCLoseText = "Cancel",
-    buttonSuccessText = "Ok"
+    buttonSuccessText = "Ok",
+    buttonSuccessAction,
 }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,13 +33,19 @@ const ConfirmModal = ({
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
                 title='Investment successful'
-                description='You have invested a sum of ₦100,000 for a period of 360 days at an interest 
-                rate of 3% with a repayment interval of 1 Monthly. 
-                You can view your investments or return home. '
+                description={
+                    `You have invested a sum of 
+                    ₦${data?.amount?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })} 
+                for a period of ${data.duration} at an interest 
+                rate of ${data.interest} with a repayment interval of 1 ${data.interval}. 
+                You can view your investments or return home. `}
                 buttonCLoseText="Go to My Investments"
                 buttonSuccessText="Return Home"
             />
-            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 md:px-8 bg-white rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] hidden md:flex items-center justify-center bg-[#D8D9EA] rounded-full">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,10 +63,11 @@ const ConfirmModal = ({
                         <DialogDescription className="text-sm md:text-base text-secondary font-light">{description}</DialogDescription>
                     </DialogHeader>
 
-                    <div className='bg-[#F9FAFB] p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
+                    <div className='bg-light p-5 space-y-3 border border-gray rounded-xl'>
                         <div className='flex items-center gap-2 text-secondary font-light'>
                             <p>Amount:</p>
-                            <p className="font-medium">₦{data.amount.toLocaleString(undefined, {
+                            <p className="font-medium">
+                                ₦{data?.amount?.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}</p>
@@ -71,25 +82,29 @@ const ConfirmModal = ({
                         </div>
                         <div className='flex items-center gap-2 text-secondary font-light'>
                             <p>Repayment interval:</p>
-                            <p className="font-medium">{data.interval}</p>
+                            <p className="font-medium capitalize">{data.interval}</p>
                         </div>
                     </div>
 
                     <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 mt-3 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-gray text-sm py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={() => {
-                                setIsModalOpen(true);
+                            onClick={async () => {
+                                await buttonSuccessAction();
                                 onClose();
+                                setIsModalOpen(true);
                             }}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm py-3 cursor-pointer rounded-xl"
                         >
-                            {buttonSuccessText}
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                buttonSuccessText
+                            }
                         </button>
                     </div>
                 </div>
