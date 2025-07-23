@@ -17,6 +17,8 @@ import {
     DialogClose
 } from "@/components/ui/dialog";
 
+import { Loader } from 'lucide-react';
+
 const FundAccountModal = ({
     isOpen,
     onClose,
