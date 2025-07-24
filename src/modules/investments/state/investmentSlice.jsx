@@ -51,6 +51,30 @@ export const addInvestments = createAsyncThunk(
   }
 );
 
+export const syncInvestmentsDetails = createAsyncThunk(
+  'investment/syncInvestmentsDetails',
+  async (code, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/investments/user-investment/${code}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const syncInvestments = createAsyncThunk(
+  'investment/syncInvestments',
+  async (code, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/investments/user-investment/copy/${code}`, {});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const investmentSlice = createSlice({
   name: 'investment',
   initialState: {
@@ -98,6 +122,19 @@ export const investmentSlice = createSlice({
           state.loading = false;
       })
       .addCase(fetchInvestments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(syncInvestmentsDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(syncInvestmentsDetails.fulfilled, (state, action) => {
+          state.investment_plan = action.payload.data // Retrieve the investment detials by coupon code from the response
+          state.loading = false;
+      })
+      .addCase(syncInvestmentsDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
