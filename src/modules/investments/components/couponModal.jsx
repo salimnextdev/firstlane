@@ -36,7 +36,7 @@ const CouponModal = ({
     const fetchInvestmentDetails = async () => {
         setSubmitted(true);
         try {
-            await dispatch(syncInvestmentsDetails(couponCode)).unwrap();
+            await dispatch(syncInvestmentsDetails(couponCode.replace('-', ''))).unwrap();
             setIsModalOpen(true);
             onClose();
         } catch (error) {
