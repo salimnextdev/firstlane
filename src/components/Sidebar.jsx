@@ -13,7 +13,7 @@ import { ReactComponent as Setting } from '@/assets/icons/setting.svg';
 import { ReactComponent as Logout } from '@/assets/icons/sign-out.svg';
 import logo from '@/assets/images/logo.png';
 
-import CouponModal from '@/modules/investments/components/couponModal';
+import SyncInvestmentCard from '@/modules/investments/components/syncInvestmentCard';
 import LogoutModal from '@/components/LogoutModal';
 
 const Sidebar = () => {
@@ -25,7 +25,6 @@ const Sidebar = () => {
         }
     }, [dispatch]);
 
-    const [isOpen, setIsOpen] = useState(false);
     const [isLogout, setIsLogout] = useState(false);
 
     return (
@@ -33,13 +32,6 @@ const Sidebar = () => {
             <LogoutModal
                 isOpen={isLogout}
                 onClose={setIsLogout}
-            />
-            <CouponModal
-                title='Sync investment'
-                description="Enter your given coupon code to sync your investment on Firstlane digital application.
-                This would make it easy for your to continue experiencing great financial services from Firstlane's digital application."
-                isOpen={isOpen}
-                onClose={setIsOpen}
             />
 
             <div className="flex items-center gap-3 px-6 h-20">
@@ -98,18 +90,7 @@ const Sidebar = () => {
                 </NavLink>
             </nav>
             <div className="absolute bottom-4 left-4 w-11/12">
-                <div className="w-[240px] bg-gradient-to-br from-[#0B1E3A] to-[#142F57] text-white mb-6 mr-4 p-6 rounded-xl">
-                    <h2 className="text-sm font-medium mb-2">Existing user?</h2>
-                    <p className="text-sm text-[#D0D5DD] font-light mb-4">
-                        Are you an existing user who has investments with Firstlane? Click button to reflect your investment digitally here.
-                    </p>
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className="text-sm font-medium text-white bg-transparent border-b border-white hover:text-gray-300 transition-all cursor-pointer"
-                    >
-                        Sync investment
-                    </button>
-                </div>
+                <SyncInvestmentCard />
 
                 <div className='flex items-center justify-between'>
                     <div className="w-10/12 flex items-center gap-3">
