@@ -9,6 +9,7 @@ import { ReactComponent as Logout } from '@/assets/icons/logout-sm.svg';
 import { ReactComponent as Close } from '@/assets/icons/close.svg';
 
 import LogoutModal from '@/components/LogoutModal';
+import SyncInvestmentCard from '@/modules/investments/components/syncInvestmentCard';
 
 const MobileSideBar = ({ isOpen, onClose }) => {
     const [isLogout, setIsLogout] = useState(false);
@@ -20,7 +21,7 @@ const MobileSideBar = ({ isOpen, onClose }) => {
                 isOpen={isLogout}
                 onClose={setIsLogout}
             />
-            
+
             <div className='flex items-center justify-between px-6 p-4 text-xl'>
                 <p>Menu</p>
                 <Close onClick={() => onClose(!isOpen)} />
@@ -54,12 +55,16 @@ const MobileSideBar = ({ isOpen, onClose }) => {
                     <Trash className="text-secondary" />
                     <span className='text-danger'>Delete account</span>
                 </NavLink>
-                <div onClick={()=> setIsLogout(true)} className={`flex items-center gap-3 p-2 font-normal text-gray-900`}
+                <div onClick={() => setIsLogout(true)} className={`flex items-center gap-3 p-2 font-normal text-gray-900`}
                 >
                     <Logout className="!text-secondary" />
                     <span className=''>Logout</span>
                 </div>
             </nav>
+
+            <div className="absolute bottom-4 left-4 w-11/12">
+                <SyncInvestmentCard />
+            </div>
         </div>
     );
 };
