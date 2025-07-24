@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { syncInvestmentsDetails } from '@/modules/investments/state/investmentSlice';
+
 import {
     Dialog,
     DialogContent,
@@ -8,8 +11,11 @@ import {
     DialogDescription,
     DialogClose
 } from "@/components/ui/dialog";
-import TextInput from '@/components/FormInputs/TextInput';
+import OTPInput from '@/components/FormInputs/OTPInput';
 import ConfirmDetailsModal from '@/modules/investments/components/confirmDetailsModal';
+
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 const CouponModal = ({
     isOpen,
@@ -20,17 +26,39 @@ const CouponModal = ({
     buttonCLoseText = "Cancel",
     buttonSuccessText = "Proceed"
 }) => {
+    const dispatch = useDispatch();
+    const { investment_plan: investment_plan, loading: loading, error: error } = useSelector((state) => state.investment);
 
+    const [submitted, setSubmitted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [couponCode, setCouponCode] = useState("");
 
+    const fetchInvestmentDetails = async () => {
+        setSubmitted(true);
+        try {
+            await dispatch(syncInvestmentsDetails(couponCode)).unwrap();
+            setIsModalOpen(true);
+            onClose();
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        };
+    };
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <ConfirmDetailsModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
-                data={{ name: 'Chibuzor Nnamdi', amount: 10000000.00}}
+                data={{
+                    name: `${investment_plan?.firstname} ${investment_plan?.lastname}`,
+                    amount: investment_plan?.amount,
+                    coupon_code: couponCode?.replace('-', '')
+                }}
             />
-            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] hidden md:flex items-center justify-center bg-[#D8D9EA] rounded-full">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,9 +77,11 @@ const CouponModal = ({
                     </DialogHeader>
 
                     <form method="post">
-                        <TextInput 
+                        <OTPInput
                             label='Coupon code'
                             name='coupon'
+                            value={couponCode}
+                            onChange={(e) => setCouponCode(e.target.value)}
                             placeholder='01AD4R'
                         />
                     </form>
@@ -59,18 +89,19 @@ const CouponModal = ({
                     <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-gray text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={()=> {
-                                setIsModalOpen(true);
-                                onClose();
-                            }}
+                            onClick={fetchInvestmentDetails}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            disabled={!couponCode}
                         >
-                            {buttonSuccessText}
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                buttonSuccessText
+                            }
                         </button>
                     </div>
                 </div>

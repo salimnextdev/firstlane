@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { syncInvestments } from '@/modules/investments/state/investmentSlice';
+
 import { ReactComponent as Check } from '@/assets/icons/check.svg';
 
 import {
@@ -11,6 +15,9 @@ import {
 } from "@/components/ui/dialog";
 import InvestmentModal from '@/modules/investments/components/investmentModal';
 
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
+
 const ConfirmDetailsModal = ({
     isOpen,
     onClose,
@@ -20,8 +27,25 @@ const ConfirmDetailsModal = ({
     buttonCLoseText = "Cancel",
     buttonSuccessText = "Confirm and sync"
 }) => {
+    const dispatch = useDispatch();
 
+    const [submitted, setSubmitted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const syncUserInvestment = async () => {
+        setSubmitted(true);
+        try {
+            await dispatch(syncInvestments(data?.coupon_code)).unwrap();
+            setIsModalOpen(true);
+            onClose();
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        };
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -34,7 +58,7 @@ const ConfirmDetailsModal = ({
                 buttonCLoseText="Go to My Investments"
                 buttonSuccessText="Return Home"
             />
-            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] hidden md:flex items-center justify-center bg-[#D8D9EA] rounded-full">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,14 +76,14 @@ const ConfirmDetailsModal = ({
                         <DialogDescription className="text-sm md:text-base text-secondary font-light">{description}</DialogDescription>
                     </DialogHeader>
 
-                    <div className='bg-[#F9FAFB] p-5 space-y-3 border border-[#E4E7EC] rounded-xl'>
+                    <div className='bg-light p-5 space-y-3 border border-gray rounded-xl'>
                         <div className='flex items-center gap-2 text-secondary font-light'>
                             <p>Name:</p>
-                            <p className="font-medium">{data.name}</p>
+                            <p className="font-medium">{data?.name}</p>
                         </div>
                         <div className='flex items-center gap-2 text-secondary font-light'>
                             <p>Investment amount:</p>
-                            <p className="font-medium">₦{data.amount.toLocaleString(undefined, {
+                            <p className="font-medium">₦{data?.amount?.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}</p>
@@ -69,18 +93,18 @@ const ConfirmDetailsModal = ({
                     <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-gray text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={()=> {
-                                setIsModalOpen(true);
-                                onClose();
-                            }}
+                            onClick={syncUserInvestment}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
                         >
-                            {buttonSuccessText}
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                buttonSuccessText
+                            }
                         </button>
                     </div>
                 </div>
