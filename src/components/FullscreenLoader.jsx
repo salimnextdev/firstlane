@@ -12,7 +12,7 @@ const FullscreenLoader = ({
 }) => {
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogContent className="p-6 md:p-8 w-[150px] md:w-[200px] bg-white border border-[#E4E7EC] rounded-xl">
+            <AlertDialogContent className="p-6 md:p-8 w-[150px] md:w-[200px] bg-white border border-gray rounded-xl">
                 <div className="flex items-center justify-center">
                     <div
                         className='w-[60px] h-[60px] md:w-[70px] md:h-[70px] bg-[#D8D9EA] rounded-full flex items-center justify-center'
