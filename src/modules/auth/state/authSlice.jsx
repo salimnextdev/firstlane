@@ -237,6 +237,19 @@ export const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(addBankAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addBankAccount.fulfilled, (state, action) => {
+        state.bankAccounts = action.payload.data; // Retrieve the user bank accounts from the response
+        state.loading = false;
+      })
+      .addCase(addBankAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(fetchBankAccounts.pending, (state) => {
         state.loading = true;
         state.error = null;
