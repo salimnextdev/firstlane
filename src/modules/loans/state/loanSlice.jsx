@@ -75,6 +75,19 @@ export const loanSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(filterLoans.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(filterLoans.fulfilled, (state, action) => {
+          state.loans = action.payload.data // Retrieve the filtered loans from the response
+          state.loading = false;
+      })
+      .addCase(filterLoans.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(fetchLoanByID.pending, (state) => {
         state.loading = true;
         state.error = null;
