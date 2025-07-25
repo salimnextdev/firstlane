@@ -20,20 +20,13 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
     }));
   }, []);
 
+  // MODIFIED: This function now handles single selection per filter type using checkboxes
   const toggleFilter = useCallback(
     (filterType, value) => {
-      const currentFilters = [...(filters[filterType] ?? [])];
-      const index = currentFilters.indexOf(value);
-
-      if (index === -1) {
-        currentFilters.push(value);
-      } else {
-        currentFilters.splice(index, 1);
-      }
-
+      const isCurrentlySelected = filters[filterType] === value;
       onFilterChange({
         ...filters,
-        [filterType]: currentFilters,
+        [filterType]: isCurrentlySelected ? '' : value, // If currently selected, deselect; otherwise, select new value
       });
     },
     [filters, onFilterChange]
@@ -49,48 +42,21 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
     [filters, onFilterChange]
   );
 
-  const removeStatusFilter = useCallback(
-    (status) => {
+  const removeFilter = useCallback(
+    (filterType) => {
       onFilterChange({
         ...filters,
-        statuses: (filters.statuses ?? []).filter(s => s !== status),
+        [filterType]: '',
       });
     },
     [filters, onFilterChange]
   );
-
-  const removeCurrencyFilter = useCallback(
-    (currency) => {
-      onFilterChange({
-        ...filters,
-        currencyPairs: (filters.currencyPairs ?? []).filter(c => c !== currency),
-      });
-    },
-    [filters, onFilterChange]
-  );
-
-  const removeTypeFilter = useCallback(
-    (type) => {
-      onFilterChange({
-        ...filters,
-        types: (filters.types ?? []).filter(t => t !== type),
-      });
-    },
-    [filters, onFilterChange]
-  );
-
-  const removeDatePeriodFilter = useCallback(() => {
-    onFilterChange({
-      ...filters,
-      datePeriod: '',
-    });
-  }, [filters, onFilterChange]);
 
   const hasActiveFilters =
-    (filters.types ?? []).length > 0 ||
-    (filters.paymentTypes ?? []).length > 0 ||
-    (filters.statuses ?? []).length > 0 ||
-    (filters.currencyPairs ?? []).length > 0 ||
+    (filters.types ?? '') !== '' ||
+    (filters.paymentTypes ?? '') !== '' ||
+    (filters.statuses ?? '') !== '' ||
+    (filters.currencyPairs ?? '') !== '' ||
     (filters.datePeriod ?? '') !== '';
 
   const hasFilterOptions =
@@ -106,46 +72,46 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
     <div className="relative flex justify-center items-center">
       {hasActiveFilters && (
         <div className="hidden md:flex flex-wrap gap-2">
-          {(filters.statuses ?? []).map(status => (
-            <div key={status} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
-              <span className="text-sm">Status: <span className='font-normal'>{status}</span></span>
-              <button onClick={() => removeStatusFilter(status)} className="ml-2 text-gray-500 hover:text-gray-700">
+          {(filters.statuses) && (
+            <div key={filters.statuses} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
+              <span className="text-sm">Status: <span className='font-normal'>{filters.statuses}</span></span>
+              <button onClick={() => removeFilter('statuses')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
             </div>
-          ))}
+          )}
 
-          {(filters.types ?? []).map(type => (
-            <div key={type} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
-              <span className="text-sm">Loan type: <span className='font-normal'>{type}</span></span>
-              <button onClick={() => removeTypeFilter(type)} className="ml-2 text-gray-500 hover:text-gray-700">
+          {(filters.types) && (
+            <div key={filters.types} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
+              <span className="text-sm">Loan type: <span className='font-normal'>{filters.types}</span></span>
+              <button onClick={() => removeFilter('types')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
             </div>
-          ))}
+          )}
 
-          {(filters.paymentTypes ?? []).map(type => (
-            <div key={type} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
-              <span className="text-sm">Payment type: <span className='font-normal'>{type}</span></span>
-              <button onClick={() => removeTypeFilter(type)} className="ml-2 text-gray-500 hover:text-gray-700">
+          {(filters.paymentTypes) && (
+            <div key={filters.paymentTypes} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
+              <span className="text-sm">Payment type: <span className='font-normal'>{filters.paymentTypes}</span></span>
+              <button onClick={() => removeFilter('paymentTypes')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
             </div>
-          ))}
+          )}
 
-          {(filters.currencyPairs ?? []).map(pair => (
-            <div key={pair} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
-              <span className="text-sm">Currency Pairs: <span className='font-normal'>{pair}</span></span>
-              <button onClick={() => removeCurrencyFilter(pair)} className="ml-2 text-gray-500 hover:text-gray-700">
+          {(filters.currencyPairs) && (
+            <div key={filters.currencyPairs} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
+              <span className="text-sm">Currency Pairs: <span className='font-normal'>{filters.currencyPairs}</span></span>
+              <button onClick={() => removeFilter('currencyPairs')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
             </div>
-          ))}
+          )}
 
-          {(filters.datePeriod ?? '') && (
+          {(filters.datePeriod) && (
             <div className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
               <span className="text-sm">Date: <span className='font-normal'>{filters.datePeriod}</span></span>
-              <button onClick={removeDatePeriodFilter} className="ml-2 text-gray-500 hover:text-gray-700">
+              <button onClick={() => removeFilter('datePeriod')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
             </div>
@@ -163,15 +129,13 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
         </div>
       )}
 
-      {true && (
-        <button
-          className={`flex items-center gap-2 h-8 md:h-10 px-2 md:px-3 text-sm border rounded-lg md:rounded-md cursor-pointer
-          ${hasActiveFilters ? 'ml-2 text-primary bg-[#D8D9EA] border-[#667185]' : 'border-gray-200'}`}
-          onClick={() => setShowFilter(!showFilter)}>
-          <Filter />
-          <span className='hidden md:block'>Filter</span>
-        </button>
-      )}
+      <button
+        className={`flex items-center gap-2 h-8 md:h-10 px-2 md:px-3 text-sm border rounded-lg md:rounded-md cursor-pointer
+                    ${hasActiveFilters ? 'ml-2 text-primary bg-[#D8D9EA] border-[#667185]' : 'border-gray-200'}`}
+        onClick={() => setShowFilter(!showFilter)}>
+        <Filter />
+        <span className='hidden md:block'>Filter</span>
+      </button>
 
       {showFilter && (
         <div className="absolute right-0 top-10 md:top-12 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-10">
@@ -189,9 +153,9 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
                     {filterOptions.types.map(type => (
                       <div key={type} className="flex items-center font-light">
                         <input
-                          type="checkbox"
+                          type="checkbox" // Kept as checkbox
                           id={`type-${type}`}
-                          checked={(filters.types ?? []).includes(type)}
+                          checked={(filters.types ?? '') === type} // Check against single value
                           onChange={() => toggleFilter('types', type)}
                           className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
@@ -218,13 +182,13 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
                     {filterOptions.paymentTypes.map(type => (
                       <div key={type} className="flex items-center font-light">
                         <input
-                          type="checkbox"
-                          id={`type-${type}`}
-                          checked={(filters.paymentTypes ?? []).includes(type)}
+                          type="checkbox" // Kept as checkbox
+                          id={`paymentType-${type}`}
+                          checked={(filters.paymentTypes ?? '') === type}
                           onChange={() => toggleFilter('paymentTypes', type)}
                           className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <label htmlFor={`type-${type}`} className="ml-2 text-sm cursor-pointer">
+                        <label htmlFor={`paymentType-${type}`} className="ml-2 text-sm cursor-pointer">
                           {type}
                         </label>
                       </div>
@@ -247,9 +211,9 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
                     {filterOptions.currencyPairs.map(pair => (
                       <div key={pair} className="flex items-center font-light">
                         <input
-                          type="checkbox"
+                          type="checkbox" // Kept as checkbox
                           id={`pair-${pair}`}
-                          checked={(filters.currencyPairs ?? []).includes(pair)}
+                          checked={(filters.currencyPairs ?? '') === pair}
                           onChange={() => toggleFilter('currencyPairs', pair)}
                           className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
@@ -276,9 +240,9 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
                     {filterOptions.statuses.map(status => (
                       <div key={status} className="flex items-center font-light">
                         <input
-                          type="checkbox"
+                          type="checkbox" // Kept as checkbox
                           id={`status-${status}`}
-                          checked={(filters.statuses ?? []).includes(status)}
+                          checked={(filters.statuses ?? '') === status}
                           onChange={() => toggleFilter('statuses', status)}
                           className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
@@ -305,9 +269,8 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
                     {filterOptions.datePeriods.map(period => (
                       <div key={period} className="flex items-center font-light">
                         <input
-                          type="radio"
+                          type="checkbox"
                           id={`period-${period}`}
-                          name="datePeriod"
                           checked={(filters.datePeriod ?? '') === period}
                           onChange={() => handleDatePeriodChange(period)}
                           className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 text-blue-600 focus:ring-blue-500"
