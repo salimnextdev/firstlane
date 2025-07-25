@@ -15,6 +15,18 @@ export const fetchLoans = createAsyncThunk(
   }
 );
 
+export const filterLoans = createAsyncThunk(
+  'loan/filterLoans',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/loan/by-many`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchLoanByID = createAsyncThunk(
   'loan/fetchLoanByID',
   async ({ key, value }, { rejectWithValue }) => {
