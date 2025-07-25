@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { setSearchTerm } from '@/modules/auth/state/searchSlice';
+
 import { IoIosSearch } from 'react-icons/io';
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
 
@@ -31,6 +34,7 @@ const mapper = {
 
 const Header = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const location = useLocation();
     const path = location.pathname;
     const pageName = path.split("/")[1]?.replace('-', ' ');
@@ -41,6 +45,13 @@ const Header = ({ isOpen, onClose }) => {
     };
 
     const [notificationOpen, setNotificationOpen] = useState(false);
+    const [search, setSearch] = useState("");
+
+    const handleChange = (e) => {
+        const { value } = e.target;
+        setSearch(value);
+        dispatch(setSearchTerm(value));
+    };
 
     // State to manage the current theme: 'light' or 'dark'
     const [theme, setTheme] = useState(() => {
@@ -94,6 +105,9 @@ const Header = ({ isOpen, onClose }) => {
                         <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
                         <input
                             type="text"
+                            name='search'
+                            value={search}
+                            onChange={handleChange}
                             placeholder="Search here..."
                             className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-gray text-sm focus:outline-none"
                         />
