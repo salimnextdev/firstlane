@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInvestments } from '@/modules/investments/state/investmentSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ActiveInvestmentTab from '@/modules/investments/components/tabs/active_inv_tab';
@@ -80,9 +84,27 @@ const data = [
 ]
 
 const ViewInvestment = () => {
+    const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
+    const { investments: investments, loading: loading, error: error } = useSelector((state) => state.investment);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchInvestments(user?._id));
+        }
+    }, [dispatch]);
+
+    const [activeInvestments, setActiveInvestments] = useState([]);
+    const [pastInvestments, setPastInvestments] = useState([]);
+
+    useEffect(() => {
+        setActiveInvestments(investments.filter(investment => investment.status === "pending"));
+        setPastInvestments(investments.filter(investment => investment.status === "completed"));
+    }, [investments])
+
     const [currentTab, setCurrentTab] = useState("active_investment");
 
-    const DATA = data.filter(item => item.type === currentTab);
+    // const DATA = data.filter(item => item.type === currentTab);
+    const DATA = currentTab === "active_investment" ? activeInvestments : pastInvestments;
 
     return (
         <div className="relative space-y-4">
