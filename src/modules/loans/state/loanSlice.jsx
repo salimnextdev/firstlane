@@ -5,9 +5,23 @@ const API_BASE_URL = import.meta.env.VITE_API_API_BASE_URL
 
 export const fetchLoans = createAsyncThunk(
   'loan/fetchLoans',
-  async (_, { rejectWithValue }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_BASE_URL}/loan`);
+      let url = `${API_BASE_URL}/loan`;
+
+      const params = [];
+      // Conditionally add 'page' and 'limit' if they are provided
+      if (page !== undefined) {
+        params.push(`page=${page}`);
+      }
+      if (limit !== undefined) {
+        params.push(`limit=${limit}`);
+      }
+
+      if (params.length > 0) {
+        url += `?${params.join('&')}`;
+      }
+      const response = await api.get(url);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -17,9 +31,23 @@ export const fetchLoans = createAsyncThunk(
 
 export const filterLoans = createAsyncThunk(
   'loan/filterLoans',
-  async (credentials, { rejectWithValue }) => {
+  async ({ credentials, page, limit }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${API_BASE_URL}/loan/by-many`, credentials);
+      let url = `${API_BASE_URL}/loan/by-many`;
+      
+      const params = [];
+      // Conditionally add 'page' and 'limit' if they are provided
+      if (page !== undefined) {
+        params.push(`page=${page}`);
+      }
+      if (limit !== undefined) {
+        params.push(`limit=${limit}`);
+      }
+
+      if (params.length > 0) {
+        url += `?${params.join('&')}`;
+      }
+      const response = await api.post(url, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -55,6 +83,7 @@ export const loanSlice = createSlice({
   name: 'loan',
   initialState: {
     loans: [],
+    metaData: null,
     loanDetails: null,
     loading: false,
     error: null
@@ -67,8 +96,9 @@ export const loanSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchLoans.fulfilled, (state, action) => {
-          state.loans = action.payload.data // Retrieve the all user loans from the response
-          state.loading = false;
+        state.loans = action.payload.data // Retrieve the all user loans from the response
+        state.metaData = action.payload.metadata; // Retrieve the pagination data from the response
+        state.loading = false;
       })
       .addCase(fetchLoans.rejected, (state, action) => {
         state.loading = false;
@@ -80,8 +110,9 @@ export const loanSlice = createSlice({
         state.error = null;
       })
       .addCase(filterLoans.fulfilled, (state, action) => {
-          state.loans = action.payload.data // Retrieve the filtered loans from the response
-          state.loading = false;
+        state.loans = action.payload.data // Retrieve the filtered loans from the response
+        state.metaData = action.payload.metadata; // Retrieve the pagination data from the response
+        state.loading = false;
       })
       .addCase(filterLoans.rejected, (state, action) => {
         state.loading = false;
@@ -93,8 +124,8 @@ export const loanSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchLoanByID.fulfilled, (state, action) => {
-          state.loanDetails = action.payload.data[0] // Retrieve the a single loan from the response
-          state.loading = false;
+        state.loanDetails = action.payload.data[0] // Retrieve the a single loan from the response
+        state.loading = false;
       })
       .addCase(fetchLoanByID.rejected, (state, action) => {
         state.loading = false;
