@@ -9,17 +9,16 @@ const ChatHeaderSkeleton = () => {
   return (
     <div className='flex items-center gap-3 animate-pulse'>
       {/* Skeleton for the back arrow (visible on mobile) */}
-      <Skeleton className='h-6 w-6 md:hidden bg-gray-200 rounded-md' />
+      <Skeleton className='h-4 w-8 md:hidden bg-gray-200 rounded-md' />
       {/* Skeleton for the avatar */}
       <Skeleton className='w-[40px] h-[40px] bg-gray-200 rounded-full' />
-      <div className='flex md:flex-col items-center md:items-start gap-3 md:gap-0 text-sm'>
+      <div className='flex flex-col items-start text-sm'>
         {/* Skeleton for the main name/title */}
         <Skeleton className='h-5 w-24 bg-gray-200 rounded-md' />
         {/* Skeleton for the type and ID (partially hidden on desktop) */}
-        <p className='flex items-center gap-3 text-xs'>
+        <p className='flex items-center gap-3 mt-1 text-xs'>
           <Skeleton className='h-4 w-16 bg-gray-200 rounded-md' />
           <Skeleton className='h-4 w-0.5 bg-gray-200 rounded-md md:hidden' />
-          <Skeleton className='h-4 w-20 bg-gray-200 rounded-md md:hidden' />
         </p>
       </div>
     </div>

@@ -284,13 +284,13 @@ const Support = () => {
                                     <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                                         <p className='capitalize'>A</p>
                                     </div>
-                                    <div className='flex md:flex-col items-center md:items-start gap-3 md:gap-0 text-sm'>
+                                    <div className='flex flex-col items-start text-sm'>
                                         <p className='font-medium'>Admin</p>
                                         <p className='flex items-center gap-3 text-xs text-secondary font-light'>
                                             <span className='capitalize'>{selected?.subject}</span>
                                             <span className='md:hidden'>|</span>
                                             <span
-                                                className={`hidden md:inline-flex items-center justify-center px-3 py-0.5 text-xs font-normal capitalize rounded-full
+                                                className={`inline-flex items-center justify-center px-3 py-0.5 text-xs font-normal capitalize rounded-full
                                                 ${selected?.status === 'closed' ? 'bg-success' :
                                                         selected?.status === 'open' ? 'bg-warning' :
                                                             'bg-danger'}`
