@@ -17,9 +17,22 @@ export const addSupport = createAsyncThunk(
 
 export const fetchSupports = createAsyncThunk(
     'support/fetchSupports',
-    async (_, { rejectWithValue }) => {
+    async ({ page, limit }, { rejectWithValue }) => {
         try {
-            const response = await api.get(`${API_BASE_URL}/support`);
+            let url = `${API_BASE_URL}/support`;
+
+            const params = [];
+            if (page !== undefined) {
+                params.push(`page=${page}`);
+            }
+            if (limit !== undefined) {
+                params.push(`limit=${limit}`);
+            }
+
+            if (params.length > 0) {
+                url += `?${params.join('&')}`;
+            }
+            const response = await api.get(url);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -67,6 +80,7 @@ export const supportSlice = createSlice({
     name: 'support',
     initialState: {
         supports: [],
+        metaData: null,
         supportConversations: [],
         supportDetails: null,
         loading: false,
@@ -83,6 +97,7 @@ export const supportSlice = createSlice({
             })
             .addCase(fetchSupports.fulfilled, (state, action) => {
                 state.supports = action.payload.data // Retrieve the all support messages from the response
+                state.metaData = action.payload.metadata; // Retrieve the pagination data from the response
                 state.loading = false;
             })
             .addCase(fetchSupports.rejected, (state, action) => {
