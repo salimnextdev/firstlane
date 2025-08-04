@@ -83,7 +83,7 @@ const TableFilter = ({ filterOptions, filters, onFilterChange, onClearFilters })
 
           {(filters.types) && (
             <div key={filters.types} className="flex items-center h-10 bg-white rounded-md border border-gray-200 px-2 font-light cursor-pointer">
-              <span className="text-sm">Loan type: <span className='font-normal'>{filters.types}</span></span>
+              <span className="text-sm">Loan type: <span className='font-normal'>{filters.types} loan</span></span>
               <button onClick={() => removeFilter('types')} className="ml-2 text-gray-500 hover:text-gray-700">
                 <X size={14} />
               </button>
