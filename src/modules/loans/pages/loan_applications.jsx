@@ -89,7 +89,7 @@ const LoanApplications = () => {
     });
 
     const filterOptions = {
-        types: ['Personal', 'Business', 'Employee', 'Asset finance'],
+        types: ['Personal', 'Business', 'Employee', 'Asset-finance'],
         statuses: ['Approved', 'Pending', 'Failed'],
         datePeriod: ['Today', 'Last 7 days', 'Last 30 days', 'Last 90 days', 'Last 360 days'],
         // currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
