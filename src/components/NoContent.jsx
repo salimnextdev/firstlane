@@ -20,21 +20,21 @@ const mapper = {
     "kyc verification": KYC
 }
 
-const NoContent = ({ icon, title, description }) => {
+const NoContent = ({ icon, title, description, className }) => {
   const Icon = () => {
     const IconComponent = mapper[icon];
     return <IconComponent className="w-5 h-5 text-primary" />;
   };
   
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
+    <div className={`flex flex-col items-center justify-center py-12 text-center ${className}`}>
       <div className="w-12 h-12 bg-[#D8D9EA] rounded-full flex items-center justify-center mb-4">
         <Icon />
       </div>
-      <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+      <h3 className="text-base md:text-lg font-medium mb-2">
         {title}
       </h3>
-      <p className="text-sm md:text-base text-gray-500 max-w-sm">
+      <p className="text-sm md:text-base text-gray-500 max-w-sm font-light">
         {description}
       </p>
     </div>
