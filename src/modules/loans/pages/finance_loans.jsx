@@ -80,7 +80,7 @@ const FinanceLoans = () => {
                 tenure: formData.duration,
                 repaymentInterval: formData.interval,
                 vendorInvoice: documentUpload.payload?.data[0]?.url || documentUpload,
-                loanType: "finance",
+                loanType: "asset-finance",
                 userID: user._id,
             };
 
