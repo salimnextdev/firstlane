@@ -16,7 +16,7 @@ const SuccessModal = ({
     isOpen, 
     onClose, 
     title = "FX Transaction successful", 
-    description = "Your transaction has been sent to the admin to. Afterwards, you will receive your exchange.",
+    description = "Your transaction has been sent to the admin. Afterwards, you will receive your exchange.",
     buttonCLoseText = "Close",
     buttonSuccessText = "Go to FX Transactions" 
 }) => {
@@ -28,7 +28,7 @@ const SuccessModal = ({
     }
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogContent className="md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl">
+            <AlertDialogContent className="md:p-6 md:px-8 bg-white border border-gray rounded-xl">
                 <div className="md:py-6 space-y-5">
                     <div 
                         className='w-[48px] h-[48px] bg-[#E7F6EC] rounded-full flex items-center justify-center'
@@ -46,7 +46,7 @@ const SuccessModal = ({
                         <div className='w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 mt-3 font-medium'>
                             <AlertDialogCancel 
                                 onClick={onClose}
-                                className='w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm py-3 rounded-md cursor-pointer'
+                                className='w-full md:w-1/2 h-11 border border-gray text-sm py-3 rounded-md cursor-pointer'
                             >
                                 {buttonCLoseText}
                             </AlertDialogCancel>
