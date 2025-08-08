@@ -1,52 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ReactComponent as Filter } from '@/assets/icons/filter.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
 
 import BackButton from '@/components/BackButton';
 import MobileTransactionCard from '@/modules/fx_transactions/components/MobileTransactionCard';
 import TableFilter from '@/components/TableFilter';
 import Pagination from '@/components/Pagination';
+import NoContent from '@/components/NoContent';
+import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
+
+const LIMIT = 10;
 
 const AllTransactions = () => {
     const navigate = useNavigate();
-    const [transactions, setTransactions] = useState([
-        {
-            id: '00001',
-            amount: 10000.89,
-            type: 'Employee',
-            purpose: 'Equipment purchase',
-            status: "approved"
-        },
-        {
-            id: '00002',
-            amount: 10000.89,
-            type: 'Business',
-            purpose: 'Marketing',
-            status: "pending"
-        },
-        {
-            id: '00003',
-            amount: 10000.89,
-            type: 'Asset finance',
-            purpose: 'Marketing',
-            status: "approved"
-        },
-        {
-            id: '00001',
-            amount: 10000.89,
-            type: 'Employee',
-            purpose: 'Asset acquisition',
-            status: "pending"
-        },
-        {
-            id: '00002',
-            amount: 10000.89,
-            type: 'Business',
-            purpose: 'Marketing',
-            status: "approved"
-        },
-    ]);
+    const dispatch = useDispatch();
+    const { searchTerm } = useSelector((state) => state.search);
+    const {
+        fx_transactions: fx_transactions,
+        metaData: metaData,
+        loading: loading, error: error,
+    } = useSelector((state) => state.fx);
+
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchFXTransactions({ page: 1, limit: LIMIT }));
+        }
+    }, [dispatch]);
+
+    const transactions = !searchTerm ? fx_transactions : fx_transactions.filter((transaction) => (
+        // transaction.amount == searchTerm ||
+        transaction.status?.toLowerCase()?.includes(searchTerm.toLowerCase())
+    ));
 
     const [filters, setFilters] = useState({
         statuses: [],
@@ -76,6 +62,10 @@ const AllTransactions = () => {
         setCurrentPage(pageNumber);
     };
 
+    useEffect(() => {
+        setTotalPages(metaData?.totalPage);
+    }, [fx_transactions]);
+
     return (
         <div className="space-y-3">
             <BackButton />
@@ -93,18 +83,26 @@ const AllTransactions = () => {
                     />
                 </div>
 
-                <div className='space-y-2' id='mobile_transaction_card'>
-                    {transactions.map((transaction, index) => (
-                        <div key={index}>
-                            <MobileTransactionCard transaction={transaction} />
-                        </div>
+                {(loading || transactions.length) > 0 ? (
+                    <div className='space-y-2' id='mobile_transaction_card'>
+                        {loading ? (
+                            Array.from({ length: 6 }).map((_, index) => (
+                                <TransactionSkeletonCard key={index} />
+                            ))
+                        ) : transactions.map((transaction, index) => (
+                            <div key={transaction?._id}>
+                                <MobileTransactionCard transaction={transaction} />
+                            </div>
 
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <NoContent icon="fx transactions" title="No FX Transactions" description="There are no foreign exchange transactions to display at the moment." />
+                )}
 
                 {/* Pagination */}
                 <Pagination
-                    className={'flex'}
+                    className={`flex ${(transactions.length == 0 || loading) && 'hidden'}`}
                     totalPages={totalPages}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
