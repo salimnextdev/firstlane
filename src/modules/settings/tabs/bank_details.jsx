@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBankAccount, updateBankAccount, fetchBankAccounts, removeBankAccount } from '@/modules/auth/state/authSlice';
 import { verifyAccount } from '@/modules/wallets/state/walletSlice';
+import { fetchCurrency } from '@/modules/fx_transactions/state/currencySlice';
 
 import SelectInput from '@/components/FormInputs/SelectInput';
 import TextInput from '@/components/FormInputs/TextInput';
@@ -25,18 +26,22 @@ const INITIAL_DATA = {
     swift_code: "",
 };
 
+const LIMIT = 10;
+
 const BankDetails = () => {
     const dispatch = useDispatch();
     const { bankAccounts: bankAccounts, loading: auth_loading, error: auth_error } = useSelector((state) => state.auth);
+    const { currencies: currencies } = useSelector((state) => state.currency);
     useEffect(() => {
         if (!auth_loading) {
             dispatch(fetchBankAccounts());
+            dispatch(fetchCurrency({ page: 1, limit: LIMIT }))
         }
     }, [dispatch])
 
     const { bankOptions, loading, error } = useBankOptions();
     const [option, setOption] = useState('NGN');
-    const currencies = ['NGN', 'USD', 'GBP', 'EUR', 'CHF', 'CAD', 'KWD']
+    // const currencies = ['NGN', 'USD', 'GBP', 'EUR', 'CHF', 'CAD', 'KWD']
 
     const [accountLoading, setAccountLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -51,14 +56,14 @@ const BankDetails = () => {
             setFormData((prev) => ({
                 ...prev,
                 prev_account_number: activeAccount?.accountNumber || "",
-                account_number: activeAccount?.accountNumber,
-                account_name: activeAccount?.accountName,
-                bank_name: activeAccount?.bankName,
-                bank_code: activeAccount?.bankCode,
-                wire_routing: activeAccount?.wireRouting,
-                ach_routing: activeAccount?.ACHrouting,
-                account_type: activeAccount?.accountType,
-                swift_code: activeAccount?.swiftCode,
+                account_number: activeAccount?.accountNumber || "",
+                account_name: activeAccount?.accountName || "",
+                bank_name: activeAccount?.bankName || "",
+                bank_code: activeAccount?.bankCode || "",
+                wire_routing: activeAccount?.wireRouting || "",
+                ach_routing: activeAccount?.ACHrouting || "",
+                account_type: activeAccount?.accountType || "",
+                swift_code: activeAccount?.swiftCode || "",
             }));
         }
     }, [bankAccounts, option]);
@@ -206,14 +211,16 @@ const BankDetails = () => {
     return (
         <div className="space-y-4">
             <div className='w-full flex items-center gap-2 md:gap-3 overflow-x-auto hide-scrollbar'>
-                {currencies.map(item => (
+                {[...currencies]
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                .map(item => (
                     <button
-                        key={item}
-                        onClick={() => setOption(item)}
+                        key={item?._id}
+                        onClick={() => setOption(item?.code)}
                         // Ensure flex-shrink-0 is added to buttons to prevent them from shrinking and wrapping
-                        className={`flex-shrink-0 w-16 h-9 ${option === item ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
+                        className={`flex-shrink-0 w-16 h-9 ${option === item?.code ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
                     >
-                        {item}
+                        {item?.code}
                     </button>
                 ))}
             </div>
