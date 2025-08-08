@@ -2,30 +2,40 @@ import React from "react";
 
 const MobileTransactionCard = ({ transaction }) => {
     return (
-        <div key={transaction.name} className='p-3 flex items-end justify-between border border-gray rounded-xl'>
-            <div className="space-y-1">
-                <p
-                    className={`inline-block mb-2 px-3 py-1 text-xs font-normal capitalize rounded-full
-                            ${transaction.status === 'approved' ? 'bg-success' :
-                                transaction.status === 'pending' ? 'bg-warning' :
-                                    'bg-danger'
-                        }`}
-                >
-                    {transaction.status}
-                </p>
-                <p className="text-sm md:text-base font-medium text-gray-800">{transaction.purpose}</p>
-                <p className="text-xs md:text-sm text-gray-500">{'19/12 at 6:03pm'}</p>
-            </div>
-            <div className='flex flex-col items-end gap-1'>
-                <p className={`text-xs font-medium ${transaction.status === 'approved' ? 'text-success' :
-                    transaction.status === 'pending' ? 'text-warning' :
-                        'text-danger'
-                    }`}>₦{transaction.amount.toLocaleString(undefined, {
+        <div key={transaction.name} className='space-y-2 p-3 border border-gray rounded-xl'>
+            <p
+                className={`inline-block mb-2 px-3 py-1 text-xs font-normal capitalize rounded-full
+                    ${transaction.status === 'approved' ? 'bg-success' :
+                        transaction.status === 'pending' ? 'bg-warning' :
+                            'bg-danger'
+                    }`}
+            >
+                {transaction.status}
+            </p>
+            <div className="flex items-center justify-between">
+                <div className="">
+                    <p className="text-xs text-tertiary">Buy amount</p>
+                    <p className='text-sm font-medium'>
+                        ₦{transaction?.toCurrency?.value?.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })}</p>
-                <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
-                    {transaction.type + ' transaction'}
+                </div>
+                <div className="text-right">
+                    <p className="text-xs text-tertiary">Sell amount</p>
+                    <p className='text-sm font-medium'>
+                        ₦{transaction?.fromCurrency?.value?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}</p>
+                </div>
+            </div>
+
+            <div className='flex items-center justify-between'>
+                <p className="text-xs md:text-sm text-tertiary">{'19/12 at 6:03pm'}</p>
+                <p className="text-xs md:text-sm text-tertiary">
+                    {transaction?.fxRate?.targetCurrency?.value}/
+                    {transaction?.fxRate?.baseCurrency?.value}
                 </p>
             </div>
         </div>
