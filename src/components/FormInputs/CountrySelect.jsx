@@ -7,10 +7,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Loader } from "lucide-react";
-
-import { currencyOptions } from "@/utils/currencies";
-
 const CurrencySelect = ({ currencies, loading, value = "USD", onChange }) => {
   const handleChange = (code) => {
     const selected = currencies.find((c) => c.code === code);
