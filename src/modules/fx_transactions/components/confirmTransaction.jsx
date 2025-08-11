@@ -36,40 +36,42 @@ const ConfirmModal = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [buy, setBuy] = useState(8);
-    const [sell, setSell] = useState(100000);
+    const [buy, setBuy] = useState('');
+    const [sell, setSell] = useState('');
 
     useEffect(() => {
-        const rateValue = parseFloat(rate?.baseCurrency?.value) || 0;
-    
-        if (type === 'Buy' && sell && rateValue) {
-            setBuy((parseFloat(sell) / rateValue).toFixed(2));
-        } else if (type === 'Sell' && buy && rateValue) {
-            setSell((parseFloat(buy) * rateValue).toFixed(2));
+        const rateBuyValue = parseFloat(rate?.baseCurrency?.value) || 0;
+        const rateSellValue = parseFloat(rate?.targetCurrency?.value) || 0;
+        // setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
+        // setBuy((parseFloat(rate?.baseCurrency?.value) * rateSellValue).toFixed(2));
+
+        if (type === 'Buy') {
+            setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
+            setBuy((parseFloat(rate?.baseCurrency?.value) / rateBuyValue).toFixed(2));
+        } else if (type === 'Sell') {
+            setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
+            setBuy((parseFloat(rate?.baseCurrency?.value) * rateSellValue).toFixed(2));
         }
-    }, [rate, type]);
-    
+    }, [isOpen, rate, type]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
         // Handle number conversion, prevent NaN
         const numericValue = parseFloat(value) || 0;
-        const rateValue = parseFloat(rate?.baseCurrency?.value) || 0;
-    
-        if (name === 'sell') {
+
+        const rateBuyValue = parseFloat(rate?.baseCurrency?.value) || 0;
+        const rateSellValue = parseFloat(rate?.targetCurrency?.value) || 0;
+        // const rateValue = parseFloat(rate?.targetCurrency?.value) || 0;
+
+        if (type === 'Sell' && name === 'sell') {
             setSell(value);
-            if (type === 'Buy' && rateValue) {
-                setBuy((numericValue / rateValue).toFixed(2));
-            }
+            setBuy((value * rateSellValue).toFixed(2));
+        } else if (type === 'Buy' && name === 'sell') {
+            setSell(value);
+            setBuy((value / rateBuyValue).toFixed(2));
         }
-    
-        if (name === 'buy') {
-            setBuy(value);
-            if (type === 'Sell' && rateValue) {
-                setSell((numericValue * rateValue).toFixed(2));
-            }
-        }
-    };    
+    };
 
     const validateForm = () => {
         const errors = {};
@@ -99,17 +101,8 @@ const ConfirmModal = ({
                 "currencyID": rate?.targetCurrency?.currencyID?._id,
                 "value": buy
             },
-            "fxRate": {
-                "baseCurrency": {
-                    "currencyID": rate?.baseCurrency?.currencyID?._id,
-                    "value": rate?.baseCurrency?.value
-                },
-                "targetCurrency": {
-                    "currencyID": rate?.targetCurrency?.currencyID?._id,
-                    "value": rate?.targetCurrency?.value
-                },
-                "rate": rate?.rate,
-            }
+            "fxRateID": rate?._id,
+            "type": type?.toLowerCase()
         };
 
         try {
@@ -157,7 +150,8 @@ const ConfirmModal = ({
 
                     <div className='space-y-3'>
                         <TransactionInput
-                            label={type === 'Buy' ? 'You are selling' : 'You are buying'}
+                            // label={type === 'Buy' ? 'You are selling' : 'You are buying'}
+                            label={'You are selling'}
                             name='sell'
                             symbol={rate?.baseCurrency?.currencyID?.symbol || '₦'}
                             currency={rate?.baseCurrency?.currencyID?.code || 'NGN'}
@@ -166,7 +160,8 @@ const ConfirmModal = ({
                             disabled={type === 'Sell' && true}
                         />
                         <TransactionInput
-                            label={type === 'Buy' ? 'To buy' : 'By selling'}
+                            // label={type === 'Buy' ? 'To buy' : 'By selling'}
+                            label={'To Recieve'}
                             name='buy'
                             symbol={rate?.targetCurrency?.currencyID?.symbol || '$'}
                             currency={rate?.targetCurrency?.currencyID?.code || 'USD'}
