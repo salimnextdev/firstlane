@@ -37,8 +37,8 @@ const MobileTransactionCard = ({ transaction }) => {
             <div className='flex items-center justify-between'>
                 <p className="text-xs md:text-sm text-tertiary">{formatDateShort(transaction?.createdAt)}</p>
                 <p className="text-xs md:text-sm text-tertiary">
-                    {transaction?.fromCurrency.currencyID?.symbol}{transaction?.fxRate?.baseCurrency?.value}/
-                    {transaction?.toCurrency.currencyID?.symbol}{transaction?.fxRate?.targetCurrency?.value}
+                    {transaction?.fromCurrency.currencyID?.symbol}{transaction?.fxRateID?.baseCurrency?.value}/
+                    {transaction?.toCurrency.currencyID?.symbol}{transaction?.fxRateID?.targetCurrency?.value}
                 </p>
             </div>
         </div>
