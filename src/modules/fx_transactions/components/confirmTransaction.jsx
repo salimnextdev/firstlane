@@ -24,6 +24,7 @@ import { Loader } from 'lucide-react';
 const ConfirmModal = ({
     isOpen,
     onClose,
+    fx,
     data,
     rate,
     type,
@@ -36,47 +37,11 @@ const ConfirmModal = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [buy, setBuy] = useState('');
-    const [sell, setSell] = useState('');
-
-    useEffect(() => {
-        const rateBuyValue = parseFloat(rate?.baseCurrency?.value) || 0;
-        const rateSellValue = parseFloat(rate?.targetCurrency?.value) || 0;
-        // setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
-        // setBuy((parseFloat(rate?.baseCurrency?.value) * rateSellValue).toFixed(2));
-
-        if (type === 'Buy') {
-            setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
-            setBuy((parseFloat(rate?.baseCurrency?.value) / rateBuyValue).toFixed(2));
-        } else if (type === 'Sell') {
-            setSell(parseFloat(rate?.baseCurrency?.value.toFixed(2)));
-            setBuy((parseFloat(rate?.baseCurrency?.value) * rateSellValue).toFixed(2));
-        }
-    }, [isOpen, rate, type]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        // Handle number conversion, prevent NaN
-        const numericValue = parseFloat(value) || 0;
-
-        const rateBuyValue = parseFloat(rate?.baseCurrency?.value) || 0;
-        const rateSellValue = parseFloat(rate?.targetCurrency?.value) || 0;
-        // const rateValue = parseFloat(rate?.targetCurrency?.value) || 0;
-
-        if (type === 'Sell' && name === 'sell') {
-            setSell(value);
-            setBuy((value * rateSellValue).toFixed(2));
-        } else if (type === 'Buy' && name === 'sell') {
-            setSell(value);
-            setBuy((value / rateBuyValue).toFixed(2));
-        }
-    };
 
     const validateForm = () => {
         const errors = {};
-        if (!buy) errors.buy = "Amount is required";
-        if (!sell) errors.sell = "Amount is required";
+        if (!fx.buy) errors.buy = "Amount is required";
+        if (!fx.sell) errors.sell = "Amount is required";
         return errors;
     };
 
@@ -95,11 +60,11 @@ const ConfirmModal = ({
             "userID": user?._id,
             "fromCurrency": {
                 "currencyID": rate?.baseCurrency?.currencyID?._id,
-                "value": sell
+                "value": fx.sell
             },
             "toCurrency": {
                 "currencyID": rate?.targetCurrency?.currencyID?._id,
-                "value": buy
+                "value": fx.buy
             },
             "fxRateID": rate?._id,
             "type": type?.toLowerCase()
@@ -155,9 +120,8 @@ const ConfirmModal = ({
                             name='sell'
                             symbol={rate?.baseCurrency?.currencyID?.symbol || '₦'}
                             currency={rate?.baseCurrency?.currencyID?.code || 'NGN'}
-                            value={sell}
-                            onChange={handleChange}
-                            disabled={type === 'Sell' && true}
+                            value={fx.sell}
+                            disabled
                         />
                         <TransactionInput
                             // label={type === 'Buy' ? 'To buy' : 'By selling'}
@@ -165,13 +129,12 @@ const ConfirmModal = ({
                             name='buy'
                             symbol={rate?.targetCurrency?.currencyID?.symbol || '$'}
                             currency={rate?.targetCurrency?.currencyID?.code || 'USD'}
-                            value={buy}
-                            onChange={handleChange}
-                            disabled={type === 'Buy' && true}
+                            value={fx.buy}
+                            disabled
                         />
                     </div>
 
-                    {type === 'Buy' && <div className='space-y-4 text-sm text-secondary'>
+                    {type === 'Sell' && <div className='space-y-4 text-sm text-secondary'>
                         <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
                             <div className='w-full md:w-1/2 flex items-center justify-between'>
                                 <div className='space-y-1 text-xs'>
@@ -227,7 +190,7 @@ const ConfirmModal = ({
                         </div>
                     </div>}
 
-                    {type === 'Sell' && <div className='space-y-4 text-sm text-secondary'>
+                    {type === 'Buy' && <div className='space-y-4 text-sm text-secondary'>
                         <div className='flex items-center justify-between'>
                             <div className='space-y-1 text-xs'>
                                 <p>Account number</p>
