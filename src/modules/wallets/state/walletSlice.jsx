@@ -72,6 +72,8 @@ export const walletSlice = createSlice({
     transactions: [],
     loading: false,
     error: null,
+    verify_loading: false,
+    verify_error: null,
     transaction_loading: false,
     transaction_error: null
   },
@@ -92,16 +94,16 @@ export const walletSlice = createSlice({
       })
 
       .addCase(verifyAccount.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.verify_loading = true;
+        state.verify_error = null;
       })
       .addCase(verifyAccount.fulfilled, (state, action) => {
           state.accountDetails = action.payload.data // Retrieve the user bank info from the response
-          state.loading = false;
+          state.verify_loading = false;
       })
       .addCase(verifyAccount.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.verify_loading = false;
+        state.verify_error = action.payload;
       })
 
       .addCase(fetchBalance.pending, (state) => {
