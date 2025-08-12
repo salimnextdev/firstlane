@@ -31,7 +31,7 @@ const FundAccountModal = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="z-50 md:p-6 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <DialogHeader>
                         <DialogTitle className="text-xl md:text-2xl text-left">Fund Account</DialogTitle>
