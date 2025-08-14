@@ -400,7 +400,7 @@ const FXTransactions = () => {
                                             <TableCell>
                                                 <span
                                                     className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${transaction?.status === 'successful' ? 'bg-success' :
+                                                ${transaction?.status === 'completed' ? 'bg-success' :
                                                             transaction?.status === 'pending' ? 'bg-warning' :
                                                                 'bg-danger'
                                                         }`}

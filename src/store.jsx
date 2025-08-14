@@ -9,6 +9,7 @@ import walletSlice from '@/modules/wallets/state/walletSlice';
 import supportSlice from '@/modules/support/states/supportSlice';
 
 import currencySlice from '@/modules/fx_transactions/state/currencySlice';
+import adminAccountSlice from '@/modules/fx_transactions/state/adminAccountSlice';
 
 import searchSlice from '@/modules/auth/state/searchSlice';
 
@@ -23,6 +24,7 @@ const store = configureStore({
     wallet: walletSlice,
     support: supportSlice,
     currency: currencySlice,
+    admin_accounts: adminAccountSlice,
 
     search: searchSlice,
   },
