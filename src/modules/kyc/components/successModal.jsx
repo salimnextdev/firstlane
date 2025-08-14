@@ -18,6 +18,12 @@ const SuccessModal = ({
     description = "Your KYC verification has been submitted and it is currently under review. Sit tight and we would get back to you soonest.",
     buttonCLoseText = "Ok, Close",
 }) => {
+    const navigate = useNavigate();
+    const GotoDashboard = () => {
+        navigate('/dashboard');
+        onClose();
+    };
+
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent className="md:p-6 md:px-8 bg-white border border-[#E4E7EC] rounded-xl">
@@ -35,7 +41,7 @@ const SuccessModal = ({
                             {description}
                         </AlertDialogDescription>
                         <AlertDialogCancel
-                            onClick={onClose}
+                            onClick={GotoDashboard}
                             className='w-full h-11 border border-[#E4E7EC] text-sm my-3 px-8 py-3 rounded-md cursor-pointer'
                         >
                             {buttonCLoseText}
