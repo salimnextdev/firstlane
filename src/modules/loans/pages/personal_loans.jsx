@@ -11,11 +11,13 @@ import { loanCollaterals, loanDurations, loanIntervals, loanReasons } from '@/ut
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import LoanSuccessModal from '../components/loanSuccessCard';
 
 const PersonalLoans = () => {
     const dispatch = useDispatch();
     const user  = JSON.parse(getCookie('user'));
 
+    const [isOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         amount: "",
@@ -72,6 +74,7 @@ const PersonalLoans = () => {
             const resultAction = await dispatch(addLoan(loanData));
             if (addLoan.fulfilled.match(resultAction)) {
                 toast.success("Loan application submitted successfully");
+                setIsModalOpen(true);
             } else {
                 toast.error(resultAction.payload.message);
                 return;
@@ -87,6 +90,10 @@ const PersonalLoans = () => {
 
     return (
         <form onSubmit={submitLoan} method='post' className="space-y-5">
+            <LoanSuccessModal 
+                isOpen={isOpen}
+                onClose={setIsModalOpen}
+            />
             <BackButton />
 
             <div className="w-full flex items-center justify-between gap-4">

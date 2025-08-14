@@ -17,6 +17,7 @@ const BusinessLoans = () => {
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
 
+    const [isOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         amount: "",
@@ -73,6 +74,7 @@ const BusinessLoans = () => {
             const resultAction = await dispatch(addLoan(loanData));
             if (addLoan.fulfilled.match(resultAction)) {
                 toast.success("Loan application submitted successfully");
+                setIsModalOpen(true);
             } else {
                 toast.error(resultAction.payload.message);
                 return;
@@ -88,6 +90,10 @@ const BusinessLoans = () => {
 
     return (
         <form onSubmit={submitLoan} method='post' className="space-y-5">
+            <LoanSuccessModal
+                isOpen={isOpen}
+                onClose={setIsModalOpen}
+            />
             <BackButton />
 
             <div className="w-full flex items-center justify-between gap-4">
@@ -169,7 +175,7 @@ const BusinessLoans = () => {
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>
-                <input onChange={()=> setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
+                <input onChange={() => setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
 

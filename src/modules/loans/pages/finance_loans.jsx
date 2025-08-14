@@ -18,6 +18,7 @@ const FinanceLoans = () => {
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
 
+    const [isOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         amount: "",
@@ -87,6 +88,7 @@ const FinanceLoans = () => {
             const resultAction = await dispatch(addLoan(loanData));
             if (addLoan.fulfilled.match(resultAction)) {
                 toast.success("Loan application submitted successfully");
+                setIsModalOpen(true);
             } else {
                 toast.error(resultAction.payload.message);
                 return;
@@ -102,6 +104,10 @@ const FinanceLoans = () => {
 
     return (
         <form onSubmit={submitLoan} method='post' className="space-y-5">
+            <LoanSuccessModal
+                isOpen={isOpen}
+                onClose={setIsModalOpen}
+            />
             <BackButton />
 
             <div className="w-full flex items-center justify-between gap-4">
