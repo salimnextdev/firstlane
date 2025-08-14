@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as Copy } from '@/assets/icons/copy.svg';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addFXTransaction } from '@/modules/fx_transactions/state/fxSlice';
+import { fetchAdminAccounts } from '@/modules/fx_transactions/state/adminAccountSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import {
@@ -14,12 +15,16 @@ import {
     DialogClose
 } from "@/components/ui/dialog";
 
+import { BiError } from 'react-icons/bi';
+
 import TransactionInput from '@/components/FormInputs/TransactionInput';
 import AccountFormModal from '@/modules/fx_transactions/components/accountFormModal';
 import { copyToClipboard } from '@/utils/copyToClipboard';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+
+const LIMIT = 25;
 
 const ConfirmModal = ({
     isOpen,
@@ -34,6 +39,21 @@ const ConfirmModal = ({
 }) => {
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
+    const { accounts: accounts, loading: loading, error: error } = useSelector((state) => state.admin_accounts);
+
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchAdminAccounts({ page: 1, limit: LIMIT }))
+        }
+    }, [dispatch]);
+
+    const [activeAccount, setActiveAccount] = useState(null);
+    useEffect(() => {
+        const account = accounts.find(
+            account => account?.currencyID?.code == rate?.baseCurrency?.currencyID?.code
+        );
+        setActiveAccount(account);
+    }, [accounts, fx]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -98,8 +118,8 @@ const ConfirmModal = ({
                 rate={rate}
             />
             <DialogContent
-                className="z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl 
-            md:!max-w-[680px] h-[90vh] md:h-auto mx-auto overflow-y-auto">
+                className={`z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl 
+            md:!max-w-[680px] ${activeAccount && 'h-[90vh]'} md:h-auto mx-auto overflow-y-auto`}>
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] bg-[#D8D9EA] hidden md:flex items-center justify-center rounded-full">
                         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,92 +154,105 @@ const ConfirmModal = ({
                         />
                     </div>
 
-                    {type === 'Sell' && <div className='space-y-4 text-sm text-secondary'>
-                        <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
-                                <div className='space-y-1 text-xs'>
-                                    <p>Account number</p>
-                                    <p className='text-base font-medium'>{data.acc_number}</p>
+                    {!activeAccount ?
+                        <div className='flex flex-col md:flex-row md:items-center gap-1 md:gap-2 p-2 px-5 text-sm bg-danger rounded-md'>
+                            <span className='w-8 h-8 flex-shrink-0 flex items-center justify-center border border-[var(--firstlane-danger)] rounded-full'>
+                                <BiError className='w-5 h-5' />
+                            </span>
+                            <span className='leading-tight'>
+                                No admin account is currently available for this FX swap transaction.
+                                Please select a different currency pair or try again later.
+                            </span>
+                        </div> :
+                        <>
+                            {type === 'Sell' && <div className='space-y-4 text-sm text-secondary'>
+                                <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>Account number</p>
+                                            <p className='text-base font-medium'>{activeAccount?.accountNumber || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount.accountNumber || 'N/A')} className="cursor-pointer" />
+                                    </div>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>Account holder's name</p>
+                                            <p className='text-base font-medium'>{activeAccount?.accountName || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.accountName || 'N/A')} className="cursor-pointer" />
+                                    </div>
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.acc_number)} className="cursor-pointer" />
-                            </div>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
-                                <div className='space-y-1 text-xs'>
-                                    <p>Account holder's name</p>
-                                    <p className='text-base font-medium'>{data.acc_name}</p>
+                                <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>Wire routing</p>
+                                            <p className='text-base font-medium'>{activeAccount?.wireRouting || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.wireRouting || 'N/A')} className="cursor-pointer" />
+                                    </div>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>ACH routing</p>
+                                            <p className='text-base font-medium'>{activeAccount?.ACHRouting || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.ACHRouting || 'N/A')} className="cursor-pointer" />
+                                    </div>
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.acc_name)} className="cursor-pointer" />
-                            </div>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
-                                <div className='space-y-1 text-xs'>
-                                    <p>Wire routing</p>
-                                    <p className='text-base font-medium'>{data.wire}</p>
+                                <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>Account type</p>
+                                            <p className='text-base font-medium'>{activeAccount?.accountType || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.accountType || 'N/A')} className="cursor-pointer" />
+                                    </div>
+                                    <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p>Account name</p>
+                                            <p className='text-base font-medium'>{activeAccount?.bankName || 'N/A'}</p>
+                                        </div>
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.bankName || 'N/A')} className="cursor-pointer" />
+                                    </div>
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.wire)} className="cursor-pointer" />
-                            </div>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
-                                <div className='space-y-1 text-xs'>
-                                    <p>ACH routing</p>
-                                    <p className='text-base font-medium'>{data.ach}</p>
+
+                                <div className='flex items-center gap-2 font-normal'>
+                                    <p>Copy all</p>
+                                    <Copy onClick={() => copyToClipboard(activeAccount)} className="cursor-pointer" />
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.ach)} className="cursor-pointer" />
-                            </div>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
-                                <div className='space-y-1 text-xs'>
-                                    <p>Account type</p>
-                                    <p className='text-base font-medium'>{data.type}</p>
+                            </div>}
+
+                            {type === 'Buy' && <div className='space-y-4 text-sm text-secondary'>
+                                <div className='flex items-center justify-between'>
+                                    <div className='space-y-1 text-xs'>
+                                        <p>Account number</p>
+                                        <p className='text-base font-medium'>{activeAccount?.accountNumber || 'N/A'}</p>
+                                    </div>
+                                    <Copy onClick={() => copyToClipboard(activeAccount?.accountNumber || 'N/A')} className="cursor-pointer" />
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.type)} className="cursor-pointer" />
-                            </div>
-                            <div className='w-full md:w-1/2 flex items-center justify-between'>
+                                <div className='flex items-center justify-between'>
+                                    <div className='space-y-1 text-xs'>
+                                        <p>Bank name</p>
+                                        <p className='text-base font-medium'>{activeAccount?.bankName || 'N/A'}</p>
+                                    </div>
+                                    <Copy onClick={() => copyToClipboard(activeAccount?.bankName || 'N/A')} className="cursor-pointer" />
+                                </div>
                                 <div className='space-y-1 text-xs'>
                                     <p>Account name</p>
-                                    <p className='text-base font-medium'>{data.bank_name}</p>
+                                    <p className='text-base font-medium'>{activeAccount?.accountName || 'N/A'}</p>
                                 </div>
-                                <Copy onClick={() => copyToClipboard(data.bank_name)} className="cursor-pointer" />
-                            </div>
-                        </div>
+                                <div className='flex items-center gap-2 font-normal'>
+                                    <p>Copy all</p>
+                                    <Copy onClick={() => copyToClipboard(activeAccount)} className="cursor-pointer" />
+                                </div>
+                            </div>}
 
-                        <div className='flex items-center gap-2 font-normal'>
-                            <p>Copy all</p>
-                            <Copy onClick={() => copyToClipboard(data)} className="cursor-pointer" />
-                        </div>
-                    </div>}
-
-                    {type === 'Buy' && <div className='space-y-4 text-sm text-secondary'>
-                        <div className='flex items-center justify-between'>
-                            <div className='space-y-1 text-xs'>
-                                <p>Account number</p>
-                                <p className='text-base font-medium'>{data.acc_number}</p>
-                            </div>
-                            <Copy onClick={() => copyToClipboard(data.acc_number)} className="cursor-pointer" />
-                        </div>
-                        <div className='flex items-center justify-between'>
-                            <div className='space-y-1 text-xs'>
-                                <p>Bank name</p>
-                                <p className='text-base font-medium'>{data.bank_name}</p>
-                            </div>
-                            <Copy onClick={() => copyToClipboard(data.bank_name)} className="cursor-pointer" />
-                        </div>
-                        <div className='space-y-1 text-xs'>
-                            <p>Account name</p>
-                            <p className='text-base font-medium'>{data.acc_name}</p>
-                        </div>
-                        <div className='flex items-center gap-2 font-normal'>
-                            <p>Copy all</p>
-                            <Copy onClick={() => copyToClipboard(data)} className="cursor-pointer" />
-                        </div>
-                    </div>}
-
-                    <p className='text-sm md:text-base text-secondary font-light'>
-                        Please click on the
-                        <span className='mx-1 font-medium'>“I have paid”</span>
-                        button to confirm that you have made the payment.
-                    </p>
+                            <p className='text-sm md:text-base text-secondary font-light'>
+                                Please click on the
+                                <span className='mx-1 font-medium'>“I have paid”</span>
+                                button to confirm that you have made the payment.
+                            </p>
+                        </>
+                    }
 
                     <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
@@ -230,7 +263,10 @@ const ConfirmModal = ({
                         </DialogClose>
                         <button
                             onClick={createFX}
-                            className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            className={`
+                                w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl
+                                ${!activeAccount && 'opacity-60'}`}
+                            disabled={!activeAccount || submitted}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
