@@ -1,24 +1,25 @@
+import { formatDateTime } from "@/utils/datetimeFormats";
 import React from "react";
 
-const WalletCard = ({ wallet }) => {
+const WalletCard = ({ transaction }) => {
     return (
-        <div key={wallet.name} className='p-3 flex items-end justify-between border border-gray rounded-xl'>
+        <div key={transaction?.reference} className='p-3 flex items-end justify-between border border-gray rounded-xl'>
             <div className="space-y-1">
                 <p className="text-sm md:text-base font-normal text-gray-800">
-                    ₦{wallet.amount.toLocaleString(undefined, {
+                    ₦{transaction?.amount?.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })}
                 </p>
-                <p className="text-xs md:text-sm text-gray-500">{'19/12 at 6:03pm'}</p>
+                <p className="text-xs md:text-sm text-gray-500">{formatDateTime(transaction?.date)}</p>
             </div>
             <div className='flex flex-col items-end gap-1'>
-                <p className={`text-xs font-medium capitalize ${wallet.status === 'successful' ? 'text-success' :
-                    wallet.status === 'pending' ? 'text-warning' :
+                <p className={`text-xs font-medium capitalize ${transaction?.status === 'successful' ? 'text-success' :
+                    transaction?.status === 'pending' ? 'text-warning' :
                         'text-danger'
-                    }`}>{wallet.status}</p>
+                    }`}>{transaction?.status}</p>
                 <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
-                    {wallet.type + ' wallet'}
+                    {transaction?.type == "D" ? "Money sent" : "Money received"}
                 </p>
             </div>
         </div>
