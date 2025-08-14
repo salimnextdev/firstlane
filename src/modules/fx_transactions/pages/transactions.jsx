@@ -225,6 +225,7 @@ const FXTransactions = () => {
                                             maximumFractionDigits: 2
                                         }) || "0.00"}
                                         onChange={(e) => updateSell(e)}
+                                        disabled={buy == 0.00 || sell == 0.00}
                                     />
                                 </div>
                                 <CountrySelect
