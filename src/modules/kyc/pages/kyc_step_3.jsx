@@ -171,8 +171,8 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                         </button>
 
                         <button
-                            // onClick={nextStep}
                             className="w-8/12 md:w-36 h-11 md:h-9 flex items-center justify-center px-3 rounded-md bg-primary text-white text-sm cursor-pointer"
+                            disabled={submitted}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
