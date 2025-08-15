@@ -62,6 +62,18 @@ export const fetchKycStatus = createAsyncThunk(
   }
 );
 
+export const fetchStates = createAsyncThunk(
+  'kyc/fetchStates',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/states`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchLGA = createAsyncThunk(
   'kyc/fetchLGA',
   async (stateName, { rejectWithValue }) => {
