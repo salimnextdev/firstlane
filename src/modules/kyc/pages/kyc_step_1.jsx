@@ -11,6 +11,7 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
 import SearchInput from '@/components/FormInputs/searchInput';
+import StatesInput from '@/components/FormInputs/StatesInput';
 import LGAInput from '@/components/FormInputs/LGAInputs';
 import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
 
@@ -81,6 +82,9 @@ const KYCStep1 = ({ nextStep }) => {
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
+        if (name == 'nationality' && value !== 'Nigeria') {
+            toast.warning("Please select Nigeria — support for other countries is coming soon.");
+        };
         setFormData((prev) => ({
             ...prev,
             [name]: type === 'file' ? { file: files[0] } : value,
@@ -298,7 +302,7 @@ const KYCStep1 = ({ nextStep }) => {
                     />
 
                     <div className='w-full flex items-center gap-3'>
-                        <SearchInput
+                        {/* <SearchInput
                             label="State"
                             name="state"
                             className='text-sm'
@@ -306,12 +310,19 @@ const KYCStep1 = ({ nextStep }) => {
                             onChange={handleChange}
                             data={stateList || []}
                             placeholder="Select State"
+                        /> */}
+
+                        <StatesInput
+                            value={formData.state}
+                            onChange={handleChange}
+                            isDisabled={formData.nationality !== 'Nigeria'}
                         />
 
                         <LGAInput
                             stateValue={formData.state}
                             value={formData.lga}
                             onChange={handleChange}
+                            isDisabled={formData.nationality !== 'Nigeria'}
                         />
                     </div>
                 </div>
