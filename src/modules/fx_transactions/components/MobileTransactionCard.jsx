@@ -6,7 +6,7 @@ const MobileTransactionCard = ({ transaction }) => {
         <div key={transaction?._id} className='space-y-2 p-3 border border-gray rounded-xl'>
             <p
                 className={`inline-block mb-2 px-3 py-1 text-xs font-normal capitalize rounded-full
-                    ${transaction.status === 'approved' ? 'bg-success' :
+                    ${transaction.status === 'completed' ? 'bg-success' :
                         transaction.status === 'pending' ? 'bg-warning' :
                             'bg-danger'
                     }`}
