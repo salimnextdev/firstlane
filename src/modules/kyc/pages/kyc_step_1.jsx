@@ -11,6 +11,7 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
 import SearchInput from '@/components/FormInputs/searchInput';
+import LGAInput from '@/components/FormInputs/LGAInputs';
 import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
@@ -66,14 +67,14 @@ const KYCStep1 = ({ nextStep }) => {
     useEffect(() => {
         GetCountries().then((result) => {
             // format coutries list to match my SearchInput data format
-            setCountriesList(result.map(item => ({...item, label: item.name, value: item.name})));
+            setCountriesList(result.map(item => ({ ...item, label: item.name, value: item.name })));
         });
     }, [dispatch]);
     useEffect(() => {
         const countryID = formData.nationality && countriesList.find(item => item.name === formData.nationality);
         if (countryID) {
             GetState(parseInt(countryID.id)).then((result) => {
-                setStateList(result.map(item => ({...item, label: item.name, value: item.name})));
+                setStateList(result.map(item => ({ ...item, label: item.name, value: item.name })));
             });
         };
     }, [dispatch, formData.nationality]);
@@ -307,19 +308,10 @@ const KYCStep1 = ({ nextStep }) => {
                             placeholder="Select State"
                         />
 
-                        <SelectInput
-                            label="LGA"
-                            name="lga"
-                            className='text-sm'
+                        <LGAInput
+                            stateValue={formData.state}
                             value={formData.lga}
                             onChange={handleChange}
-                            options={[
-                                { label: "Agenebode", value: "agenebode" },
-                                { label: "Oredo", value: "oredo" },
-                                { label: "Etsako East", value: "etsako east" },
-                                { label: "Etsako West", value: "etsako west" },
-                            ]}
-                            placeholder="Select LGA"
                         />
                     </div>
                 </div>
