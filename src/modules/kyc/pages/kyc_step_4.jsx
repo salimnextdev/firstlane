@@ -136,14 +136,14 @@ const KYCStep4 = ({ prevStep }) => {
                         onChange={handleChange}
                     />
                     <FileInput
-                        label='Supporting document 1'
+                        label='Supporting document 1 (optional)'
                         name='document2'
                         accept='.pdf'
                         value={formData.document2}
                         onChange={handleChange}
                     />
                     <FileInput
-                        label='Supporting document 2'
+                        label='Supporting document 2 (optional)'
                         name='document3'
                         accept='.pdf'
                         value={formData.document3}
