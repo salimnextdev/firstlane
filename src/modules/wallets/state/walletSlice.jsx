@@ -103,6 +103,30 @@ export const fetchTransactions = createAsyncThunk(
   }
 );
 
+export const fetchTransactionByID = createAsyncThunk(
+  'wallet/fetchTransactionByID',
+  async (transactionID, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/wallet/transaction/${transactionID}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const sendMoney = createAsyncThunk(
+  'wallet/sendMoney',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/wallet/withdraw-funds`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
@@ -111,6 +135,7 @@ export const walletSlice = createSlice({
     accountDetails: null,
     transactions: [],
     metaData: null,
+    transactionDetails: null,
     loading: false,
     error: null,
     verify_loading: false,
@@ -170,6 +195,19 @@ export const walletSlice = createSlice({
         state.transaction_loading = false;
       })
       .addCase(fetchTransactions.rejected, (state, action) => {
+        state.transaction_loading = false;
+        state.transaction_error = action.payload;
+      })
+      
+      .addCase(fetchTransactionByID.pending, (state) => {
+        state.transaction_loading = true;
+        state.transaction_error = null;
+      })
+      .addCase(fetchTransactionByID.fulfilled, (state, action) => {
+        state.transactionDetails = action.payload.data // Retrieve the single transaction from the response
+        state.transaction_loading = false;
+      })
+      .addCase(fetchTransactionByID.rejected, (state, action) => {
         state.transaction_loading = false;
         state.transaction_error = action.payload;
       })
