@@ -6,7 +6,7 @@ const TransactionSkeletonTable = () => {
   return (
     <TableRow className="text-sm font-light border-b border-gray-200 last:border-b-0 animate-pulse">
       {/* Checkbox column */}
-      <TableCell className="px-6 py-4">
+      <TableCell className="px-4 py-4">
         <Skeleton className="h-4 w-4 bg-gray-200 rounded-sm" />
       </TableCell>
       {/* Amount Requested column */}
