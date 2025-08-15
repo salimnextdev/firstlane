@@ -58,10 +58,11 @@ const FundOptionsModal = ({
             {isModalOpen && selectedOption === "coupon_code" && <CouponModal
                 isOpen={isCouponModalOpen}
                 onClose={setIsCouponModalOpen}
+                purpose="funding"
                 title="Fund account"
-                description="You can select either of the options below to fund your account. "
+                description="You can select either of the options below to fund your account."
             />}
-            <DialogContent className="z-50 md:p-6 bg-white border border-[#E4E7EC] rounded-xl md:max-w-md mx-auto">
+            <DialogContent className="z-50 md:p-6 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] bg-[#D8D9EA] rounded-full hidden md:flex items-center justify-center">
                         <Investment className="text-primary" />
@@ -121,7 +122,7 @@ const FundOptionsModal = ({
                     <div className="w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 font-medium">
                         <DialogClose
                             onClick={onClose}
-                            className="w-full md:w-1/2 h-11 border border-[#E4E7EC] text-sm px-8 py-3 cursor-pointer rounded-md"
+                            className="w-full md:w-1/2 h-11 border border-gray text-sm px-8 py-3 cursor-pointer rounded-md"
                         >
                             {buttonCLoseText}
                         </DialogClose>
