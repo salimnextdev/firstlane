@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile, updateUserProfile } from '@/modules/auth/state/authSlice';
-import { uploadFile } from '@/modules/kyc/state/kycSlice';
+import { fetchLGA, uploadFile } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { ReactComponent as KYC_Upload } from '@/assets/icons/kyc_upload.svg';
@@ -12,6 +12,8 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
 import SearchInput from '@/components/FormInputs/searchInput';
+import StatesInput from '@/components/FormInputs/StatesInput';
+import LGAInput from '@/components/FormInputs/LGAInputs';
 import { genderOptions, maritalStatusOptions, titleOptions } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
@@ -68,20 +70,23 @@ const Profile = () => {
     useEffect(() => {
         GetCountries().then((result) => {
             // format coutries list to match my SearchInput data format
-            setCountriesList(result.map(item => ({...item, label: item.name, value: item.name})));
+            setCountriesList(result.map(item => ({ ...item, label: item.name, value: item.name })));
         });
     }, [dispatch]);
     useEffect(() => {
         const countryID = formData.nationality && countriesList.find(item => item.name === formData.nationality);
         if (countryID) {
             GetState(parseInt(countryID.id)).then((result) => {
-                setStateList(result.map(item => ({...item, label: item.name, value: item.name})));
+                setStateList(result.map(item => ({ ...item, label: item.name, value: item.name })));
             });
         };
     }, [dispatch, userProfile, formData.nationality]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
+        if (name == 'nationality' && value !== 'Nigeria') {
+            toast.warning("Please select Nigeria — support for other countries is coming soon.");
+        };
         setFormData((prev) => ({
             ...prev,
             [name]: type === 'file' ? { file: files[0] } : value,
@@ -138,7 +143,7 @@ const Profile = () => {
                 firstname: formData.firstname,
                 lastname: formData.lastname,
                 email: formData.email,
-                phone: formData.phone, 
+                phone: formData.phone,
                 gender: formData.gender,
                 dob: formData.date_of_birth,
                 state: formData.state,
@@ -306,7 +311,7 @@ const Profile = () => {
                     />
 
                     <div className='w-full flex items-center gap-3'>
-                        <SearchInput
+                        {/* <SearchInput
                             label="State"
                             name="state"
                             className='text-sm'
@@ -314,21 +319,19 @@ const Profile = () => {
                             onChange={handleChange}
                             data={stateList || []}
                             placeholder="Select State"
+                        /> */}
+
+                        <StatesInput
+                            value={formData.state}
+                            onChange={handleChange}
+                            isDisabled={formData.nationality !== 'Nigeria'}
                         />
 
-                        <SelectInput
-                            label="LGA"
-                            name="lga"
-                            className='text-sm'
+                        <LGAInput
+                            stateValue={formData.state}
                             value={formData.lga}
                             onChange={handleChange}
-                            options={[
-                                { label: "Mr", value: "Mr" },
-                                { label: "Mrs", value: "Mrs" },
-                                { label: "Sir", value: "Sir" },
-                                { label: "Miss", value: "Miss" },
-                            ]}
-                            placeholder="Select LGA"
+                            isDisabled={formData.nationality !== 'Nigeria'}
                         />
                     </div>
                 </div>
@@ -336,6 +339,7 @@ const Profile = () => {
                 <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         className='w-full md:w-36 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
+                        disabled={submitted}
                     >
                         {submitted ?
                             <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
