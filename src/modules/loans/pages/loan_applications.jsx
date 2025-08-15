@@ -195,7 +195,7 @@ const LoanApplications = () => {
                         <TableBody className="">
                             {loading ? (
                                 // Render 6 skeleton table rows when loading is true
-                                Array.from({ length: 6 }).map((_, index) => (
+                                Array.from({ length: LIMIT }).map((_, index) => (
                                     <LoanSkeletonTable key={index} />
                                 ))
                             ) : fLoans.map(loan => (
@@ -256,7 +256,11 @@ const LoanApplications = () => {
                         </TableBody>
                     </Table>
                 ) : (
-                    <NoContent icon="loans" title="No loan applications" description="Start your loan application journey by creating your first loan application." />
+                    <NoContent
+                        icon="loans"
+                        title="No loan applications found"
+                        description="We couldn’t find any loan applications to display at the moment."
+                    />
                 )}
             </div>
 
@@ -278,8 +282,7 @@ const LoanApplications = () => {
                 {(loading || fLoans.length) > 0 ? (
                     <div className='space-y-2' id='mobile_transaction_card'>
                         {loading ? (
-                            // Render 6 skeleton cards when loading is true
-                            Array.from({ length: 6 }).map((_, index) => (
+                            Array.from({ length: LIMIT }).map((_, index) => (
                                 <LoanSkeletonCard key={index} />
                             ))
                         ) : fLoans.map((loan, index) => (
@@ -290,7 +293,11 @@ const LoanApplications = () => {
                         ))}
                     </div>
                 ) : (
-                    <NoContent icon="loans" title="No loan applications" description="Start your loan application journey by creating your first loan application." />
+                    <NoContent
+                        icon="loans"
+                        title="No loan applications found"
+                        description="We couldn’t find any loan applications to display at the moment."
+                    />
                 )}
             </div>
 
