@@ -1,75 +1,101 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
+
 import FundAccountModal from '@/modules/investments/components/fundAccountModal';
+import InvestmentSkeletonCard from '../investmentSkeletonCard';
+import NoContent from '@/components/NoContent';
+import { calculateDurationDetails } from '@/utils/datetimeFormats';
 
 const ActiveInvestmentTab = ({ data }) => {
+    const { investments: investments, loading: loading, error: error } = useSelector((state) => state.investment);
     const [isOpen, setIsOpen] = useState(false);
-    
+
     return (
         <div className="relative space-y-8">
             <FundAccountModal
                 isOpen={isOpen}
                 onClose={setIsOpen}
-                data={{
-                    amount: 140000.00,
-                    acc_number: "0123456789",
-                    acc_name: "Alison Eyo",
-                    bank_name: "Paystack Titan",
-                }}
             />
             <div>
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
-                    {data.map((item, index) => (
-                        <div key={index} className='p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
-                            <p className='text-xs md:text-sm text-secondary'>Investment Duration</p>
-                            <p className='text-lg font-medium space-x-1'>
-                                <span>{item.days} days</span>
-                                <span className='text-sm text-secondary font-light'>({item.months} months)</span>
-                            </p>
+                {investments.length > 0 ? (
+                    <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
+                        {loading ? (
+                            Array.from({ length: 6 }).map((_, index) => (
+                                <InvestmentSkeletonCard key={index} plan={false} />
+                            ))
+                        ) : data.map((item, index) => {
+                            const investmentProfit = (item?.amount * (item?.investmentID?.interestRate || item?.interestRate)) / 100;
+                            const investmentBalance = item?.amount + investmentProfit;
+                            const duration = parseInt(item?.investmentID?.duration[0].split(' ')[0]);
+                            const daySoFar = calculateDurationDetails(item?.createdAt, duration)?.daysSoFar;
 
-                            <div className='flex gap-10 my-4'>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Investment amount</p>
-                                    <p className='text-base font-medium'>₦{item.investment?.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })}</p>
-                                </div>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Interest rate</p>
-                                    <p className='text-base font-medium'>{item.interest}%</p>
-                                </div>
-                            </div>
-
-                            <div className='flex gap-10 my-4'>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Investment balance</p>
-                                    <p className='text-base font-medium'>₦{item.balance?.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })}</p>
-                                </div>
-                                <div className='space-y-1 text-xs md:text-sm'>
-                                    <p className='text-secondary'>Investment earned</p>
-                                    <p className='text-sm text-[#099137] font-medium'>
-                                        ₦{item.earned?.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        })}
+                            const investmentEarned = (investmentProfit * daySoFar) / duration || 0.00;
+                            return (
+                                <div key={index} className='p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
+                                    <p className='text-xs md:text-sm text-secondary'>Investment Duration</p>
+                                    <p className='text-lg font-medium space-x-1'>
+                                        <span>{item?.investmentID?.duration[0]}</span>
+                                        <span className='text-sm text-secondary font-light'>
+                                            ({duration / 30 + ` month${(duration / 30) > 1 ? 's' : ''}`})
+                                        </span>
                                     </p>
-                                </div>
-                            </div>
 
-                            <div className='space-y-1 text-xs md:text-sm mt-2'>
-                                <p className='text-secondary'>Investment duration so far</p>
-                                <p className='text-base font-medium space-x-1'>
-                                    {item.days} days
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                                    <div className='flex gap-10 my-4'>
+                                        <div className='space-y-1 text-xs md:text-sm'>
+                                            <p className='text-secondary'>Investment amount</p>
+                                            <p className='text-base font-medium'>₦{item?.amount?.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}</p>
+                                        </div>
+                                        <div className='space-y-1 text-xs md:text-sm'>
+                                            <p className='text-secondary'>Interest rate</p>
+                                            <p className='text-base font-medium'>
+                                                {item?.investmentID?.interestRate || item?.interestRate}%
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className='flex gap-10 my-4'>
+                                        <div className='space-y-1 text-xs md:text-sm'>
+                                            <p className='text-secondary'>Investment balance</p>
+                                            <p className='text-base font-medium'>
+                                                ₦{investmentBalance?.toLocaleString(undefined, {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                })}</p>
+                                        </div>
+                                        <div className='space-y-1 text-xs md:text-sm'>
+                                            <p className='text-secondary'>Investment earned</p>
+                                            <p className='text-sm text-success font-medium'>
+                                                ₦{investmentEarned?.toLocaleString(undefined, {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className='space-y-1 text-xs md:text-sm mt-2'>
+                                        <p className='text-secondary'>Investment duration so far</p>
+                                        <p className='text-base font-medium space-x-1'>
+                                            {daySoFar + (daySoFar === 1 ? ' day' : ' days')}
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        )}
+                    </div>
+                ) : (
+                    <NoContent
+                        icon="investment"
+                        title="No active investments"
+                        description="You haven’t made any investments yet. Your active investments will appear here."
+                    />
+                )}
             </div>
         </div>
     );
