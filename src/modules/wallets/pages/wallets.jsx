@@ -235,33 +235,33 @@ const Wallets = () => {
             </div>
 
             {/* Recent Transactions Table */}
-            {(transaction_loading || transactions.length) > 0 ? (
-                <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
-                    <div className="">
-                        <div className="flex items-center justify-between p-4">
-                            <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent Wallet Transactions</h2>
-                            <div className="w-full flex items-center justify-end gap-2">
-                                <div className="w-4/12 relative">
-                                    <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search here..."
-                                        className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
-                                        value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                    />
-                                </div>
-
-                                <TableFilter
-                                    filterOptions={filterOptions}
-                                    filters={filters}
-                                    onFilterChange={handleFilterChange}
-                                    onClearFilters={handleClearFilters}
+            <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
+                <div className="">
+                    <div className="flex items-center justify-between p-4">
+                        <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent Wallet Transactions</h2>
+                        <div className="w-full flex items-center justify-end gap-2">
+                            <div className="w-4/12 relative">
+                                <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
+                                <input
+                                    type="text"
+                                    placeholder="Search here..."
+                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
                                 />
                             </div>
-                        </div>
 
-                        <div className="overflow-x-auto text-secondary">
+                            <TableFilter
+                                filterOptions={filterOptions}
+                                filters={filters}
+                                onFilterChange={handleFilterChange}
+                                onClearFilters={handleClearFilters}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto text-secondary">
+                        {(transaction_loading || transactions.length) > 0 ? (
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-light border-b border-gray">
@@ -328,18 +328,17 @@ const Wallets = () => {
                                     ))}
                                 </TableBody>
                             </Table>
-                        </div>
+                        ) : (
+                            <NoContent
+                                icon="wallets"
+                                title="No wallet transactions found"
+                                description="We couldn't find any wallet transactions to display at the moment."
+                                className="hidden md:flex"
+                            />
+                        )}
                     </div>
                 </div>
-            ) : (
-                <NoContent
-                    icon="wallets"
-                    title="No wallet transactions found"
-                    description="We couldn't find any wallet transactions to display at the moment."
-                    className="hidden md:flex"
-                />
-
-            )}
+            </div>
 
             {/* MOBILE ::::  Wallet Cards */}
             <div className='md:hidden space-y-4'>
