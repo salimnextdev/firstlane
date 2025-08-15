@@ -11,6 +11,8 @@ const useRedirectOnDesktop = (url) => {
       }
     };
 
+    handleResize(); // Run once on mount
+
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
