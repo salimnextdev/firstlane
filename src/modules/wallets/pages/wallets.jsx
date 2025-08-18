@@ -121,8 +121,8 @@ const Wallets = () => {
 
 
     useEffect(() => {
-        setTotalPages(parseInt(metaData?.total_pages));
-        setCurrentPage(parseInt(metaData?.current_page));
+        setTotalPages(parseInt(metaData?.total_pages || 0));
+        // setCurrentPage(parseInt(metaData?.current_page));
     }, [transactions]);
 
     useEffect(() => {
@@ -357,7 +357,7 @@ const Wallets = () => {
                                 <WalletSkeletonCard key={index} />
                             ))
                         ) : transactions.map((transaction, index) => (
-                            <div key={index} onClick={() => navigate(`/wallets/all/${index}`)}>
+                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
                                 <WalletCard transaction={transaction} />
                             </div>
 
@@ -375,7 +375,7 @@ const Wallets = () => {
 
             {/* Pagination */}
             <Pagination
-                className={`hidden md:flex ${(transactions.length == 0 || transaction_loading) && 'hidden'}`}
+                className={`${(transactions.length == 0 || transaction_loading) ? 'hidden' : 'hidden md:flex'}`}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}

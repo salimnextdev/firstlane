@@ -113,7 +113,7 @@ const AllWallets = () => {
                                 <WalletSkeletonCard key={index} />
                             ))
                         ) : transactions.map((transaction, index) => (
-                            <div key={index} onClick={() => navigate(`/wallets/all/${index}`)}>
+                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
                                 <WalletCard transaction={transaction} />
                             </div>
 
