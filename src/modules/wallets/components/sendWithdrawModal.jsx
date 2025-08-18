@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBankAccounts } from '@/modules/auth/state/authSlice';
+import { fetchBankAccounts, sendCodeToEmail } from '@/modules/auth/state/authSlice';
 import { verifyAccount } from '@/modules/wallets/state/walletSlice';
 
 import {
@@ -21,6 +21,7 @@ import { useBankOptions } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import { getCookie } from '@/utils/cookieUtils';
 
 const INITIAL_DATA = {
     amount: "",
@@ -40,6 +41,7 @@ const SendMoneyModal = ({
     buttonSuccessText = "Send Money"
 }) => {
     const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
     const { bankAccounts: bankAccounts, verify_loading: auth_loading, verify_error: auth_error } = useSelector((state) => state.auth);
     useEffect(() => {
         if (!auth_loading) {
@@ -52,6 +54,8 @@ const SendMoneyModal = ({
     const [accountLoading, setAccountLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState(INITIAL_DATA);
+    const clearFormData = () => setFormData(INITIAL_DATA);
+
 
     useEffect(() => {
         if (bankAccounts.length > 0) {
@@ -131,11 +135,11 @@ const SendMoneyModal = ({
         if (!formData.amount) errors.amount = "Amount is required";
         if (!formData.account_number) errors.account_number = "Account number is required";
         if (!formData.account_name) errors.account_name = "Account name is required";
-        if (!formData.bank_name) errors.bank_name = "Bank name is required";
+        if (!formData.bank_code) errors.bank_code = "Bank name is required";
         return errors;
     };
 
-    const sendMoney = async (e) => {
+    const sendUserOTP = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
@@ -147,21 +151,18 @@ const SendMoneyModal = ({
 
         setSubmitted(true);
         const data = {
-            "amount": formData.amount,
-            "bankName": formData.bank_name,
-            "accountNumber": formData.account_number,
-            "accountName": formData.account_name,
-            "bankCode": formData.bank_code,
+            email: user?.email || "",
+            type: "Withdrawal"
         };
+
         try {
-            // const resultAction = await dispatch(addBankAccount(data));
-            // if (addBankAccount.fulfilled.match(resultAction)) {
-            // setIsModalOpen(true);
-            // onClose();
-            //     toast.success("Bank details updated successfully");
-            // } else {
-            //     toast.warning(resultAction.payload.message);
-            // }
+            const resultAction = await dispatch(sendCodeToEmail(data));
+            if (sendCodeToEmail.fulfilled.match(resultAction)) {
+                setIsModalOpen(true);
+                onClose();
+            } else {
+                toast.warning(resultAction.payload.message);
+            }
         } catch (error) {
             toast.error("An error occured", {
                 description: error.message,
@@ -176,7 +177,10 @@ const SendMoneyModal = ({
             <SendOTPModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
+                formData={formData}
+                email={user?.email}
                 type={type}
+                clearFormData={clearFormData}
             />
             <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
@@ -243,13 +247,14 @@ const SendMoneyModal = ({
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={() => {
-                                setIsModalOpen(true);
-                                onClose();
-                            }}
+                            onClick={sendUserOTP}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            disabled={submitted}
                         >
-                            {buttonSuccessText}
+                            {submitted ?
+                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                buttonSuccessText
+                            }
                         </button>
                     </div>
                 </div>
