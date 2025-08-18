@@ -78,8 +78,8 @@ const Wallets = () => {
 
     const openModal = (type) => {
         setModal(type);
-        setIsOpen(!isOpen);
-    };
+        setIsOpen(true);
+    };    
 
     const [filters, setFilters] = useState({
         statuses: '',
