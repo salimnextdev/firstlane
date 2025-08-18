@@ -59,13 +59,15 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
 
         setSubmitted(true);
         const data = {
-            title: formData.title,
-            firstName: formData.firstname,
-            lastName: formData.lastname,
-            relationship: formData.relationship,
-            gender: formData.gender,
-            phoneNumber: formData.phone,
-            residentialAddress: formData.address?.display_name || '',
+            "nextOfKin": {
+                title: formData.title,
+                firstName: formData.firstname,
+                lastName: formData.lastname,
+                relationship: formData.relationship,
+                gender: formData.gender,
+                phoneNumber: formData.phone,
+                residentialAddress: formData.address?.display_name || '',
+            }
         };
 
         try {
