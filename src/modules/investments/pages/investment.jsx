@@ -26,7 +26,7 @@ const Investment = () => {
 
     useEffect(() => {
         if (!loading) {
-            !balance && dispatch(fetchBalance(user?._id));
+            dispatch(fetchBalance(user?._id));
             dispatch(fetchInvestments(user?._id));
             dispatch(fetchInvestmentPlans());
         }
