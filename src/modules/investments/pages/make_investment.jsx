@@ -225,9 +225,9 @@ const MakeInvestment = () => {
                 <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         type='button'
-                        onClick={() => investNow()}
+                        onClick={investNow}
                         className='w-full md:w-24 h-10 md:h-9 my-3 md:my-5 px-2 rounded-md bg-primary text-sm cursor-pointer'
-                        disabled={balance_loading}
+                        disabled={submitted || balance_loading}
                     >
                         {submitted ?
                             <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
