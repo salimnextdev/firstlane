@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFXRates, fetchFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
+import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
 import { fetchCurrency } from '@/modules/fx_transactions/state/currencySlice';
 
 import { IoIosInformationCircleOutline, IoIosSearch } from 'react-icons/io';
@@ -52,6 +52,12 @@ const FXTransactions = () => {
         }
     }, [dispatch]);
 
+    const [search, setSearch] = useState("");
+    const [transactions, setTransactions] = useState([]);
+    useEffect(() => {
+        setTransactions(fx_transactions);
+    }, [fx_transactions]);
+
     const [currencyPairs, setCurrencyPairs] = useState([]);
     useEffect(() => {
         setCurrencyPairs(fx_rates.map(rate =>
@@ -59,14 +65,18 @@ const FXTransactions = () => {
         ));
     }, [fx_rates]);
 
-    // Filter transactions based on global search or page search
-    const transactions = !searchTerm ? fx_transactions : fx_transactions.filter((transaction) => (
-        transaction?.fromCurrency?.value == searchTerm ||
-        transaction?.toCurrency?.value == searchTerm ||
-        transaction?.fromCurrency?.currencyID?.code?.toLowerCase(searchTerm.toLowerCase()) ||
-        transaction?.toCurrency?.currencyID?.code?.toLowerCase(searchTerm.toLowerCase()) ||
-        transaction?.status?.toLowerCase()?.includes(searchTerm.toLowerCase())
-    ));
+    // Search transactions based on table search
+    useEffect(() => {
+        if (search) {
+            setTransactions(fx_transactions.filter((transaction) => (
+                transaction?.fromCurrency?.value == search ||
+                transaction?.toCurrency?.value == search ||
+                transaction?.fromCurrency?.currencyID?.code?.toLowerCase()?.includes(search.toLowerCase()) ||
+                transaction?.toCurrency?.currencyID?.code?.toLowerCase()?.includes(search.toLowerCase()) ||
+                transaction?.status?.toLowerCase()?.includes(search.toLowerCase())
+            )));
+        }
+    }, [search]);
 
     const [isOpen, setIsOpen] = useState(false);
     const [option, setOption] = useState('Sell');
@@ -123,13 +133,13 @@ const FXTransactions = () => {
     });
 
     const filterOptions = {
-        statuses: ['Successful', 'Pending', 'Failed'],
+        statuses: ['Completed', 'Pending', 'Failed'],
         // currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
         currencyPairs: currencyPairs,
     };
 
     const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
+        setFilters({ ...newFilters });
     };
 
     const handleClearFilters = () => {
@@ -141,7 +151,6 @@ const FXTransactions = () => {
 
     const [totalPages, setTotalPages] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -151,8 +160,28 @@ const FXTransactions = () => {
     }, [fx_transactions]);
 
     useEffect(() => {
-        if (Object.keys(filters).length > 0) {
-            // dispatch(filterLoans({ credentials: filters, page: currentPage, limit: LIMIT }));
+        const hasActiveFilters = Object.values(filters).some(value => value !== '');
+        const getFilterPayload = () => {
+            const { statuses, currencyPairs } = filters;
+            const result = {};
+
+            if (statuses) {
+                result.status = statuses.toLowerCase();
+            }
+
+            if (currencyPairs && currencyPairs.includes('/')) {
+                const [from, to] = currencyPairs.split('/');
+                if (from && to) {
+                    result.fromCurrency = { currencyID: { code: from } };
+                    result.toCurrency = { currencyID: { code: to } };
+                }
+            }
+
+            return result;
+        };
+
+        if (hasActiveFilters) {
+            dispatch(filterFXTransactions(getFilterPayload()));
         } else {
             dispatch(fetchFXTransactions({ page: currentPage, limit: LIMIT }));
         }
@@ -323,31 +352,34 @@ const FXTransactions = () => {
             </Link>
 
             {/* Recent Transactions Table */}
-            {(loading || transactions.length) > 0 ? (
-                <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
-                    <div className="">
-                        <div className="flex items-center justify-between p-4">
-                            <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent FX Transactions</h2>
-                            <div className="w-full flex items-center justify-end gap-2">
-                                <div className="w-4/12 relative">
-                                    <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search here..."
-                                        className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
-                                    />
-                                </div>
-
-                                <TableFilter
-                                    filterOptions={filterOptions}
-                                    filters={filters}
-                                    onFilterChange={handleFilterChange}
-                                    onClearFilters={handleClearFilters}
+            <div className="hidden md:block w-full rounded-lg border border-gray bg-white">
+                <div className="">
+                    <div className="flex items-center justify-between p-4">
+                        <h2 className="text-nowrap text-xl font-medium text-tertiary">Recent FX Transactions</h2>
+                        <div className="w-full flex items-center justify-end gap-2">
+                            <div className="w-4/12 relative">
+                                <IoIosSearch className="w-5 h-5 absolute top-2.5 left-3 text-gray-600" />
+                                <input
+                                    type="text"
+                                    name='search'
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Search here..."
+                                    className="w-full h-[40px] pl-10 pr-4 rounded-md border border-gray text-sm focus:outline-gray-200"
                                 />
                             </div>
+
+                            <TableFilter
+                                filterOptions={filterOptions}
+                                filters={filters}
+                                onFilterChange={handleFilterChange}
+                                onClearFilters={handleClearFilters}
+                            />
                         </div>
+                    </div>
 
 
+                    {(loading || transactions.length) > 0 ? (
                         <div className="overflow-x-auto text-secondary">
                             <Table>
                                 <TableHeader>
@@ -413,20 +445,20 @@ const FXTransactions = () => {
                                     ))}
                                 </TableBody>
                             </Table>
-                        </div>
-                    </div>
-                </div>) : (
-                <NoContent
-                    className="hidden md:flex"
-                    icon="fx transactions"
-                    title="No FX Transactions"
-                    description="There are no foreign exchange transactions to display at the moment."
-                />
-            )}
+                        </div>) : (
+                        <NoContent
+                            className="hidden md:flex"
+                            icon="fx transactions"
+                            title="No FX Transactions"
+                            description="There are no foreign exchange transactions to display at the moment."
+                        />
+                    )}
+                </div>
+            </div>
 
             {/* Pagination */}
             <Pagination
-                className={`hidden md:flex ${(transactions.length == 0 || loading) && 'hidden'}`}
+                className={`${(transactions.length == 0 || loading) ? 'hidden' : 'hidden md:flex'}`}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
@@ -436,15 +468,3 @@ const FXTransactions = () => {
 };
 
 export default FXTransactions;
-
-const transactions = [
-    {
-        id: 1,
-        sent_amount: "10,000.00",
-        buy_amount: "100",
-        currency_pair: "USD/NGN",
-        exchange_rate: "$1/₦1,600.00",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "successful"
-    }
-];
