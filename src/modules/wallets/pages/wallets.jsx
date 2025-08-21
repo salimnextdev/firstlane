@@ -60,7 +60,7 @@ const Wallets = () => {
         transaction_error: transaction_error,
     } = useSelector((state) => state.wallet);
     useEffect(() => {
-        if (!balance) {
+        if (!loading) {
             dispatch(fetchBalance(user?._id));
             dispatch(fetchTransactions({
                 userID: user?._id,
