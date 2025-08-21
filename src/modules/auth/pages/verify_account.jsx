@@ -70,7 +70,7 @@ const VerifyAccount = () => {
             if (verifyAuthentication.fulfilled.match(resultAction)) {
                 removeCookie('user');
                 setCookie('token', resultAction.payload?.access_token);
-                setCookie('data', JSON.stringify(resultAction.payload?.data));
+                setCookie('user', JSON.stringify(resultAction.payload?.data));
                 navigate('/account-success');
             } else {
                 setCountdown(0);
