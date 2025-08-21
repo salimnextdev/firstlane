@@ -29,6 +29,43 @@ export const fetchFXTransactions = createAsyncThunk(
   }
 );
 
+// export const filterFXTransactions = createAsyncThunk(
+//   'fx_transaction/filterFXTransactions',
+//   async ({ credentials, page, limit }, { rejectWithValue }) => {
+//     try {
+//       let url = `${API_BASE_URL}/fx/find-by-many`;
+      
+//       const params = [];
+//       if (page !== undefined) {
+//         params.push(`page=${page}`);
+//       }
+//       if (limit !== undefined) {
+//         params.push(`limit=${limit}`);
+//       }
+
+//       if (params.length > 0) {
+//         url += `?${params.join('&')}`;
+//       }
+//       const response = await api.post(url, credentials);
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
+
+export const filterFXTransactions = createAsyncThunk(
+  'fx_transaction/filterFXTransactions',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/fx/find-by-many`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchFXTransactionByID = createAsyncThunk(
   'fx_transaction/fetchFXTransactionByID',
   async ({ key, value }, { rejectWithValue }) => {
@@ -104,6 +141,20 @@ export const FXSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchFXTransactions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(filterFXTransactions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(filterFXTransactions.fulfilled, (state, action) => {
+        state.fx_transactions = action.payload.data // Retrieve the all user fx_transactions from the response
+        state.metaData = action.payload.metadata; // Retrieve the pagination data from the response
+        state.loading = false;
+      })
+      .addCase(filterFXTransactions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
