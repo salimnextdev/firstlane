@@ -1,30 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLoanStats } from '@/modules/loans/state/loanStatsSlice';
+import { getCookie } from '@/utils/cookieUtils';
+
 import SelectInput from '@/components/FormInputs/SelectInput';
-import { RiEyeCloseLine } from "react-icons/ri";
 import { BsArrowRight } from 'react-icons/bs';
 
 import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
 import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
-
-const loanData = [
-    {
-        key: 'collected',
-        label: 'Total loan collected',
-        amount: 1210000,
-    },
-    {
-        key: 'repaid',
-        label: 'Total loan repaid',
-        amount: 1000000,
-    },
-    {
-        key: 'due',
-        label: 'Total loan due',
-        amount: 210000,
-    },
-];
 
 const data = [
     {
@@ -50,7 +35,34 @@ const data = [
 ]
 
 const Loans = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = JSON.parse(getCookie('user') || null);
+    const { stats: stats, loading: loading, error: error } = useSelector((state) => state.loan_stats);
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchLoanStats(user?._id));
+        }
+    }, [dispatch]);
+
+    const loanData = [
+        {
+            key: 'collected',
+            label: 'Total loan collected',
+            amount: stats?.totalLoanCollected || 0.0,
+        },
+        {
+            key: 'repaid',
+            label: 'Total loan repaid',
+            amount: stats?.totalLoanRepaid || 0.00,
+        },
+        {
+            key: 'due',
+            label: 'Total loan due',
+            amount: stats?.totalLoanDue || 0.00,
+        },
+    ];
+
     const [filter, setFilter] = useState('');
 
     const [statsView, setStatsView] = useState({
@@ -102,10 +114,10 @@ const Loans = () => {
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
                         options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
+                            { label: "Today", value: "today" },
+                            { label: "This Week", value: "week" },
+                            { label: "This Month", value: "month" },
+                            { label: "This Year", value: "year" },
                         ]}
                         placeholder="This month"
                     />
