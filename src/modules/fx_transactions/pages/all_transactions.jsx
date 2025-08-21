@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
+import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
+import useRedirectOnDesktop from '@/hooks/useRedirectOnDesktop';
 
 import BackButton from '@/components/BackButton';
 import MobileTransactionCard from '@/modules/fx_transactions/components/MobileTransactionCard';
@@ -14,20 +15,31 @@ import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 const LIMIT = 10;
 
 const AllTransactions = () => {
+    useRedirectOnDesktop('/fx-transactions');
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { searchTerm } = useSelector((state) => state.search);
     const {
         fx_transactions: fx_transactions,
         metaData: metaData,
+        fx_rates: fx_rates,
         loading: loading, error: error,
     } = useSelector((state) => state.fx);
 
     useEffect(() => {
         if (!loading) {
             dispatch(fetchFXTransactions({ page: 1, limit: LIMIT }));
+            dispatch(fetchFXRates({ page: 1, limit: LIMIT }));
         }
     }, [dispatch]);
+
+    const [currencyPairs, setCurrencyPairs] = useState([]);
+    useEffect(() => {
+        setCurrencyPairs(fx_rates.map(rate =>
+            `${rate?.baseCurrency?.currencyID?.code}/${rate?.targetCurrency?.currencyID?.code}`
+        ));
+    }, [fx_rates]);
 
     const transactions = !searchTerm ? fx_transactions : fx_transactions.filter((transaction) => (
         // transaction.amount == searchTerm ||
@@ -35,13 +47,14 @@ const AllTransactions = () => {
     ));
 
     const [filters, setFilters] = useState({
-        statuses: [],
-        currencyPairs: [],
+        statuses: '',
+        currencyPairs: '',
     });
 
     const filterOptions = {
-        statuses: ['Successful', 'Pending', 'Failed'],
-        currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
+        statuses: ['Completed', 'Pending', 'Failed'],
+        // currencyPairs: ['USD/EUR', 'GBP/USD', 'JPY/CAD'],
+        currencyPairs: currencyPairs,
     };
 
     const handleFilterChange = (newFilters) => {
@@ -50,8 +63,8 @@ const AllTransactions = () => {
 
     const handleClearFilters = () => {
         setFilters({
-            statuses: [],
-            currencyPairs: [],
+            statuses: '',
+            currencyPairs: '',
         });
     };
 
@@ -65,6 +78,34 @@ const AllTransactions = () => {
     useEffect(() => {
         setTotalPages(metaData?.totalPage);
     }, [fx_transactions]);
+
+    useEffect(() => {
+        const hasActiveFilters = Object.values(filters).some(value => value !== '');
+        const getFilterPayload = () => {
+            const { statuses, currencyPairs } = filters;
+            const result = {};
+
+            if (statuses) {
+                result.status = statuses.toLowerCase();
+            }
+
+            if (currencyPairs && currencyPairs.includes('/')) {
+                const [from, to] = currencyPairs.split('/');
+                if (from && to) {
+                    result.fromCurrency = { currencyID: { code: from } };
+                    result.toCurrency = { currencyID: { code: to } };
+                }
+            }
+
+            return result;
+        };
+
+        if (hasActiveFilters) {
+            dispatch(filterFXTransactions(getFilterPayload()));
+        } else {
+            dispatch(fetchFXTransactions({ page: currentPage, limit: LIMIT }));
+        }
+    }, [currentPage, filters]);
 
     return (
         <div className="space-y-3">
