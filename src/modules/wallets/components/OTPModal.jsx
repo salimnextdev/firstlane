@@ -78,8 +78,9 @@ const SendOTPModal = ({
             if (sendMoney.fulfilled.match(resultAction)) {
                 setIsModalOpen(true);
                 onClose();
+                
                 // Clear formdata
-                clearFormData();
+                // clearFormData();
                 setOTP('');
             } else {
                 toast.warning(resultAction.payload.message);
