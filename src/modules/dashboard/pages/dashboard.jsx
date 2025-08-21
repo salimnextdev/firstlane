@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCookie } from '@/utils/cookieUtils';
 import { fetchUserProfile } from '@/modules/auth/state/authSlice';
+import { fetchDashboardStats } from '@/modules/dashboard/state/dashboardStatsSlice';
+import { fetchTransactions } from '@/modules/wallets/state/walletSlice';
 
 import {
     Table,
@@ -23,87 +25,8 @@ import { ReactComponent as Divider } from '@/assets/icons/divider.svg';
 import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
 import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
-import SelectInput from '@/components/FormInputs/SelectInput';
-import TableFilter from '@/components/TableFilter';
 import TransactionCard from '@/modules/fx_transactions/components/TransactionCard';
-
-const cardData = [
-    {
-        key: 'loan',
-        label: 'Loan balance',
-        value: 1210000,
-        icon: <Loan />,
-        direction: 'down',
-        percentage: 10,
-        color: 'text-red-500',
-    },
-    {
-        key: 'investment',
-        label: 'Investment balance',
-        value: 2420000,
-        icon: <Investment />,
-        direction: 'up',
-        percentage: 10,
-        color: 'text-green-500',
-    },
-    {
-        key: 'interest',
-        label: 'Accrued interest',
-        value: 110000,
-        icon: <Divider />,
-        direction: 'up',
-        percentage: 10,
-        color: 'text-green-500',
-    },
-];
-
-const transactions = [
-    {
-        id: 1,
-        name: "Emery Torff",
-        email: "e.t@mail.com",
-        amount: "10,000.00",
-        paymentType: "Wallet funding",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "successful"
-    },
-    {
-        id: 2,
-        name: "Emery Torff",
-        email: "e.t@mail.com",
-        amount: "10,000.00",
-        paymentType: "Money sent",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "pending"
-    },
-    {
-        id: 3,
-        name: "Emery Torff",
-        email: "e.t@mail.com",
-        amount: "10,000.00",
-        paymentType: "Loan",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "successful"
-    },
-    {
-        id: 4,
-        name: "Emery Torff",
-        email: "e.t@mail.com",
-        amount: "10,000.00",
-        paymentType: "Loan",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "successful"
-    },
-    {
-        id: 5,
-        name: "Emery Torff",
-        email: "e.t@mail.com",
-        amount: "10,000.00",
-        paymentType: "Investment",
-        dateTime: "12th Aug, 2026 | 8:23AM",
-        status: "failed"
-    }
-];
+import { formatDateTime } from '@/utils/datetimeFormats';
 
 const KYCBanner = {
     pending: {
@@ -126,24 +49,80 @@ const KYCBanner = {
         border: "border-[#CB1A14]",
         text: "text-[#CB1A14]",
     }
-}
+};
+
+const LIMIT = 10;
 
 const Dashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = JSON.parse(getCookie('user') || null);
+
+    const { stats: stats, loading: stats_loading, error: stats_error } = useSelector((state) => state.dashboard_stats);
     const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
+    const {
+        transactions: transactions,
+        metaData: metaData,
+        loading: wallet_loading,
+        error: wallet_error
+    } = useSelector((state) => state.wallet);
     useEffect(() => {
         if (!loading) {
             dispatch(fetchUserProfile());
+            dispatch(fetchDashboardStats(user?._id));
+            dispatch(fetchTransactions({
+                userID: user?._id,
+                page: 1,
+                limit: LIMIT,
+            }))
         }
     }, [dispatch]);
 
+    const cardData = [
+        {
+            key: 'loan',
+            label: 'Loan balance',
+            value: stats?.loanBalance || 0.00,
+            icon: <Loan />,
+            direction: stats?.monthlyChanges?.loanBalance <= 0 ? 'down' : 'up',
+            percentage: stats?.monthlyChanges?.loanBalance,
+            color: stats?.monthlyChanges?.loanBalance <= 0 ? 'text-red-500' : 'text-green-500',
+        },
+        {
+            key: 'investment',
+            label: 'Investment balance',
+            value: stats?.investmentBalance || 0.00,
+            icon: <Investment />,
+            direction: stats?.monthlyChanges?.investmentBalance <= 0 ? 'down' : 'up',
+            percentage: stats?.monthlyChanges?.investmentBalance,
+            color: stats?.monthlyChanges?.investmentBalance <= 0 ? 'text-red-500' : 'text-green-500',
+        },
+        {
+            key: 'interest',
+            label: 'Accrued interest',
+            value: stats?.accruedInterest || 0.00,
+            icon: <Divider />,
+            direction: stats?.monthlyChanges?.accruedInterest <= 0 ? 'down' : 'up',
+            percentage: stats?.monthlyChanges?.accruedInterest,
+            color: stats?.monthlyChanges?.accruedInterest <= 0 ? 'text-red-500' : 'text-green-500',
+        },
+    ];
+
+    const [showKYC, setShowKYC] = useState(false);
     const [kycStatus, setKycStatus] = useState('failed');
     useEffect(() => {
-        if (userProfile && userProfile?.verifications?.status === 'pending') {
+        if (userProfile && userProfile?.verifications?.status === 'verified') {
             setKycStatus('pending');
+            setShowKYC(false);
+        } else if (!userProfile?.verifications) {
+            setKycStatus('failed');
+            setShowKYC(true);
+        } else if (userProfile && userProfile?.verifications?.status === 'pending') {
+            setKycStatus('pending');
+            setShowKYC(true);
         } else if (userProfile && userProfile?.verifications?.status === 'failed') {
             setKycStatus('failed');
+            setShowKYC(true);
         };
     }, [userProfile]);
 
@@ -199,8 +178,7 @@ const Dashboard = () => {
             </div>
 
             {/* KYC Verification Banner */}
-            {userProfile?.verifications?.status &&
-                userProfile?.verifications?.status !== 'verified' &&
+            {showKYC &&
                 <div className={`flex flex-col lg:flex-row justify-between ${KYCBanner[kycStatus].bg} border md:border-[1.5px] ${KYCBanner[kycStatus].border} p-4 rounded-xl`}>
                     <div className='w-full flex flex-row gap-3'>
                         <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
@@ -320,7 +298,7 @@ const Dashboard = () => {
                             </TableHeader>
                             <TableBody className='text-sm text-secondary font-light'>
                                 {transactions.map((transaction) => (
-                                    <TableRow key={transaction.id} className="border-b border-gray">
+                                    <TableRow key={transaction?._id} className="border-b border-gray">
                                         <TableCell className="p-4">
                                             <Checkbox />
                                         </TableCell>
@@ -330,18 +308,23 @@ const Dashboard = () => {
                                                     <img src="/api/placeholder/40/40" alt="User avatar" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-800">{transaction.name}</p>
-                                                    <p className="text-sm text-gray-500">{transaction.email}</p>
+                                                    <p className="font-medium text-gray-800">{user?.fullname}</p>
+                                                    <p className="text-sm text-gray-500">{user?.email}</p>
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-gray-800">₦{transaction.amount}</TableCell>
+                                        <TableCell className="text-gray-800">
+                                            ₦{transaction?.amount?.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            })}
+                                        </TableCell>
                                         <TableCell>
-                                            <span className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
-                                                {transaction.paymentType}
+                                            <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
+                                                {transaction?.type == "D" ? "Money sent" : "Money received"}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-gray-800">{transaction.dateTime}</TableCell>
+                                        <TableCell className="text-gray-800">{formatDateTime(transaction?.date)}</TableCell>
                                         <TableCell>
                                             <span
                                                 className={`px-3 py-1 text-xs font-normal capitalize rounded-full
@@ -372,7 +355,7 @@ const Dashboard = () => {
 
                 <div className='space-y-2' id='mobile_transaction_card'>
                     {transactions.map((transaction, index) => (
-                        <TransactionCard key={index} transaction={transaction} />
+                        <TransactionCard key={transaction?._id} transaction={transaction} />
                     ))}
                 </div>
             </div>
