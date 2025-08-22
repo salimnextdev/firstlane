@@ -93,18 +93,25 @@ const MakeInvestment = () => {
         };
 
         try {
-            await dispatch(addInvestments(data)).unwrap();
-            // setConfirmOpen(true);
-            return true;
+            const resultAction = await dispatch(addInvestments(data));
+            if (addInvestments.fulfilled.match(resultAction)) {
+                return true;
+            } else {
+                toast.error(resultAction.payload.message);
+                return false;
+            };
         } catch (error) {
             toast.error("An error occured", {
                 description: error.message,
             });
+            return false
         } finally {
             setSubmitted(false);
-            return false;
         }
     };
+
+    // const btnDisabled = submitted || balance_loading || balance?.available_balance < investment_plan?.minAmount;
+    const btnDisabled = submitted || balance_loading;
 
     return (
         <div className="space-y-4">
@@ -226,8 +233,8 @@ const MakeInvestment = () => {
                     <button
                         type='button'
                         onClick={investNow}
-                        className='w-full md:w-24 h-10 md:h-9 my-3 md:my-5 px-2 rounded-md bg-primary text-sm cursor-pointer'
-                        disabled={submitted || balance_loading}
+                        className={`w-full md:w-24 h-10 md:h-9 my-3 md:my-5 px-2 rounded-md bg-primary text-sm ${btnDisabled ? 'opacity-70' : 'cursor-pointer'}`}
+                        disabled={btnDisabled}
                     >
                         {submitted ?
                             <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
