@@ -22,6 +22,7 @@ import { ReactComponent as Bank } from '@/assets/icons/bank-sm.svg';
 
 import NotificationSkeleton from './NotificationSkeleton';
 import { formatDateToday } from '@/utils/datetimeFormats';
+import NoContent from './NoContent';
 
 const mapper = {
   'KYC': KYC,
@@ -91,45 +92,54 @@ const NotificationPanel = ({ isOpen, onClose }) => {
                 {metaData?.total?.toLocaleString() || 0}
               </span>
             </h2>
-            <button
-              className="text-sm md:text-base text-secondary hover:underline cursor-pointer"
-              onClick={() => readAllNotifications()}
-            >
-              Mark all as read
-            </button>
+            {notifications.length > 1 &&
+              <button
+                className="text-sm md:text-base text-secondary hover:underline cursor-pointer"
+                onClick={() => readAllNotifications()}
+              >
+                Mark all as read
+              </button>
+            }
           </div>
 
-          <div className="">
-            {loading ? (
-              <NotificationSkeleton count={5} />
-            ) : notifications.map((notif) => (
-              <div key={notif._id} className="flex items-start gap-2 px-4 py-2 rounded-xl cursor-pointer hover:bg-gray-50">
-                <div className="relative">
-                  <div className='w-2/12'>
-                    <p className="w-[44px] h-[44px] flex items-center justify-center border border-[#D0D5DD] rounded-full">
-                      <Icon ID={notif?.entityType} />
-                    </p>
+          {notifications.length > 0 ?
+            <div className="">
+              {loading ? (
+                <NotificationSkeleton count={5} />
+              ) : notifications.map((notif) => (
+                <div key={notif._id} className="flex items-start gap-2 px-4 py-2 rounded-xl cursor-pointer hover:bg-gray-50">
+                  <div className="relative">
+                    <div className='w-2/12'>
+                      <p className="w-[44px] h-[44px] flex items-center justify-center border border-[#D0D5DD] rounded-full">
+                        <Icon ID={notif?.entityType} />
+                      </p>
+                    </div>
+                    {!(notif?.isRead) && (
+                      <span className="absolute top-0 right-0 bg-secondary w-3 h-3 rounded-full"></span>
+                    )}
                   </div>
-                  {!(notif?.isRead) && (
-                    <span className="absolute top-0 right-0 bg-secondary w-3 h-3 rounded-full"></span>
-                  )}
+                  <div>
+                    {notif?.action && (
+                      <p className="text-xs text-[#099137] capitalize">{notif?.action}</p>
+                    )}
+                    <p className="text-sm md:text-base font-normal">{notif?.details || ""}</p>
+                    <p className="text-xs text-secondary mt-1">{formatDateToday(notif.createdAt)}</p>
+                  </div>
                 </div>
-                <div>
-                  {notif?.action && (
-                    <p className="text-xs text-[#099137] capitalize">{notif?.action}</p>
-                  )}
-                  <p className="text-sm md:text-base font-normal">{notif?.details || ""}</p>
-                  <p className="text-xs text-secondary mt-1">{formatDateToday(notif.createdAt)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div> :
+            <NoContent
+              icon="notification"
+              title="No notifications yet"
+              description="You’ll see any updates or alerts here as soon as they’re available."
+            />
+          }
 
           {!loading &&
             <div className="px-4 py-2 text-sm md:text-base text-secondary">
               Showing &nbsp;
               <span className="text-secondary font-medium">
-                {metaData?.limit * metaData?.currentPage}
+                {(LIMIT <= totalItems && parseInt(metaData?.limit) || 0) * metaData?.currentPage}
               </span> &nbsp;
               out of &nbsp;
               <span className="text-secondary font-medium">{metaData?.total?.toLocaleString() || 0}</span>
@@ -146,7 +156,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
                 <button
                   onClick={() => paginator('next')}
                   className="w-[36px] h-[36px] flex items-center justify-center border border-gray rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={isLastPage}
+                  disabled={isLastPage || notifications.length == 0}
                 >
                   <SlArrowRight className={`${isLastPage ? 'text-gray-400' : ''}`} />
                 </button>

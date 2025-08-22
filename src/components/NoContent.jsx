@@ -8,6 +8,7 @@ import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
 import { ReactComponent as Support } from '@/assets/icons/support.svg';
 import { ReactComponent as Setting } from '@/assets/icons/setting.svg';
 import { ReactComponent as KYC } from '@/assets/icons/kyc.svg';
+import { ReactComponent as Bell } from '@/assets/icons/bell-sm.svg';
 
 const mapper = {
     "dashboard": Dashboard,
@@ -17,7 +18,8 @@ const mapper = {
     "wallets": Wallet,
     "support": Support,
     "settings": Setting,
-    "kyc verification": KYC
+    "kyc verification": KYC,
+    "notification": Bell
 }
 
 const NoContent = ({ icon, title, description, className }) => {
