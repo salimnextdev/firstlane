@@ -172,7 +172,7 @@ const AccountFormModal = ({
                         </DialogDescription>
                     </DialogHeader>
 
-                    {type === 'Buy' && <form method='post' className='space-y-3'>
+                    {type === 'Sell' && <form method='post' className='space-y-3'>
                         <TextInput
                             label='Account number'
                             name='account_number'
@@ -205,7 +205,7 @@ const AccountFormModal = ({
                         </div>
                     </form>}
 
-                    {type === 'Sell' && <form method='post' className='space-y-2 text-sm'>
+                    {type === 'Buy' && <form method='post' className='space-y-2 text-sm'>
                         <div className='flex flex-col md:flex-row items-center gap-5'>
                             <TextInput
                                 label='Account number'
