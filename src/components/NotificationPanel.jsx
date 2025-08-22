@@ -92,7 +92,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
                 {metaData?.total?.toLocaleString() || 0}
               </span>
             </h2>
-            {notifications.length > 1 &&
+            {notifications.length > 0 &&
               <button
                 className="text-sm md:text-base text-secondary hover:underline cursor-pointer"
                 onClick={() => readAllNotifications()}
@@ -102,7 +102,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
             }
           </div>
 
-          {notifications.length > 0 ?
+          {(loading || notifications.length > 0) ?
             <div className="">
               {loading ? (
                 <NotificationSkeleton count={5} />
@@ -139,7 +139,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
             <div className="px-4 py-2 text-sm md:text-base text-secondary">
               Showing &nbsp;
               <span className="text-secondary font-medium">
-                {(LIMIT <= totalItems && parseInt(metaData?.limit) || 0) * metaData?.currentPage}
+                {(LIMIT <= totalItems && parseInt(metaData?.limit) || totalItems) * metaData?.currentPage}
               </span> &nbsp;
               out of &nbsp;
               <span className="text-secondary font-medium">{metaData?.total?.toLocaleString() || 0}</span>
