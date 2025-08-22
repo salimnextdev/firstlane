@@ -25,13 +25,15 @@ const ConfirmModal = ({
     buttonSuccessAction,
 }) => {
 
+    const [success, setSuccess] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <InvestmentModal
+            {success ? <InvestmentModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
+                success={success}
                 title='Investment successful'
                 description={
                     `You have invested a sum of 
@@ -44,7 +46,16 @@ const ConfirmModal = ({
                 You can view your investments or return home. `}
                 buttonCLoseText="Go to My Investments"
                 buttonSuccessText="Return Home"
-            />
+            /> :
+            <InvestmentModal
+                isOpen={isModalOpen}
+                onClose={setIsModalOpen}
+                success={success}
+                title='Investment failed'
+                description='Oops! Your investment failed due to insufficient balance. You can topup your wallet and try investing again'
+                buttonCLoseText="Cancel"
+                buttonSuccessText="Fund Wallet"
+            />}
             <DialogContent className="z-50 md:p-6 md:px-8 bg-white rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] hidden md:flex items-center justify-center bg-[#D8D9EA] rounded-full">
@@ -95,11 +106,20 @@ const ConfirmModal = ({
                         </DialogClose>
                         <button
                             onClick={async () => {
-                                await buttonSuccessAction();
-                                onClose();
+                                const success = await buttonSuccessAction();
+                        
+                                if (success) {
+                                    onClose();
+                                    setSuccess(true);
+                                } else {
+                                    onClose();
+                                    setSuccess(false);
+                                }
+                                
                                 setIsModalOpen(true);
                             }}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm py-3 cursor-pointer rounded-xl"
+                            disabled={submitted}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :

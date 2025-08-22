@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Check } from '@/assets/icons/check.svg';
+import { ReactComponent as Investment } from '@/assets/icons/investment.svg';
 
 import {
     AlertDialog,
@@ -11,20 +12,21 @@ import {
     AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
-const SuccessModal = ({ 
-    isOpen, 
-    onClose, 
-    title = "Success!", 
+const SuccessModal = ({
+    isOpen,
+    onClose,
+    success,
+    title = "Success!",
     description = "Operation completed successfully.",
     buttonCLoseText = "Cancel",
-    buttonSuccessText = "Ok" 
+    buttonSuccessText = "Ok"
 }) => {
     const navigate = useNavigate();
-    const GotoInv = ()=> {
+    const GotoInv = () => {
         onClose();
         navigate('/investment/all')
     };
-    const GotoHome = ()=> {
+    const GotoHome = () => {
         onClose();
         navigate('/investment')
     };
@@ -33,11 +35,15 @@ const SuccessModal = ({
         <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent className="md:p-6 md:px-8 bg-white rounded-xl">
                 <div className="space-y-5">
-                    <div 
-                        className='w-[48px] h-[48px] bg-[#E7F6EC] rounded-full flex items-center justify-center'
-                    >
-                        <Check className='' />
-                    </div>
+                    {success ?
+                        <div className='w-[48px] h-[48px] bg-[#E7F6EC] rounded-full flex items-center justify-center'>
+                            <Check className='' />
+                        </div> :
+                        <div className='w-[48px] h-[48px] bg-[#D8D9EA] rounded-full flex items-center justify-center'>
+                            <Investment className='text-primary' />
+                        </div>
+                    }
+
                     <AlertDialogHeader className="text-left">
                         <AlertDialogTitle className="text-xl md:text-2xl">
                             {title}
@@ -47,13 +53,13 @@ const SuccessModal = ({
                         </AlertDialogDescription>
 
                         <div className='w-full flex flex-col md:flex-row flex-col-reverse md:justify-center gap-2 md:gap-5 mt-3'>
-                            <AlertDialogCancel 
-                                onClick={GotoInv}
+                            <AlertDialogCancel
+                                onClick={success ? GotoInv : onClose}
                                 className='w-full md:w-1/2 h-11 border border-gray text-sm px-8 py-3 rounded-md cursor-pointer'
                             >
                                 {buttonCLoseText}
                             </AlertDialogCancel>
-                            <AlertDialogCancel 
+                            <AlertDialogCancel
                                 onClick={GotoHome}
                                 className='w-full md:w-1/2 h-11 bg-primary text-sm px-8 py-3 rounded-xl cursor-pointer'
                             >
