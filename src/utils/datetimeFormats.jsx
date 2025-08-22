@@ -106,3 +106,59 @@ export const formatDateToday = (isoString) => {
         return `${formattedDay}/${formattedMonth}/${year}, ${timeString}`;
     }
 };
+
+export const calculateDurationDetails = (createdDateString, durationLimitInDays) => {
+    if (!createdDateString) {
+        return '';
+    }
+
+    // Define the number of milliseconds in one day and one hour for calculations
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const millisecondsPerHour = 1000 * 60 * 60;
+
+    // 1. Parse the created date string into a Date object
+    const createdDate = new Date(createdDateString);
+
+    // 2. Get the current date and time
+    const now = new Date(); // This will be the actual current time when the function runs
+
+    // 3. Calculate the difference in milliseconds between now and the created date
+    const differenceInMilliseconds = now.getTime() - createdDate.getTime();
+
+    // 4. Convert the difference from milliseconds to days (float)
+    const durationSoFarInDays = differenceInMilliseconds / millisecondsPerDay;
+
+    // 5. Calculate whole days and remaining hours
+    const totalHoursSoFar = differenceInMilliseconds / millisecondsPerHour;
+    const daysSoFar = Math.floor(totalHoursSoFar / 24);
+    const hoursSoFar = Math.floor(totalHoursSoFar % 24); // Use Math.floor to get whole hours
+
+    // 6. Determine if the duration is within the specified limit
+    const isWithinDurationLimit = durationSoFarInDays <= durationLimitInDays;
+
+    // 7. Calculate the exact end date based on the created date and the duration limit
+    const endDate = new Date(createdDate.getTime() + (durationLimitInDays * millisecondsPerDay));
+
+    // 8. Calculate days remaining or days overdue
+    let daysRemaining = 0;
+    let daysOverdue = 0;
+
+    if (isWithinDurationLimit) {
+        // If within the limit, calculate how many days are left
+        daysRemaining = durationLimitInDays - durationSoFarInDays;
+    } else {
+        // If past the limit, calculate how many days it is overdue
+        daysOverdue = durationSoFarInDays - durationLimitInDays;
+    }
+
+    // Return an object with all the calculated details
+    return {
+        durationSoFarInDays: parseFloat(durationSoFarInDays.toFixed(2)), // Total duration as a float (e.g., 1.5 days)
+        daysSoFar: daysSoFar, // Whole days (e.g., 1 day)
+        hoursSoFar: hoursSoFar, // Remaining hours (e.g., 12 hours)
+        isWithinDurationLimit: isWithinDurationLimit,
+        daysRemaining: parseFloat(daysRemaining.toFixed(2)),
+        daysOverdue: parseFloat(daysOverdue.toFixed(2)),
+        // endDate: endDate?.toISOString() // Return end date in ISO format for consistency
+    };
+}
