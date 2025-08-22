@@ -1,29 +1,35 @@
+import { formatDateTime } from "@/utils/datetimeFormats";
 import React from "react";
 
-const TransactionCard = ({ transaction }) => {
+const TransactionCard = ({ userProfile, transaction }) => {
     return (
-        <div key={transaction.name} className='p-3 flex items-center justify-between border border-gray rounded-xl'>
+        <div key={transaction?.reference} className='p-3 flex items-center justify-between border border-gray rounded-xl'>
             <div className="flex items-center gap-2">
                 <div className="w-[36px] h-[36px] rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
-                    <img src="/api/placeholder/40/40" alt="User avatar" className="w-full h-full object-cover" />
+                    <img
+                        src={userProfile?.profileImage}
+                        alt="User avatar"
+                        className="w-full h-full object-cover"
+                        crossOrigin="anonymous"
+                    />
                 </div>
                 <div className="space-y-1">
-                    <p className="text-sm md:text-base font-medium text-gray-800">{transaction.name}</p>
-                    <p className="text-xs md:text-sm text-gray-500">{'19/12 at 6:03pm'}</p>
+                    <p className="text-sm md:text-base font-medium text-gray-800">{userProfile?.fullname || 'N/A'}</p>
+                    <p className="text-xs md:text-sm text-gray-500">{formatDateTime(transaction?.date)}</p>
                 </div>
             </div>
             <div className='flex flex-col items-end gap-1'>
-                <p className={`text-sm font-medium ${transaction.status === 'successful' ? 'text-success' :
-                    transaction.status === 'pending' ? 'text-warning' :
-                        'text-danger'
+                <p className={`text-sm font-medium ${transaction?.type === 'C' ? 'text-success' :
+                    transaction?.type === 'D' ? 'text-danger' :
+                        'text-warning'
                     }`}>
-                    {transaction.paymentType === 'Loan' ? '-' : '+'}
+                    {transaction?.type === 'D' ? '-' : '+'}
                     ₦{transaction.amount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })}</p>
                 <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
-                    {transaction.paymentType}
+                    {transaction?.status || 'N/A'}
                 </p>
             </div>
         </div>
