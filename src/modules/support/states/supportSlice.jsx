@@ -17,9 +17,9 @@ export const addSupport = createAsyncThunk(
 
 export const fetchSupports = createAsyncThunk(
     'support/fetchSupports',
-    async ({ page, limit }, { rejectWithValue }) => {
+    async ({ key, value, page, limit }, { rejectWithValue }) => {
         try {
-            let url = `${API_BASE_URL}/support`;
+            let url = `${API_BASE_URL}/support/by-any/${key}/${value}`;
 
             const params = [];
             if (page !== undefined) {

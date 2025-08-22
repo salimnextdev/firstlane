@@ -44,7 +44,7 @@ const Support = () => {
 
     useEffect(() => {
         if (!loading) {
-            dispatch(fetchSupports({ page: 1, limit: LIMIT }));
+            dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
         }
     }, [dispatch]);
 
@@ -123,7 +123,7 @@ const Support = () => {
         if (parseInt(metaData?.currentPage) < parseInt(metaData?.totalPage)) {
             const nextPage = currentPage + 1;
             setCurrentPage(nextPage);
-            dispatch(fetchSupports({ page: nextPage, limit: LIMIT }));
+            dispatch(fetchSupports({ key: 'userID', value: user?._id, page: nextPage, limit: LIMIT }));
         }
     };
 
@@ -170,7 +170,7 @@ const Support = () => {
             if (selected) {
                 data.supportID = selected?._id;
             }
-            
+
             const msg = selected ? "Reply sent successfully!" : "Support ticket created successfully!"
             await dispatch(addSupport(data)).unwrap();
             selected && await getConversations(selected); // Fetch conversations for already existing support ticket.
@@ -222,39 +222,45 @@ const Support = () => {
                 <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto space-y-2 md:p-3 md:border-r border-gray`}>
                     {loading ? <SupportListSkeleton /> :
                         supports.length > 0 ?
-                        supports.map((item, index) => (
-                            <div
-                                key={item?._id}
-                                onClick={() => getConversations(item)}
-                                className={`flex items-center justify-between py-2 md:p-3 ${item?._id === selected?._id && 'bg-currency'} md:hover:bg-gray-100 rounded-md cursor-pointer`}
-                            >
-                                <div className='flex items-center gap-3'>
-                                    <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
-                                        <p className='capitalize'>A</p>
-                                    </div>
-                                    <div className='text-sm font-light'>
-                                        <p className='font-medium space-x-3'>
-                                            <span>Admin</span>
-                                            <span className='text-secondary'>|</span>
-                                            <span
-                                                className={`inline-flex items-center justify-center px-3 py-0.5 text-xs font-normal capitalize rounded-full
+                            supports.map((item, index) => (
+                                <div
+                                    key={item?._id}
+                                    onClick={() => getConversations(item)}
+                                    className={`flex items-center justify-between py-2 md:p-3 ${item?._id === selected?._id && 'bg-currency'} md:hover:bg-gray-100 rounded-md cursor-pointer`}
+                                >
+                                    <div className='flex items-center gap-3'>
+                                        <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
+                                            <p className='capitalize'>A</p>
+                                        </div>
+                                        <div className='text-sm font-light'>
+                                            <p className='font-medium space-x-3'>
+                                                <span>Admin</span>
+                                                <span className='text-secondary'>|</span>
+                                                <span
+                                                    className={`inline-flex items-center justify-center px-3 py-0.5 text-xs font-normal capitalize rounded-full
                                                 ${item?.status === 'closed' ? 'bg-success' :
-                                                        item?.status === 'open' ? 'bg-warning' :
-                                                            'bg-danger'}`
-                                                }
-                                            >
-                                                {item?.status}
-                                            </span>
-                                        </p>
-                                        <p className='text-secondary capitalize'>{item?.subject}</p>
+                                                            item?.status === 'open' ? 'bg-warning' :
+                                                                'bg-danger'}`
+                                                    }
+                                                >
+                                                    {item?.status}
+                                                </span>
+                                            </p>
+                                            <p className='text-secondary capitalize'>{item?.subject}</p>
+                                        </div>
+                                    </div>
+                                    <div className='text-xs font-light'>
+                                        <p>{formatDateToday(item?.createdAt)?.split(',')[1]}</p>
+                                        <p className='w-[29px] h-[17px] float-right flex items-center justify-center bg-primary rounded-full'>10</p>
                                     </div>
                                 </div>
-                                <div className='text-xs font-light'>
-                                    <p>{formatDateToday(item?.createdAt)?.split(',')[1]}</p>
-                                    <p className='w-[29px] h-[17px] float-right flex items-center justify-center bg-primary rounded-full'>10</p>
-                                </div>
-                            </div>
-                        )) : <NoContent icon="support" title="No support ticket found" description=""  className="h-full"/>
+                            )) :
+                            <NoContent
+                                icon="support"
+                                title="No support ticket found"
+                                description="You currently have no support tickets. Once you create a ticket, it will appear here."
+                                className="h-full"
+                            />
                     }
 
                     {/* Load More Button */}
@@ -302,7 +308,7 @@ const Support = () => {
                                     </div>
                                 </div>
                             }
-                            
+
                             {/* Chat Area */}
                             <div className={`mt-5 mb-24 md:mb-0 w-full space-y-3 ${selected ? 'md:h-[60vh]' : 'md:h-[65vh]'} overflow-y-auto cursor-pointer`}>
                                 {sortedConversations.length === 0 ?
