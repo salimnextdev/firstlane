@@ -1,4 +1,4 @@
-// utils/copyToClipboard.js
+import { toast } from "sonner";
 
 export async function copyToClipboard(content) {
     try {
@@ -14,9 +14,10 @@ export async function copyToClipboard(content) {
         }
 
         await navigator.clipboard.writeText(textToCopy);
+        toast.success("Copied successfully!");
         return true;
     } catch (error) {
-        // console.error('Failed to copy to clipboard:', error);
+        toast.error("Failed to copy content. Please try again.");
         return false;
     }
 }
