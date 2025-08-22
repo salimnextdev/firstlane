@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
+import { getCookie } from '@/utils/cookieUtils';
 import useRedirectOnDesktop from '@/hooks/useRedirectOnDesktop';
 
 import BackButton from '@/components/BackButton';
@@ -19,6 +20,7 @@ const AllTransactions = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
     const {
         fx_transactions: fx_transactions,
@@ -29,7 +31,7 @@ const AllTransactions = () => {
 
     useEffect(() => {
         if (!loading) {
-            dispatch(fetchFXTransactions({ page: 1, limit: LIMIT }));
+            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
             dispatch(fetchFXRates({ page: 1, limit: LIMIT }));
         }
     }, [dispatch]);
@@ -84,6 +86,8 @@ const AllTransactions = () => {
         const getFilterPayload = () => {
             const { statuses, currencyPairs } = filters;
             const result = {};
+            
+            result.userID = user?._id;
 
             if (statuses) {
                 result.status = statuses.toLowerCase();
@@ -103,7 +107,7 @@ const AllTransactions = () => {
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
         } else {
-            dispatch(fetchFXTransactions({ page: currentPage, limit: LIMIT }));
+            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
 

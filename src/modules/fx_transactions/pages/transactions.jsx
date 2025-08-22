@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
 import { fetchCurrency } from '@/modules/fx_transactions/state/currencySlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import { IoIosInformationCircleOutline, IoIosSearch } from 'react-icons/io';
 import { BsArrowRight } from 'react-icons/bs';
@@ -34,6 +35,7 @@ const LIMIT = 10;
 const FXTransactions = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
     const {
         fx_transactions: fx_transactions,
@@ -46,7 +48,7 @@ const FXTransactions = () => {
 
     useEffect(() => {
         if (!loading || !rates_loading) {
-            dispatch(fetchFXTransactions({ page: 1, limit: LIMIT }));
+            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
             dispatch(fetchFXRates({ page: 1, limit: LIMIT }));
             dispatch(fetchCurrency({ page: 1, limit: LIMIT }))
         }
@@ -165,6 +167,8 @@ const FXTransactions = () => {
             const { statuses, currencyPairs } = filters;
             const result = {};
 
+            result.userID = user?._id;
+
             if (statuses) {
                 result.status = statuses.toLowerCase();
             }
@@ -183,7 +187,7 @@ const FXTransactions = () => {
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
         } else {
-            dispatch(fetchFXTransactions({ page: currentPage, limit: LIMIT }));
+            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
 
