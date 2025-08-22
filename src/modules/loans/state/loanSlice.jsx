@@ -5,9 +5,9 @@ const API_BASE_URL = import.meta.env.VITE_API_API_BASE_URL
 
 export const fetchLoans = createAsyncThunk(
   'loan/fetchLoans',
-  async ({ page, limit }, { rejectWithValue }) => {
+  async ({ key, value, page, limit }, { rejectWithValue }) => {
     try {
-      let url = `${API_BASE_URL}/loan`;
+      let url = `${API_BASE_URL}/loan/by-any/${key}/${value}`;
 
       const params = [];
       // Conditionally add 'page' and 'limit' if they are provided

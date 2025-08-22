@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLoans, filterLoans } from '@/modules/loans/state/loanSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import {
     Table,
@@ -34,11 +35,12 @@ const LIMIT = 10;
 const LoanApplications = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
     const { loans: loans, metaData: metaData, loading: loading, error: error } = useSelector((state) => state.loan);
     useEffect(() => {
         if (!loading) {
-            dispatch(fetchLoans({ page: 1, limit: LIMIT }));
+            dispatch(fetchLoans({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
         }
     }, [dispatch]);
 
@@ -136,7 +138,7 @@ const LoanApplications = () => {
         if (Object.keys(filterData).length > 0) {
             dispatch(filterLoans({ credentials: filterData, page: currentPage, limit: LIMIT }));
         } else {
-            dispatch(fetchLoans({ page: currentPage, limit: LIMIT }));
+            dispatch(fetchLoans({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
 
