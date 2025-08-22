@@ -26,7 +26,10 @@ import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
 import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import TransactionCard from '@/modules/fx_transactions/components/TransactionCard';
+import NoContent from '@/components/NoContent';
 import { formatDateTime } from '@/utils/datetimeFormats';
+import TransactionSkeletonTable from '../components/TransactionSkeletonTable';
+import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 
 const KYCBanner = {
     pending: {
@@ -63,8 +66,8 @@ const Dashboard = () => {
     const {
         transactions: transactions,
         metaData: metaData,
-        loading: wallet_loading,
-        error: wallet_error
+        transaction_loading: wallet_loading,
+        transaction_error: wallet_error
     } = useSelector((state) => state.wallet);
     useEffect(() => {
         if (!loading) {
@@ -281,71 +284,89 @@ const Dashboard = () => {
                         <h2 className="text-[20px] font-medium text-tertiary">Transactions</h2>
                     </div>
 
-                    <div className="overflow-x-auto text-secondary">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-light border-b border-gray-200">
-                                    <TableHead className="w-12 p-4">
-                                        <Checkbox />
-                                    </TableHead>
-                                    <TableHead className="w-[25%] font-medium text-xs">Name</TableHead>
-                                    <TableHead className="font-medium text-xs">Amount</TableHead>
-                                    <TableHead className="font-medium text-xs">Payment type</TableHead>
-                                    <TableHead className="font-medium text-xs">Date & time</TableHead>
-                                    <TableHead className="font-medium text-xs">Status</TableHead>
-                                    <TableHead className="w-12"></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody className='text-sm text-secondary font-light'>
-                                {transactions.map((transaction) => (
-                                    <TableRow key={transaction?._id} className="border-b border-gray">
-                                        <TableCell className="p-4">
+                    {(wallet_loading || transactions.length) > 0 ?
+                        <div className="overflow-x-auto text-secondary">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="bg-light border-b border-gray-200">
+                                        <TableHead className="w-12 p-4">
                                             <Checkbox />
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
-                                                    <img src="/api/placeholder/40/40" alt="User avatar" className="w-full h-full object-cover" />
+                                        </TableHead>
+                                        <TableHead className="w-[25%] font-medium text-xs">Name</TableHead>
+                                        <TableHead className="font-medium text-xs">Amount</TableHead>
+                                        <TableHead className="font-medium text-xs">Payment type</TableHead>
+                                        <TableHead className="font-medium text-xs">Date & time</TableHead>
+                                        <TableHead className="font-medium text-xs">Status</TableHead>
+                                        <TableHead className="w-12"></TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody className='text-sm text-secondary font-light'>
+                                    {wallet_loading ? (
+                                        Array.from({ length: 6 }).map((_, index) => (
+                                            <TransactionSkeletonTable key={index} />
+                                        ))
+                                    ) : transactions.map((transaction) => (
+                                        <TableRow key={transaction?._id} className="border-b border-gray">
+                                            <TableCell className="p-4">
+                                                <Checkbox />
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
+                                                        <img
+                                                            src={userProfile?.profileImage}
+                                                            alt="User avatar"
+                                                            className="w-full h-full object-cover"
+                                                            crossOrigin='anonymous'
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-gray-800">{userProfile?.fullname || 'N/A'}</p>
+                                                        <p className="text-sm text-gray-500">{userProfile?.email || 'N/A'}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="font-medium text-gray-800">{user?.fullname}</p>
-                                                    <p className="text-sm text-gray-500">{user?.email}</p>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-gray-800">
-                                            ₦{transaction?.amount?.toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })}
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
-                                                {transaction?.type == "D" ? "Money sent" : "Money received"}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className="text-gray-800">{formatDateTime(transaction?.date)}</TableCell>
-                                        <TableCell>
-                                            <span
-                                                className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${transaction.status === 'successful' ? 'bg-success' :
-                                                        transaction.status === 'pending' ? 'bg-warning' :
-                                                            'bg-danger'
-                                                    }`}
-                                            >
-                                                {transaction.status}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                            </TableCell>
+                                            <TableCell className="text-gray-800">
+                                                ₦{transaction?.amount?.toLocaleString(undefined, {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                })}
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
+                                                    {transaction?.type == "D" ? "Money sent" : "Money received"}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-gray-800">{formatDateTime(transaction?.date)}</TableCell>
+                                            <TableCell>
+                                                <span
+                                                    className={`px-3 py-1 text-xs font-normal capitalize rounded-full
+                                                ${transaction?.status === 'successful' ? 'bg-success' :
+                                                            transaction?.status === 'pending' ? 'bg-warning' :
+                                                                'bg-danger'
+                                                        }`}
+                                                >
+                                                    {transaction?.status || 'N/A'}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                                                 <MoreVertical className="h-4 w-4" />
                                             </Button> */}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div> : (
+                            <NoContent
+                                icon="wallets"
+                                title="No wallet transactions found"
+                                description="We couldn't find any wallet transactions to display at the moment."
+                                className="hidden md:flex"
+                            />
+                        )
+                    }
                 </div>
             </div>
 
@@ -353,11 +374,26 @@ const Dashboard = () => {
             <div className='md:hidden space-y-4'>
                 <p className='text-base font-medium'>Transactions</p>
 
-                <div className='space-y-2' id='mobile_transaction_card'>
-                    {transactions.map((transaction, index) => (
-                        <TransactionCard key={transaction?._id} transaction={transaction} />
-                    ))}
-                </div>
+                {(wallet_loading || transactions.length) > 0 ? (
+                    <div className='space-y-2' id='mobile_transaction_card'>
+                        {wallet_loading ? (
+                            Array.from({ length: 6 }).map((_, index) => (
+                                <TransactionSkeletonCard key={index} />
+                            ))
+                        ) : transactions.map((transaction, index) => (
+                            <div key={transaction?.reference} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
+                                <TransactionCard userProfile={userProfile} transaction={transaction} />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <NoContent
+                        icon="wallets"
+                        title="No wallet transactions found"
+                        description="We couldn't find any wallet transactions to display at the moment."
+                    />
+
+                )}
             </div>
         </div>
     );
