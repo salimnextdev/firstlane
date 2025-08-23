@@ -70,6 +70,8 @@ function App() {
       <Toaster style={{ top: "10px" }} />
 
       <Routes>
+        <Route path="/" element={<Navigate to="/signup" replace />} />
+        
         {/* Authentication View */}
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
