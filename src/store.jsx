@@ -11,7 +11,11 @@ import supportSlice from '@/modules/support/states/supportSlice';
 import currencySlice from '@/modules/fx_transactions/state/currencySlice';
 import adminAccountSlice from '@/modules/fx_transactions/state/adminAccountSlice';
 
+import dashboardSlice from '@/modules/dashboard/state/dashboardStatsSlice';
+import loanStatsSlice from '@/modules/loans/state/loanStatsSlice';
+
 import searchSlice from '@/modules/auth/state/searchSlice';
+import dropdownOptionSlice from '@/modules/kyc/state/dropdownSlice';
 
 const store = configureStore({
   reducer: {
@@ -26,6 +30,10 @@ const store = configureStore({
     currency: currencySlice,
     admin_accounts: adminAccountSlice,
 
+    dashboard_stats: dashboardSlice,
+    loan_stats: loanStatsSlice,
+    
+    dropdownOptions: dropdownOptionSlice,
     search: searchSlice,
   },
 });
