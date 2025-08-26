@@ -90,14 +90,14 @@ export const uploadFile = createAsyncThunk(
   'kyc/uploadFile',
   async (files, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${API_BASE_URL}/upload/file`, files ,
+      const response = await api.post(`${API_BASE_URL}/upload/cloudinary?folder=userDocuments`, files ,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         }
       );
-      return response.data;
+      return {data: response.data}; // Formatted the response because of the change in the response from the update url
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
