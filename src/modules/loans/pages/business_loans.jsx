@@ -8,12 +8,20 @@ import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import DateInput from '@/components/FormInputs/DateInput';
 import BackButton from '@/components/BackButton';
-import { loanCollaterals, loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
+import LoanSuccessModal from '../components/loanSuccessCard';
+import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
 const BusinessLoans = () => {
+    const {
+        loanReasons: { options: loanReasons, loading: loadingReasons, error: errorReasons },
+        loanDurations: { options: loanDurations, loading: loadingDurations, error: errorDurations },
+        loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
+        loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
+    } = useLoanDropdowns();
+
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
 
@@ -25,6 +33,7 @@ const BusinessLoans = () => {
         duration: "",
         interval: "",
         collateral: "",
+        referral: "",
         others: "",
     });
 
@@ -65,9 +74,10 @@ const BusinessLoans = () => {
             purpose: formData.loan_reason,
             tenure: formData.duration,
             repaymentInterval: formData.interval,
-            collateral: formData.collateral,
+            collateral: formData.others || formData.collateral,
             loanType: "business",
             userID: user._id,
+            refCode: formData.referral,
         };
 
         try {
@@ -169,9 +179,18 @@ const BusinessLoans = () => {
                         className='text-sm'
                         value={formData.others}
                         onChange={handleChange}
-                        placeholder="Select name"
+                        placeholder="Collateral"
                     />
                 </div>
+
+                <TextInput
+                    label='Referral code (optional)'
+                    name='referral'
+                    className='w-full md:w-1/2'
+                    value={formData.referral}
+                    onChange={handleChange}
+                    placeholder='000000'
+                />
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>

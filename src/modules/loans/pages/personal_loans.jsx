@@ -7,15 +7,22 @@ import { getCookie } from '@/utils/cookieUtils';
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import BackButton from '@/components/BackButton';
-import { loanCollaterals, loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
+import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 import LoanSuccessModal from '../components/loanSuccessCard';
 
 const PersonalLoans = () => {
+    const {
+        loanReasons: { options: loanReasons, loading: loadingReasons, error: errorReasons },
+        loanDurations: { options: loanDurations, loading: loadingDurations, error: errorDurations },
+        loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
+        loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
+    } = useLoanDropdowns();
+
     const dispatch = useDispatch();
-    const user  = JSON.parse(getCookie('user'));
+    const user = JSON.parse(getCookie('user'));
 
     const [isOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -25,6 +32,7 @@ const PersonalLoans = () => {
         duration: "",
         interval: "",
         collateral: "",
+        referral: "",
         others: "",
     });
 
@@ -65,9 +73,10 @@ const PersonalLoans = () => {
             purpose: formData.loan_reason,
             tenure: formData.duration,
             repaymentInterval: formData.interval,
-            collateral: formData.collateral,
+            collateralID: formData.others || formData.collateral,
             loanType: "personal",
             userID: user._id,
+            // refCode: formData.referral,
         };
 
         try {
@@ -90,7 +99,7 @@ const PersonalLoans = () => {
 
     return (
         <form onSubmit={submitLoan} method='post' className="space-y-5">
-            <LoanSuccessModal 
+            <LoanSuccessModal
                 isOpen={isOpen}
                 onClose={setIsModalOpen}
             />
@@ -169,13 +178,22 @@ const PersonalLoans = () => {
                         className='text-sm'
                         value={formData.others}
                         onChange={handleChange}
-                        placeholder="Select name"
+                        placeholder="Collateral"
                     />
                 </div>
+
+                <TextInput
+                    label='Referral code (optional)'
+                    name='referral'
+                    className='w-full md:w-1/2'
+                    value={formData.referral}
+                    onChange={handleChange}
+                    placeholder='000000'
+                />
             </div>
 
             <div className='flex md:items-center gap-4 text-sm pr-8 text-secondary font-light'>
-                <input onChange={()=> setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
+                <input onChange={() => setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
                 <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
             </div>
 

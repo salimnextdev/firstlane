@@ -9,12 +9,20 @@ import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import FileInput from '@/components/FormInputs/FileInput';
 import BackButton from '@/components/BackButton';
-import { loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
+import LoanSuccessModal from '../components/loanSuccessCard';
+import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
 const FinanceLoans = () => {
+    const {
+        loanReasons: { options: loanReasons, loading: loadingReasons, error: errorReasons },
+        loanDurations: { options: loanDurations, loading: loadingDurations, error: errorDurations },
+        loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
+        loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
+    } = useLoanDropdowns();
+
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
 
@@ -27,6 +35,7 @@ const FinanceLoans = () => {
         interval: "",
         collateral: "",
         invoice: null,
+        referral: "",
     });
 
     const [checked, setChecked] = useState(false);
@@ -83,6 +92,7 @@ const FinanceLoans = () => {
                 vendorInvoice: documentUpload.payload?.data[0]?.url || documentUpload,
                 loanType: "asset-finance",
                 userID: user._id,
+                refCode: formData.referral,
             };
 
             const resultAction = await dispatch(addLoan(loanData));
@@ -167,7 +177,7 @@ const FinanceLoans = () => {
                     />
                 </div>
 
-                <div className='md:w-1/2'>
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
                     <FileInput
                         label='Invoice of item from vendor'
                         name='invoice'
@@ -175,10 +185,19 @@ const FinanceLoans = () => {
                         onChange={handleChange}
                         accept=".pdf,image/*"
                     />
-                    <p className='mt-2 text-sm text-secondary'>
-                        You need to upload an invoice of the asset you want to purchase which would contain the account details of the vendor of this asset.
-                    </p>
+
+                    <TextInput
+                        label='Referral code (optional)'
+                        name='referral'
+                        value={formData.referral}
+                        onChange={handleChange}
+                        placeholder='000000'
+                    />
                 </div>
+
+                <p className='md:w-1/2 mt-2 text-sm text-secondary'>
+                    You need to upload an invoice of the asset you want to purchase which would contain the account details of the vendor of this asset.
+                </p>
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>

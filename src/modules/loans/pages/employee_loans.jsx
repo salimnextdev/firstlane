@@ -9,15 +9,22 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import SearchInput from '@/components/FormInputs/searchInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
 import BackButton from '@/components/BackButton';
-import { loanDurations, loanIntervals, loanReasons } from '@/utils/dropdownOptions';
-
+import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
 import { GetCountries, GetState } from 'react-country-state-city';
+import LoanSuccessModal from '../components/loanSuccessCard';
 
 const EmployeeLoans = () => {
+    const {
+        loanReasons: { options: loanReasons, loading: loadingReasons, error: errorReasons },
+        loanDurations: { options: loanDurations, loading: loadingDurations, error: errorDurations },
+        loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
+        loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
+    } = useLoanDropdowns();
+
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
 
@@ -37,6 +44,7 @@ const EmployeeLoans = () => {
         nationality: "",
         state: "",
         lga: "",
+        referral: "",
     });
 
     const [checked, setChecked] = useState(false);
@@ -112,6 +120,7 @@ const EmployeeLoans = () => {
 
             loanType: "employee",
             userID: user._id,
+            refCode: formData.referral,
         };
 
         try {
@@ -247,7 +256,7 @@ const EmployeeLoans = () => {
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
-                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
+                <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <SearchInput
                         label="Nationality"
                         name="nationality"
@@ -282,6 +291,14 @@ const EmployeeLoans = () => {
                         ]}
                         placeholder="Select LGA"
                     />
+                    
+                <TextInput
+                    label='Referral code (optional)'
+                    name='referral'
+                    value={formData.referral}
+                    onChange={handleChange}
+                    placeholder='000000'
+                />
                 </div>
             </div>
 
