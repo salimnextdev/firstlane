@@ -102,7 +102,7 @@ export const useLoanCollaterals = () => {
   const options = useMemo(() => {
     return data.map((item) => ({
       label: item.name,
-      value: item.name,
+      value: item._id,
     }));
   }, [data]);
 
@@ -135,7 +135,27 @@ export const useLoanIntervals = () => {
 
   useEffect(() => {
     if (data.length === 0 && !loading && !error) {
-      dispatch(fetchInterval());
+      dispatch(fetchInterval('loan'));
+    }
+  }, [dispatch, data, loading, error]);
+
+  const options = useMemo(() => {
+    return data.map((item) => ({
+      label: item.name,
+      value: item.name,
+    }));
+  }, [data]);
+
+  return { options, loading, error };
+};
+
+export const useInvestmentIntervals = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.dropdownOptions.interval);
+
+  useEffect(() => {
+    if (data.length === 0 && !loading && !error) {
+      dispatch(fetchInterval('investment'));
     }
   }, [dispatch, data, loading, error]);
 
