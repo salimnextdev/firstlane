@@ -66,7 +66,7 @@ const Support = () => {
     };
     const handleModalClose = () => {
         setIsOpen(false);
-        setSelected({ subject: selectedModalOption });
+        setSelected({ new: selectedModalOption });
     };
 
     const INITIAL_DATA = {
@@ -171,8 +171,9 @@ const Support = () => {
                 data.supportID = selected?._id;
             }
 
-            const msg = selected ? "Reply sent successfully!" : "Support ticket created successfully!"
+            const msg = selected?.message ? "Reply sent successfully!" : "Support ticket created successfully!"
             await dispatch(addSupport(data)).unwrap();
+            await dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT })).unwrap();
             selected && await getConversations(selected); // Fetch conversations for already existing support ticket.
             setFormData(INITIAL_DATA);
             toast.success(msg);
@@ -284,7 +285,7 @@ const Support = () => {
                     {(loading || support_loading) ? <SupportChatSkeleton /> :
                         <>
                             {/* Chat Header */}
-                            {selected &&
+                            {selected?.subject &&
                                 <div className='flex items-center gap-3'>
                                     <ArrowLeft onClick={() => setSelected(null)} className='md:hidden cursor-pointer' />
                                     <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
@@ -312,20 +313,58 @@ const Support = () => {
                             {/* Chat Area */}
                             <div className={`mt-5 mb-24 md:mb-0 w-full space-y-3 ${selected ? 'md:h-[60vh]' : 'md:h-[65vh]'} overflow-y-auto cursor-pointer`}>
                                 {sortedConversations.length === 0 ?
-                                    (selected ?
-                                        <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                            <HiOutlineChatBubbleBottomCenterText className="w-12 h-12 md:w-20 md:h-20" />
+                                    (selected?.new ?
+                                        (<div className='w-full h-[60vh] md:h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                            <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                                <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
+                                            </div>
                                             <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                                Welcome! Start typing to open a new support conversation.
+                                                Start typing to open or reply a support conversation.
                                             </p>
-                                        </div> :
-                                        <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                            <HiOutlineChatBubbleBottomCenterText className="w-12 h-12 md:w-20 md:h-20" />
-                                            <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                                Select a support ticket to view conversations!
-                                            </p>
-                                        </div>
-                                    ) : (
+                                        </div>) :
+                                        selected?.message ?
+                                            <div className='w-full flex justify-end'>
+                                                <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
+                                                    <div className='w-full space-y-1 font-light'>
+                                                        <div
+                                                            className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`}
+                                                        >
+                                                            <div className='text-sm leading-relaxed'>
+                                                                {selected?.message}
+                                                            </div>
+                                                        </div>
+                                                        {selected?.url &&
+                                                            <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                                                <div className='flex items-center gap-3 text-sm'>
+                                                                    <File />
+                                                                    <div className='space-y-1 text-sm'>
+                                                                        <p className='truncate'>{selected?.url?.split('/')?.pop()}</p>
+                                                                        <p className='text-xs text-gray-700'>1 page • PDF • 4mb</p>
+                                                                    </div>
+                                                                </div>
+                                                                <a href={selected?.url} download>
+                                                                    <Upload className="w-full" />
+                                                                </a>
+                                                            </div>
+                                                        }
+                                                        <div className='flex items-center justify-end text-xs text-gray-500'>
+                                                            <p>You • {formatDateToday(selected?.createdAt)?.split(',')[1]}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className='hidden md:block w-[40px] h-[40px]'>
+                                                        <Check className='w-5 h-5' />
+                                                    </div>
+                                                </div>
+                                            </div> :
+                                            <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                                <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                                    <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
+                                                </div>
+                                                <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
+                                                    Select a support ticket to view conversations!
+                                                </p>
+                                            </div>) :
+                                    (
                                         <>
                                             {/* Single Date Tag at the top */}
                                             <div className='mb-2 flex items-center justify-center font-light'>
