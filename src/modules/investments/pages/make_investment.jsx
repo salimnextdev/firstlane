@@ -12,9 +12,11 @@ import BackButton from '@/components/BackButton';
 
 import ConfirmModal from '@/modules/investments/components/confirmModal';
 import CustomInvestmentModal from '@/modules/investments/components/customInvestmentModal';
+import { useInvestmentIntervals } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import { IoIosInformationCircleOutline } from 'react-icons/io';
 
 const MakeInvestment = () => {
     const dispatch = useDispatch();
@@ -30,6 +32,8 @@ const MakeInvestment = () => {
         }
     }, [dispatch]);
 
+    const { options: intervalOptions, loading: intervalLoading } = useInvestmentIntervals();
+
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [customOpen, setCustomOpen] = useState(false);
 
@@ -37,6 +41,7 @@ const MakeInvestment = () => {
     const [formData, setFormData] = useState({
         amount: 0.00,
         interval: "",
+        referral: "",
     });
     useEffect(() => {
         setFormData(prevFormData => ({
@@ -89,7 +94,8 @@ const MakeInvestment = () => {
         const data = {
             investmentID: investment_plan?._id,
             amount: parseFloat(formData.amount),
-            repaymentInterval: formData.interval
+            repaymentInterval: formData.interval,
+            refCode: formData.referral,
         };
 
         try {
@@ -110,8 +116,9 @@ const MakeInvestment = () => {
         }
     };
 
-    // const btnDisabled = submitted || balance_loading || balance?.available_balance < investment_plan?.minAmount;
-    const btnDisabled = submitted || balance_loading;
+    const InsufficientBalance = balance?.available_balance < investment_plan?.minAmount
+    const btnDisabled = submitted || balance_loading || InsufficientBalance;
+    // const btnDisabled = submitted || balance_loading;
 
     return (
         <div className="space-y-4">
@@ -165,7 +172,7 @@ const MakeInvestment = () => {
                         type='number'
                         min={investment_plan?.minAmount}
                         max={investment_plan?.maxAmount}
-                        className='md:h-15 pl-7 pr-36 font-medium no-spinner'
+                        className={`md:h-15 pl-7 pr-36 font-medium no-spinner ${InsufficientBalance ? 'border !border-[var(--firstlane-danger)]' : undefined}`}
                         value={formData.amount}
                         onChange={handleChange}
                         placeholder='10,000.00'
@@ -181,14 +188,22 @@ const MakeInvestment = () => {
                     </p>
                 </div>
 
-                <p className="mt-2 mb-5 text-sm text-secondary font-light space-x-1">
-                    <span>Minimum amount that can be invested is</span>
-                    <span className='font-medium'>
-                        ₦{(investment_plan?.minAmount || 0.00)?.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}</span>
-                </p>
+                <div className='flex flex-col md:flex-row flex-col-reverse md:items-center justify-between mb-5'>
+                    <p className="mt-2 text-sm text-secondary font-light space-x-1">
+                        <span>Minimum amount that can be invested is</span>
+                        <span className='font-medium'>
+                            ₦{(investment_plan?.minAmount || 0.00)?.toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}</span>
+                    </p>
+                    {InsufficientBalance && (
+                        <div className='md:mt-2 flex items-center gap-1 text-[var(--firstlane-danger)]'>
+                            <IoIosInformationCircleOutline className='w-5 h-5' />
+                            <p className='my-1 text-sm font-light'>Insufficient Balance</p>
+                        </div>
+                    )}
+                </div>
 
                 {showCustomRate &&
                     <div className='mb-3 p-3 bg-light text-sm text-secondary font-light border border-gray rounded-lg'>
@@ -217,17 +232,21 @@ const MakeInvestment = () => {
                     className='!mb-0 text-sm'
                     value={formData.interval}
                     onChange={handleChange}
-                    options={[
-                        { label: "Daily", value: "Daily" },
-                        { label: "Weekly", value: "Weekly" },
-                        { label: "Monthly", value: "Monthly" },
-                        { label: "Yearly", value: "Yearly" },
-                    ]}
+                    options={intervalOptions}
                     placeholder='Select repayment interval'
                 />
-                <p className="mt-2 text-sm text-secondary font-light">
+                <p className="mt-2 mb-5 text-sm text-secondary font-light">
                     This is the time period it would take to keep getting part of your interest until your investment is fully mature
                 </p>
+
+                <TextInput
+                    label='Referral code (optional)'
+                    name='referral'
+                    className=''
+                    value={formData.referral}
+                    onChange={handleChange}
+                    placeholder='000000'
+                />
 
                 <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
