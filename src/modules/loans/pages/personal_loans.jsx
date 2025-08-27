@@ -76,7 +76,7 @@ const PersonalLoans = () => {
             collateralID: formData.others || formData.collateral,
             loanType: "personal",
             userID: user._id,
-            // refCode: formData.referral,
+            refCode: formData.referral,
         };
 
         try {
