@@ -41,9 +41,9 @@ export const fetchDuration = createAsyncThunk(
 
 export const fetchInterval = createAsyncThunk(
   'dropdownOptions/fetchInterval',
-  async (_, { rejectWithValue }) => {
+  async (intervalType, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_BASE_URL}/interval?page=1&limit=25`);
+      const response = await api.get(`${API_BASE_URL}/interval/by-any/type/${intervalType}?page=1&limit=25`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
