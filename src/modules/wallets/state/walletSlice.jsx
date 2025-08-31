@@ -127,6 +127,18 @@ export const sendMoney = createAsyncThunk(
   }
 );
 
+export const fundWalletByCoupon = createAsyncThunk(
+  'wallet/fundWalletByCoupon',
+  async (couponCode, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/coupon/redeem/${couponCode}`, {});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
