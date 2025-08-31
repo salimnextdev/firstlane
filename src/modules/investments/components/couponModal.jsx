@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { syncInvestmentsDetails } from '@/modules/investments/state/investmentSlice';
+import { fundWalletByCoupon } from '@/modules/wallets/state/walletSlice';
 
 import {
     Dialog,
@@ -23,6 +24,7 @@ const CouponModal = ({
     data,
     title = "Fund account",
     description = "Operation completed successfully.",
+    purpose = "syncing",
     buttonCLoseText = "Cancel",
     buttonSuccessText = "Proceed"
 }) => {
@@ -47,6 +49,28 @@ const CouponModal = ({
             setSubmitted(false);
         };
     };
+
+    const fundWallet = async () => {
+        setSubmitted(true);
+        try {
+            const result = await dispatch(fundWalletByCoupon(couponCode.replace('-', ''))).unwrap();
+            if (result.status) {
+                toast.success("Wallet funded successfully!");
+                onClose();
+            } else {
+                toast.error("Invalid Coupon", {description: result?.message})
+            }
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        };
+    };
+
+    const buttonAction = (purpose === 'syncing' ? fetchInvestmentDetails : fundWallet)
+    
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <ConfirmDetailsModal
@@ -94,9 +118,9 @@ const CouponModal = ({
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={fetchInvestmentDetails}
-                            className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
-                            disabled={!couponCode}
+                            onClick={buttonAction}
+                            className={`w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl ${couponCode.length < 6 ? 'opacity-70' : undefined}`}
+                            disabled={couponCode.length < 6}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
