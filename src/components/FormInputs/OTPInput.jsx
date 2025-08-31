@@ -11,9 +11,10 @@ const OTPInput = ({
 }) => {
   // Internal handler to format value as XXX-XXX
   const formatOtp = (val) => {
-    const digitsOnly = val.replace(/\D/g, "").slice(0, 6); // only numbers, max 6
-    const first = digitsOnly.slice(0, 3);
-    const second = digitsOnly.slice(3);
+    // .toUpperCase() add this to charsOnly when you want to enforce only uppercase letter
+    const charsOnly = val.replace(/[^a-zA-Z0-9]/g, "").slice(0, 6);
+    const first = charsOnly.slice(0, 3);
+    const second = charsOnly.slice(3);
     return second ? `${first}-${second}` : first;
   };
 
