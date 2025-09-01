@@ -117,15 +117,24 @@ const FXTransactions = () => {
     }, [buyCurrency, sellCurrency, fx_rates]);
 
     const updateSell = (e) => {
-        const { name, value } = e.target;
-        setSell(value);
+        const input = e.target.value;
+        const cleanValue = input.replace(/[^0-9.]/g, '');
+        const numericValue = parseFloat(cleanValue);
+
+        if (isNaN(numericValue)) {
+            setSell(0);
+            setBuy(0);
+            return;
+        }
+
+        setSell(numericValue);
         const rateBuyValue = parseFloat(selectedRate?.baseCurrency?.value) || 0;
         const rateSellValue = parseFloat(selectedRate?.targetCurrency?.value) || 0;
 
         if (option === 'Sell') {
-            setBuy((value * rateSellValue).toFixed(2));
+            setBuy((numericValue * rateSellValue).toFixed(2));
         } else if (option === 'Buy') {
-            setBuy((value / rateBuyValue).toFixed(2));
+            setBuy((numericValue / rateBuyValue).toFixed(2));
         }
     };
 
@@ -253,12 +262,9 @@ const FXTransactions = () => {
                                     <input
                                         type="text"
                                         className='w-full text-2xl md:text-[28px] font-semibold text-secondary focus:outline-none'
-                                        value={sell?.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }) || "0.00"}
+                                        value={parseFloat(sell || 0).toFixed(2)}
                                         onChange={(e) => updateSell(e)}
-                                        disabled={buy == 0.00 || sell == 0.00}
+                                    // disabled={buy == 0.00 || sell == 0.00}
                                     />
                                 </div>
                                 <CountrySelect
