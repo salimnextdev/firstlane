@@ -167,14 +167,16 @@ const Support = () => {
             };
 
             // Only add supportID for existing support, passing it as an empty string will cause errors
-            if (selected) {
+            if (selected?.message) {
                 data.supportID = selected?._id;
             }
 
             const msg = selected?.message ? "Reply sent successfully!" : "Support ticket created successfully!"
             await dispatch(addSupport(data)).unwrap();
-            await dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT })).unwrap();
-            selected && await getConversations(selected); // Fetch conversations for already existing support ticket.
+            selected?.new && setSelected(null); // Display the support list after creating a new support ticket.
+
+            await dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            selected?.message && await getConversations(selected); // Fetch conversations for already existing support ticket.
             setFormData(INITIAL_DATA);
             toast.success(msg);
         } catch (error) {
@@ -200,7 +202,10 @@ const Support = () => {
                 buttonSuccessAction={handleModalClose}
             />
 
-            {!selected && <BackButton className='md:hidden' />}
+            {selected?.new ?
+                <BackButton onClick={() => setSelected(null)} className='md:hidden' /> :
+                <BackButton className='md:hidden' />
+            }
 
             <div className='flex items-center justify-between'>
                 <div className="hidden md:block">
@@ -252,7 +257,8 @@ const Support = () => {
                                     </div>
                                     <div className='text-xs font-light'>
                                         <p>{formatDateToday(item?.createdAt)?.split(',')[1]}</p>
-                                        <p className='w-[29px] h-[17px] float-right flex items-center justify-center bg-primary rounded-full'>10</p>
+                                        <p className='float-right text-secondary'>{formatDateToday(item?.createdAt)?.split(',')[0]}</p>
+                                        {/* <p className='w-[29px] h-[17px] float-right flex items-center justify-center bg-primary rounded-full'>10</p> */}
                                     </div>
                                 </div>
                             )) :
@@ -286,7 +292,7 @@ const Support = () => {
                         <>
                             {/* Chat Header */}
                             {selected?.subject &&
-                                <div className='flex items-center gap-3'>
+                                <div className='flex items-center gap-3 pb-3 md:p-0 border-b border-gray md:border-0'>
                                     <ArrowLeft onClick={() => setSelected(null)} className='md:hidden cursor-pointer' />
                                     <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
                                         <p className='capitalize'>A</p>
@@ -312,17 +318,35 @@ const Support = () => {
 
                             {/* Chat Area */}
                             <div className={`mt-5 mb-24 md:mb-0 w-full space-y-3 ${selected ? 'md:h-[60vh]' : 'md:h-[65vh]'} overflow-y-auto cursor-pointer`}>
-                                {sortedConversations.length === 0 ?
-                                    (selected?.new ?
-                                        (<div className='w-full h-[60vh] md:h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                            <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
-                                                <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
+                                {(selected?.new ?
+                                    (<div className='w-full h-[60vh] md:h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                        <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                            <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
+                                        </div>
+                                        <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
+                                            Start typing to open or reply a support conversation.
+                                        </p>
+                                    </div>) :
+                                    sortedConversations.length === 0 && !selected?.message ?
+                                        (
+                                            <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                                <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                                    <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
+                                                </div>
+                                                <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
+                                                    Select a support ticket to view conversations!
+                                                </p>
                                             </div>
-                                            <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                                Start typing to open or reply a support conversation.
-                                            </p>
-                                        </div>) :
-                                        selected?.message ?
+                                        ) :
+                                        <>
+                                            {/* Single Date Tag at the top */}
+                                            <div className='mb-2 flex items-center justify-center font-light'>
+                                                <p className="inline-block px-2 py-1 text-xs text-center rounded-full bg-currency text-secondary">
+                                                    {formatDateToday(selected?.createdAt)?.split(',')[0]}
+                                                </p>
+                                            </div>
+
+                                            {/* Manually added initial message since it is not coming from the backend */}
                                             <div className='w-full flex justify-end'>
                                                 <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
                                                     <div className='w-full space-y-1 font-light'>
@@ -348,30 +372,15 @@ const Support = () => {
                                                             </div>
                                                         }
                                                         <div className='flex items-center justify-end text-xs text-gray-500'>
-                                                            <p>You • {formatDateToday(selected?.createdAt)?.split(',')[1]}</p>
+                                                            <p>You • {formatDateToday(selected?.createdAt)}</p>
                                                         </div>
                                                     </div>
                                                     <div className='hidden md:block w-[40px] h-[40px]'>
                                                         <Check className='w-5 h-5' />
                                                     </div>
                                                 </div>
-                                            </div> :
-                                            <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                                <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
-                                                    <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
-                                                </div>
-                                                <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                                    Select a support ticket to view conversations!
-                                                </p>
-                                            </div>) :
-                                    (
-                                        <>
-                                            {/* Single Date Tag at the top */}
-                                            <div className='mb-2 flex items-center justify-center font-light'>
-                                                <p className="inline-block px-2 py-1 text-xs text-center rounded-full bg-currency text-secondary">
-                                                    {formatDateToday(selected?.createdAt)?.split(',')[0]}
-                                                </p>
                                             </div>
+
                                             {sortedConversations.map((message) => {
                                                 const isUser = user?._id === message.userID?._id;
                                                 return (
@@ -402,7 +411,7 @@ const Support = () => {
                                                                             </div>
                                                                         }
                                                                         <div className='flex items-center justify-end text-xs text-gray-500'>
-                                                                            <p>You • {formatDateToday(message?.createdAt)?.split(',')[1]}</p>
+                                                                            <p>You • {formatDateToday(message?.createdAt)}</p>
                                                                         </div>
                                                                     </div>
                                                                     <div className='hidden md:block w-[40px] h-[40px]'>
@@ -441,7 +450,7 @@ const Support = () => {
                                                                             </div>
                                                                         }
                                                                         <div className='flex items-center justify-start text-xs text-gray-500'>
-                                                                            <p>Admin • {formatDateToday(message?.createdAt)?.split(',')[1]}</p>
+                                                                            <p>Admin • {formatDateToday(message?.createdAt)}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -451,7 +460,7 @@ const Support = () => {
                                                 );
                                             })}
                                         </>
-                                    )
+                                )
                                 }
                             </div>
                         </>
