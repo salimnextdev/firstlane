@@ -20,11 +20,10 @@ const SuccessModal = ({
     buttonCLoseText = "Close",
     buttonSuccessText = "Go to FX Transactions" 
 }) => {
-
     const navigate = useNavigate();
     const Goto = () => {
-        onClose();
         navigate('/fx-transactions');
+        onClose();
     }
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
