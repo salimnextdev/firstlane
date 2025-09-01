@@ -39,7 +39,7 @@ const ListItemSkeleton = () => {
  * SupportListSkeleton component displays multiple loading skeletons for a list section.
  * It's useful when loading a collection of items, like a list of messages or tickets.
  */
-const SupportListSkeleton = ({ count = 8 }) => {
+const SupportListSkeleton = ({ count = 7 }) => {
   return (
     <div className="space-y-2"> {/* Adjust space-y based on your actual list spacing */}
       {Array.from({ length: count }).map((_, index) => (
