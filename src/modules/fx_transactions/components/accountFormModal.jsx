@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBankAccounts, fetchUserProfile } from '@/modules/auth/state/authSlice';
+import { addBankAccount, fetchBankAccounts, fetchUserProfile, removeBankAccount } from '@/modules/auth/state/authSlice';
 import { verifyAccount } from '@/modules/wallets/state/walletSlice';
 
 import {
@@ -56,7 +56,7 @@ const AccountFormModal = ({
     }, [dispatch]);
 
     // Helps to determine which bank details to use based on the type of transaction
-    const option = type === 'Buy' ? 'NGN' : (rate?.targetCurrency?.currencyID?.code || 'USD');
+    const option = type === 'Sell' ? 'NGN' : (rate?.targetCurrency?.currencyID?.code || 'USD');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { bankOptions, loading, error } = useBankOptions();
@@ -146,6 +146,61 @@ const AccountFormModal = ({
         }));
     };
 
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.account_number) errors.account_number = "Account number is required";
+        if (!formData.account_name) errors.account_name = "Account name is required";
+        if (!formData.bank_name) errors.bank_name = "Bank name is required";
+        return errors;
+    };
+
+    const submitBankData = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            Object.values(validationErrors).map(error => {
+                toast.error(error);
+            });
+            return;
+        };
+
+        setSubmitted(true);
+        const ngnData = {
+            "bankName": formData.bank_name,
+            "accountNumber": formData.account_number,
+            "accountName": formData.account_name,
+            "bankCode": formData.bank_code,
+            "currency": option
+        };
+        const otherData = {
+            ...ngnData,
+            "accountType": formData.account_type,
+            "ACHrouting": formData.ach_routing,
+            "wireRouting": formData.wire_routing,
+            "swiftCode": formData.swift_code,
+        };
+
+        const data = option === 'NGN' ? ngnData : otherData;
+
+        try {
+            const removeCriteria1 = formData.prev_account_number.length === 10;
+            const removeCriteria2 = formData.prev_account_number !== formData.account_number;
+            if (removeCriteria1 && removeCriteria2) {
+                await dispatch(removeBankAccount(formData.prev_account_number)).unwrap();
+            };
+
+            await dispatch(addBankAccount(data)).unwrap();
+            setIsModalOpen(true);
+            onClose();
+        } catch (error) {
+            toast.error("An error occured", {
+                description: error.message,
+            });
+        } finally {
+            setSubmitted(false);
+        }
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <SuccessModal
@@ -154,7 +209,7 @@ const AccountFormModal = ({
             />
             <DialogContent
                 className={`z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl 
-                md:!max-w-[680px] ${type === 'Sell' && 'h-[90vh]'} md:h-auto mx-auto`}
+                md:!max-w-[680px] ${type === 'Buy' && 'h-[90vh]'} md:h-auto mx-auto overflow-y-auto`}
             >
                 <div className="space-y-5">
                     <div className="w-[48px] h-[48px] bg-[#D8D9EA] hidden md:flex items-center justify-center rounded-full">
@@ -273,13 +328,11 @@ const AccountFormModal = ({
                             {buttonCLoseText}
                         </DialogClose>
                         <button
-                            onClick={() => {
-                                setIsModalOpen(true);
-                                onClose();
-                            }}
+                            onClick={submitBankData}
                             className="w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl"
+                            disabled={submitted}
                         >
-                            {buttonSuccessText}
+                            {submitted ? <Loader rotate={360} className='text-xl animate-spin mx-auto' /> : buttonSuccessText}
                         </button>
                     </div>
                 </div>
