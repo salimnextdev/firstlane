@@ -36,6 +36,7 @@
   --firstlane-bg-currency: #F0F2F5;
   --firstlane-primary: #3E4095;
   --firstlane-primary-hover: #3a3b92;
+  --firstlane-primary-light: #D6D7E5;
   --firstlane-secondary: #05B1F3;
   --firstlane-secondary-hover: #06adef;
   --firstlane-tertiary: #D8D9EA;
@@ -50,7 +51,7 @@
   --firstlane-danger:#DC2626;
   --firstlane-danger-light:#FEF2F2;
   --firstlane-border: #E4E7EC;
-  --firstlane-color: #000;
+  --firstlane-color: #101928;
   --radius-lg: 8px;
   --radius-xl: 12px;
 
@@ -75,6 +76,7 @@
   --firstlane-bg-light: #374151;
   --firstlane-bg-currency: #374151;
   --firtlane-primary: #3E4095;
+  --firstlane-primary-light: #D8D9EA;
   --firstlane-gray: #D8D9EA;
   --firstlane-border: #374151;
   --firstlane-text-tertiary: #c8c9d8;
