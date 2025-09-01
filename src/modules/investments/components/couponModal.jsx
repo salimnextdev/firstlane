@@ -120,7 +120,7 @@ const CouponModal = ({
                         <button
                             onClick={buttonAction}
                             className={`w-full md:w-1/2 h-11 bg-primary text-white text-sm px-8 py-3 cursor-pointer rounded-xl ${couponCode.length < 6 ? 'opacity-70' : undefined}`}
-                            disabled={couponCode.length < 6}
+                            disabled={submitted || couponCode.length < 6}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
