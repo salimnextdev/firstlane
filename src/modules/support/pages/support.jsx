@@ -25,6 +25,7 @@ import { HiOutlineChatBubbleBottomCenterText } from 'react-icons/hi2';
 import { formatDateToday } from '@/utils/datetimeFormats';
 import { IoIosClose } from 'react-icons/io';
 import NoContent from '@/components/NoContent';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 const LIMIT = 10;
 
@@ -256,8 +257,8 @@ const Support = () => {
                                         </div>
                                     </div>
                                     <div className='text-xs font-light'>
-                                        <p>{formatDateToday(item?.createdAt)?.split(',')[1]}</p>
-                                        <p className='float-right text-secondary'>{formatDateToday(item?.createdAt)?.split(',')[0]}</p>
+                                        <p className='float-right'>{formatDateToday(item?.createdAt)?.split(',')[1]}</p>
+                                        <p className='text-secondary'>{formatDateToday(item?.createdAt)?.split(',')[0]}</p>
                                         {/* <p className='w-[29px] h-[17px] float-right flex items-center justify-center bg-primary rounded-full'>10</p> */}
                                     </div>
                                 </div>
@@ -320,7 +321,7 @@ const Support = () => {
                             <div className={`mt-5 mb-24 md:mb-0 w-full space-y-3 ${selected ? 'md:h-[60vh]' : 'md:h-[65vh]'} overflow-y-auto cursor-pointer`}>
                                 {(selected?.new ?
                                     (<div className='w-full h-[60vh] md:h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                        <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                        <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
                                             <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
                                         </div>
                                         <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
@@ -330,7 +331,7 @@ const Support = () => {
                                     sortedConversations.length === 0 && !selected?.message ?
                                         (
                                             <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                                <div className="w-15 h-15 bg-[#D8D9EA] rounded-full flex items-center justify-center">
+                                                <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
                                                     <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
                                                 </div>
                                                 <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
@@ -469,57 +470,65 @@ const Support = () => {
                     {/* Chat Form  */}
                     <div className='relative'>
                         <div className="fixed md:static left-0 bottom-0 z-10 w-full md:w-auto md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
-                            <form onSubmit={submitSupport} method='post' className='flex items-center gap-2 md:gap-3 md:mr-0 mt-1 px-2'>
-                                <div className='w-[90%] relative mt-1'>
-                                    <textarea
-                                        name="message"
-                                        className={`w-full text-sm font-light h-12 px-4 pt-4 py-2 pr-10 border border-gray rounded-xl focus:outline-none resize-none`}
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        placeholder='Write your message'
-                                    />
-                                    {/* Upload Input */}
-                                    <input
-                                        type="file"
-                                        id="attachment"
-                                        name="attachment"
-                                        className="hidden"
-                                        onChange={handleChange}
-                                        accept="image/*"
-                                    />
-
-                                    {/* Attachment Icon */}
-                                    <label htmlFor="attachment">
-                                        <Attachment className="absolute top-4 right-4 cursor-pointer" />
-                                    </label>
-
-                                    {/* Image Preview */}
-                                    {previewImage && (
-                                        <div className="absolute bottom-full right-0 mb-2 w-[50px] h-[50px] rounded-md overflow-hidden border border-gray-300 shadow-md">
-                                            <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-                                            <button
-                                                type="button"
-                                                onClick={removePreviewImage}
-                                                className="absolute top-0 right-0 w-4 h-4 bg-gray-50 text-black rounded-full flex items-center justify-center shadow hover:bg-gray-100"
-                                            >
-                                                <IoIosClose className='w-4 h-4' />
-                                            </button>
-                                        </div>
-                                    )}
-
+                            {selected?.status === 'closed' ?
+                                <div className='hidden md:flex items-center gap-2 w-full p-4 bg-[var(--firstlane-primary-light)] text-black rounded-xl'>
+                                    <FaCircleCheck className='w-5 h-5'/>
+                                    <p className='text-sm font-light'>
+                                        This support ticket has been closed by the administrator and can no longer accept responses.
+                                    </p>
                                 </div>
+                                :
+                                <form onSubmit={submitSupport} method='post' className='flex items-center gap-2 md:gap-3 md:mr-0 mt-1 px-2'>
+                                    <div className='w-[90%] relative mt-1'>
+                                        <textarea
+                                            name="message"
+                                            className={`w-full text-sm font-light h-12 px-4 pt-4 py-2 pr-10 border border-gray rounded-xl focus:outline-none resize-none`}
+                                            value={formData.message}
+                                            onChange={handleChange}
+                                            placeholder='Write your message'
+                                        />
+                                        {/* Upload Input */}
+                                        <input
+                                            type="file"
+                                            id="attachment"
+                                            name="attachment"
+                                            className="hidden"
+                                            onChange={handleChange}
+                                            accept="image/*"
+                                        />
 
-                                <button
-                                    className='!w-[49px] h-[49px] flex items-center justify-center bg-primary rounded-xl cursor-pointer'
-                                    disabled={submitted}
-                                >
-                                    {submitted ? (
-                                        <Loader rotate={360} className='text-xl animate-spin mx-auto' />
-                                    ) : (
-                                        <Send />
-                                    )}
-                                </button>
-                            </form>
+                                        {/* Attachment Icon */}
+                                        <label htmlFor="attachment">
+                                            <Attachment className="absolute top-4 right-4 cursor-pointer" />
+                                        </label>
+
+                                        {/* Image Preview */}
+                                        {previewImage && (
+                                            <div className="absolute bottom-full right-0 mb-2 w-[50px] h-[50px] rounded-md overflow-hidden border border-gray-300 shadow-md">
+                                                <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={removePreviewImage}
+                                                    className="absolute top-0 right-0 w-4 h-4 bg-gray-50 text-black rounded-full flex items-center justify-center shadow hover:bg-gray-100"
+                                                >
+                                                    <IoIosClose className='w-4 h-4' />
+                                                </button>
+                                            </div>
+                                        )}
+
+                                    </div>
+
+                                    <button
+                                        className='!w-[49px] h-[49px] flex items-center justify-center bg-primary rounded-xl cursor-pointer'
+                                        disabled={submitted}
+                                    >
+                                        {submitted ? (
+                                            <Loader rotate={360} className='text-xl animate-spin mx-auto' />
+                                        ) : (
+                                            <Send />
+                                        )}
+                                    </button>
+                                </form>}
                         </div>
                     </div>
                 </div>
