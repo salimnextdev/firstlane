@@ -13,6 +13,7 @@ import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 import InvestmentSkeletonCard from '../components/investmentSkeletonCard';
 import NoContent from '@/components/NoContent';
+import NoContent from '@/components/NoContent';
 import { Loader } from 'lucide-react';
 
 const Investment = () => {
@@ -159,7 +160,31 @@ const Investment = () => {
                                             <p className='text-base font-medium'>{item?.interestRate}%</p>
                                         </div>
                                     </div>
+                                    <div className='flex gap-10 my-4'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p className='text-secondary'>Investment starts at</p>
+                                            <p className='text-base font-medium'>₦{item?.minAmount?.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}</p>
+                                        </div>
+                                        <div className='space-y-1 text-xs'>
+                                            <p className='text-secondary'>Interest starts at</p>
+                                            <p className='text-base font-medium'>{item?.interestRate}%</p>
+                                        </div>
+                                    </div>
 
+                                    <Link
+                                        to={`/investment/make-investment/${item?.id}`}
+                                        className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                        <span>Invest</span>
+                                        <BsArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
+                            )
+                        }))}
+                    </div>
+                }
                                     <Link
                                         to={`/investment/make-investment/${item?.id}`}
                                         className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
