@@ -12,6 +12,7 @@ import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 import InvestmentSkeletonCard from '../components/investmentSkeletonCard';
+import NoContent from '@/components/NoContent';
 import { Loader } from 'lucide-react';
 
 const Investment = () => {
@@ -121,48 +122,55 @@ const Investment = () => {
 
             <div className="mt-6 md:mt-0">
                 <h2 className="text-base md:text-xl font-medium">Available Investment</h2>
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
-                    {loading ? (
-                        // Render 6 skeleton cards when loading is true
-                        Array.from({ length: 6 }).map((_, index) => (
-                            <InvestmentSkeletonCard key={index} />
-                        ))
-                    ) : (investment_plans.map((item, index) => {
-                        const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
-                        return (
-                            <div key={index} className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
-                                <p className='text-xs text-secondary'>Investment Duration</p>
-                                <p className='text-xl font-medium space-x-1'>
-                                    <span>{item?.duration[0]}</span>
-                                    <span className='text-sm text-secondary font-light'>
-                                        ({duration + ` month${duration > 1 ? 's' : ''}`})
-                                    </span>
-                                </p>
+                {investment_plans.length === 0 ?
+                    <NoContent
+                        icon="investment"
+                        title="No Investment Plans Available"
+                        description="There are currently no investment plans available. Please check back later or contact support for more information."
+                    /> :
+                    <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
+                        {loading ? (
+                            // Render 6 skeleton cards when loading is true
+                            Array.from({ length: 6 }).map((_, index) => (
+                                <InvestmentSkeletonCard key={index} />
+                            ))
+                        ) : (investment_plans.map((item, index) => {
+                            const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
+                            return (
+                                <div key={index} className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
+                                    <p className='text-xs text-secondary'>Investment Duration</p>
+                                    <p className='text-xl font-medium space-x-1'>
+                                        <span>{item?.duration[0]}</span>
+                                        <span className='text-sm text-secondary font-light'>
+                                            ({duration + ` month${duration > 1 ? 's' : ''}`})
+                                        </span>
+                                    </p>
 
-                                <div className='flex gap-10 my-4'>
-                                    <div className='space-y-1 text-xs'>
-                                        <p className='text-secondary'>Investment starts at</p>
-                                        <p className='text-base font-medium'>₦{item?.minAmount?.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        })}</p>
+                                    <div className='flex gap-10 my-4'>
+                                        <div className='space-y-1 text-xs'>
+                                            <p className='text-secondary'>Investment starts at</p>
+                                            <p className='text-base font-medium'>₦{item?.minAmount?.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}</p>
+                                        </div>
+                                        <div className='space-y-1 text-xs'>
+                                            <p className='text-secondary'>Interest starts at</p>
+                                            <p className='text-base font-medium'>{item?.interestRate}%</p>
+                                        </div>
                                     </div>
-                                    <div className='space-y-1 text-xs'>
-                                        <p className='text-secondary'>Interest starts at</p>
-                                        <p className='text-base font-medium'>{item?.interestRate}%</p>
-                                    </div>
+
+                                    <Link
+                                        to={`/investment/make-investment/${item?.id}`}
+                                        className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                        <span>Invest</span>
+                                        <BsArrowRight className="w-4 h-4" />
+                                    </Link>
                                 </div>
-
-                                <Link
-                                    to={`/investment/make-investment/${item?.id}`}
-                                    className="inline-flex items-center justify-center gap-3 px-4 h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
-                                    <span>Invest</span>
-                                    <BsArrowRight className="w-4 h-4" />
-                                </Link>
-                            </div>
-                        )
-                    }))}
-                </div>
+                            )
+                        }))}
+                    </div>
+                }
             </div>
         </div>
     );
