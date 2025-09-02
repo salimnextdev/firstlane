@@ -54,7 +54,7 @@ const Settings = () => {
         }
     }, [userProfile]);
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
     const [selected, setSelected] = useState(false);
@@ -311,7 +311,7 @@ const Settings = () => {
                                     This is an irreversible action. Are you sure you want to proceed with this action?
                                 </p>
 
-                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-white md:bg-transparent border-t md:border-0 border-gray">
+                                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[122px] px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                                     <div className='flex flex-col md:flex-row items-center gap-1 md:gap-5 mt-3 md:mt-5'>
                                         <button
                                             onClick={() => navigate('/dashboard')}
