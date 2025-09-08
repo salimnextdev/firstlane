@@ -13,6 +13,7 @@ import SearchInput from '@/components/FormInputs/searchInput';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const INITIAL_DATA = {
     prev_account_number: "",
@@ -31,7 +32,7 @@ const LIMIT = 10;
 const BankDetails = () => {
     const dispatch = useDispatch();
     const { bankAccounts: bankAccounts, loading: auth_loading, error: auth_error } = useSelector((state) => state.auth);
-    const { currencies: currencies } = useSelector((state) => state.currency);
+    const { currencies: currencies, loading: currency_loading } = useSelector((state) => state.currency);
     useEffect(() => {
         if (!auth_loading) {
             dispatch(fetchBankAccounts());
@@ -72,8 +73,8 @@ const BankDetails = () => {
         const verifyBankDetails = async () => {
             if (
                 option === 'NGN' &&
-                formData.account_number && 
-                formData.account_number.length === 10 && 
+                formData.account_number &&
+                formData.account_number.length === 10 &&
                 formData.bank_code
             ) {
                 setFormData((prev) => ({
@@ -111,11 +112,11 @@ const BankDetails = () => {
             } else {
                 // Optional: Clear account_name if either account_number or bank_name is missing for NGN option
                 // This prevents an old account_name from lingering if inputs are cleared.
-                option === 'NGN' && 
-                setFormData((prev) => ({
-                    ...prev,
-                    account_name: "",
-                }));
+                option === 'NGN' &&
+                    setFormData((prev) => ({
+                        ...prev,
+                        account_name: "",
+                    }));
             }
         };
 
@@ -138,7 +139,7 @@ const BankDetails = () => {
                 (option) => option.value === formData.bank_code
             );
             const newBankName = selectedBank ? selectedBank.label : ''; // Set to empty string if no match
-    
+
             // Only update if the bank_name has actually changed to avoid unnecessary re-renders
             if (newBankName !== formData.bank_name) {
                 setFormData((prev) => ({
@@ -211,18 +212,22 @@ const BankDetails = () => {
     return (
         <div className="space-y-4">
             <div className='w-full flex items-center gap-2 md:gap-3 overflow-x-auto hide-scrollbar'>
-                {[...currencies]
-                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-                .map(item => (
-                    <button
-                        key={item?._id}
-                        onClick={() => setOption(item?.code)}
-                        // Ensure flex-shrink-0 is added to buttons to prevent them from shrinking and wrapping
-                        className={`flex-shrink-0 w-16 h-9 ${option === item?.code ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
-                    >
-                        {item?.code}
-                    </button>
-                ))}
+                {currency_loading ? (
+                    Array.from({ length: 8 }).map((_, index) => (
+                        <Skeleton key={index} className="w-16 h-9 bg-gray-200 rounded-md" />
+                    ))
+                ) : [...currencies]
+                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                        .map(item => (
+                            <button
+                                key={item?._id}
+                                onClick={() => setOption(item?.code)}
+                                // Ensure flex-shrink-0 is added to buttons to prevent them from shrinking and wrapping
+                                className={`flex-shrink-0 w-16 h-9 ${option === item?.code ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
+                            >
+                                {item?.code}
+                            </button>
+                        ))}
             </div>
 
             {option === 'NGN' ?
