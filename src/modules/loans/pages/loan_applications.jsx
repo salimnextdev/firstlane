@@ -124,20 +124,16 @@ const LoanApplications = () => {
     );
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(null);
+    
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     useEffect(() => {
-        setTotalPages(metaData?.totalPage);
-    }, [loans]);
-
-    useEffect(() => {
         if (Object.keys(filterData).length > 0) {
             dispatch(filterLoans({ credentials: filterData, page: currentPage, limit: LIMIT }));
-        } else {
+        } else if (currentPage !== null) {
             dispatch(fetchLoans({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
@@ -306,8 +302,8 @@ const LoanApplications = () => {
             {/* Pagination */}
             <Pagination
                 className={`flex ${(fLoans.length == 0 || loading) && 'hidden'}`}
-                totalPages={totalPages}
-                currentPage={currentPage}
+                totalPages={metaData?.totalPage}
+                currentPage={currentPage || parseInt(metaData?.currentPage)}
                 onPageChange={handlePageChange}
             />
         </div>

@@ -114,17 +114,13 @@ const Wallets = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(null);
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     useEffect(() => {
-        setTotalPages(parseInt(metaData?.total_pages || 0));
-    }, [metaData]);
-
-    useEffect(() => {
-        if (currentPage !== 1) {
+        if (currentPage !== null) {
             dispatch(fetchTransactions({
                 userID: user?._id,
                 page: currentPage,
@@ -377,8 +373,8 @@ const Wallets = () => {
             {/* Pagination */}
             <Pagination
                 className={`${(transactions.length == 0 || transaction_loading) ? 'hidden' : 'hidden md:flex'}`}
-                totalPages={totalPages}
-                currentPage={currentPage}
+                totalPages={metaData?.total_pages}
+                currentPage={currentPage || parseInt(metaData?.current_page)}
                 onPageChange={handlePageChange}
             />
         </div>

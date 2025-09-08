@@ -161,14 +161,11 @@ const FXTransactions = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(null);
+    
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-
-    useEffect(() => {
-        setTotalPages(metaData?.totalPage);
-    }, [fx_transactions]);
 
     useEffect(() => {
         const hasActiveFilters = Object.values(filters).some(value => value !== '');
@@ -195,7 +192,7 @@ const FXTransactions = () => {
 
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
-        } else {
+        } else if (currentPage !== null)  {
             dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
@@ -469,8 +466,8 @@ const FXTransactions = () => {
             {/* Pagination */}
             <Pagination
                 className={`${(transactions.length == 0 || loading) ? 'hidden' : 'hidden md:flex'}`}
-                totalPages={totalPages}
-                currentPage={currentPage}
+                totalPages={metaData?.totalPage}
+                currentPage={currentPage || parseInt(metaData?.currentPage)}
                 onPageChange={handlePageChange}
             />
         </div>

@@ -13,7 +13,7 @@ import Pagination from '@/components/Pagination';
 import NoContent from '@/components/NoContent';
 import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 
-const LIMIT = 10;
+const LIMIT = 1;
 
 const AllTransactions = () => {
     useRedirectOnDesktop('/fx-transactions');
@@ -71,15 +71,11 @@ const AllTransactions = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(null);
+    
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-
-    useEffect(() => {
-        setTotalPages(metaData?.totalPage);
-    }, [fx_transactions]);
 
     useEffect(() => {
         const hasActiveFilters = Object.values(filters).some(value => value !== '');
@@ -106,7 +102,7 @@ const AllTransactions = () => {
 
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
-        } else {
+        } else if (currentPage !== null) {
             dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
@@ -148,8 +144,8 @@ const AllTransactions = () => {
                 {/* Pagination */}
                 <Pagination
                     className={`flex ${(transactions.length == 0 || loading) && 'hidden'}`}
-                    totalPages={totalPages}
-                    currentPage={currentPage}
+                    totalPages={metaData?.totalPage}
+                    currentPage={currentPage || parseInt(metaData?.currentPage)}
                     onPageChange={handlePageChange}
                 />
             </div>

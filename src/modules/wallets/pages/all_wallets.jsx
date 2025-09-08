@@ -78,15 +78,16 @@ const AllWallets = () => {
 
     useEffect(() => {
         setTotalPages(parseInt(metaData?.total_pages));
-        setCurrentPage(parseInt(metaData?.current_page));
-    }, [transactions]);
+    }, [metaData]);
 
     useEffect(() => {
-        dispatch(fetchTransactions({
-            userID: user?._id,
-            page: currentPage,
-            limit: LIMIT
-        }));
+        if (currentPage !== 1) {
+            dispatch(fetchTransactions({
+                userID: user?._id,
+                page: currentPage,
+                limit: LIMIT
+            }));
+        }
     }, [currentPage]);
 
     return (
@@ -131,8 +132,8 @@ const AllWallets = () => {
                 {/* Pagination */}
                 <Pagination
                     className={`flex ${(transactions.length == 0 || transaction_loading) && 'hidden'}`}
-                    totalPages={totalPages}
-                    currentPage={currentPage}
+                    totalPages={metaData?.total_pages}
+                    currentPage={currentPage || parseInt(metaData?.current_page)}
                     onPageChange={handlePageChange}
                 />
             </div>
