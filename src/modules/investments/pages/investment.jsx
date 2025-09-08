@@ -122,7 +122,7 @@ const Investment = () => {
 
             <div className="mt-6 md:mt-0">
                 <h2 className="text-base md:text-xl font-medium">Available Investment</h2>
-                {investment_plans.length === 0 ?
+                {!loading && investment_plans.length === 0 ?
                     <NoContent
                         icon="investment"
                         title="No Investment Plans Available"
