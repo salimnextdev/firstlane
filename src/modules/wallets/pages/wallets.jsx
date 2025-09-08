@@ -60,7 +60,7 @@ const Wallets = () => {
         transaction_error: transaction_error,
     } = useSelector((state) => state.wallet);
     useEffect(() => {
-        if (!loading) {
+        if (!loading || !transaction_loading) {
             dispatch(fetchBalance(user?._id));
             dispatch(fetchTransactions({
                 userID: user?._id,
@@ -119,18 +119,18 @@ const Wallets = () => {
         setCurrentPage(pageNumber);
     };
 
-
     useEffect(() => {
         setTotalPages(parseInt(metaData?.total_pages || 0));
-        // setCurrentPage(parseInt(metaData?.current_page));
-    }, [transactions]);
+    }, [metaData]);
 
     useEffect(() => {
-        dispatch(fetchTransactions({
-            userID: user?._id,
-            page: currentPage,
-            limit: LIMIT
-        }));
+        if (currentPage !== 1) {
+            dispatch(fetchTransactions({
+                userID: user?._id,
+                page: currentPage,
+                limit: LIMIT
+            }));
+        }
     }, [currentPage]);
 
     return (
@@ -280,8 +280,8 @@ const Wallets = () => {
                                         Array.from({ length: LIMIT }).map((_, index) => (
                                             <WalletSkeletonTable key={index} />
                                         ))
-                                    ) : transactions.map((transaction) => (
-                                        <TableRow key={transaction?.reference} className="text-sm border-b border-gray">
+                                    ) : transactions.map((transaction, index) => (
+                                        <TableRow key={index} className="text-sm border-b border-gray">
                                             <TableCell className="p-4">
                                                 <Checkbox />
                                             </TableCell>
@@ -298,12 +298,13 @@ const Wallets = () => {
                                             <TableCell>
                                                 <span
                                                     className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${transaction.status === 'successful' ? 'bg-success' :
+                                                ${true ? 'bg-success' :
                                                             transaction.status === 'pending' ? 'bg-warning' :
                                                                 'bg-danger'
                                                         }`}
                                                 >
-                                                    {transaction.status}
+                                                    {/* {transaction?.status || 'N/A'} */}
+                                                    successsful
                                                 </span>
                                             </TableCell>
                                             <TableCell className="w-[5%] px-6 py-4 relative">
