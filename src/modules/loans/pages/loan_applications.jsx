@@ -38,11 +38,6 @@ const LoanApplications = () => {
     const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
     const { loans: loans, metaData: metaData, loading: loading, error: error } = useSelector((state) => state.loan);
-    useEffect(() => {
-        if (!loading) {
-            dispatch(fetchLoans({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
-        }
-    }, [dispatch]);
 
     const [showDropdown, setShowDropdown] = useState(null);
     const [selectedInvestments, setSelectedInvestments] = useState([]);
@@ -106,7 +101,6 @@ const LoanApplications = () => {
             types: '',
             statuses: '',
             datePeriod: '',
-            currencyPairs: '',
         });
     };
     const keyRenamingMap = {
@@ -124,7 +118,7 @@ const LoanApplications = () => {
     );
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -132,15 +126,12 @@ const LoanApplications = () => {
 
     useEffect(() => {
         if (Object.keys(filterData).length > 0) {
+            filterData['userID'] = user?._id
             dispatch(filterLoans({ credentials: filterData, page: currentPage, limit: LIMIT }));
-        } else if (currentPage !== null) {
+        } else {
             dispatch(fetchLoans({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
-
-    // useEffect(() => {
-    //     Object.keys(filterData).length > 0 && dispatch(filterLoans({ credentials: filterData, page: 1, limit: LIMIT }));
-    // }, [filters]);
 
     return (
         <div className="space-y-5">
