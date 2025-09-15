@@ -11,18 +11,19 @@ const FullscreenLoader = ({
     onClose
 }) => {
     return (
-        <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogContent className="p-6 md:p-8 w-[150px] md:w-[200px] bg-white border border-gray rounded-xl">
-                <div className="flex items-center justify-center">
+        <div className="fixed inset-0 z-[9999] !mb-0 flex items-center justify-center bg-white/5 backdrop-blur">
+            <div className='space-y-3'>
+                <div class="flex-col gap-4 w-full flex items-center justify-center">
                     <div
-                        className='w-[60px] h-[60px] md:w-[70px] md:h-[70px] bg-[#D8D9EA] rounded-full flex items-center justify-center'
+                        class="w-20 h-20 border-4 border-transparent text-4xl animate-spin flex items-center justify-center border-t-[var(--firstlane-primary)] rounded-full"
                     >
-                        <Loader rotate={360} className='w-8 h-8 text-primary animate-spin mx-auto' />
+                        <div
+                            class="w-16 h-16 border-4 border-transparent text-2xl animate-spin flex items-center justify-center border-t-[var(--firstlane-secondary)] rounded-full"
+                        ></div>
                     </div>
                 </div>
-                <p className='text-center text-secondary font-light'>Loading...</p>
-            </AlertDialogContent>
-        </AlertDialog>
+            </div>
+        </div>
     );
 };
 
