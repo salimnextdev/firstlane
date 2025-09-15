@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
@@ -33,7 +33,6 @@ import { formatDateTime } from '@/utils/datetimeFormats';
 const LIMIT = 10;
 
 const FXTransactions = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
@@ -48,7 +47,8 @@ const FXTransactions = () => {
 
     useEffect(() => {
         if (!loading || !rates_loading) {
-            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            // Commented to avoid multiple fetch call based on useEffect currentPage dependency below
+            // dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
             dispatch(fetchFXRates({ page: 1, limit: LIMIT }));
             dispatch(fetchCurrency({ page: 1, limit: LIMIT }))
         }
@@ -87,13 +87,26 @@ const FXTransactions = () => {
     const [buyCurrency, setBuyCurrency] = useState('NGN');
     const [sellCurrency, setSellCurrency] = useState('USD');
     const [selectedRate, setSelectedRate] = useState(null);
+    const [isValidRate, setIsValidRate] = useState(false);
+
     useEffect(() => {
+        // First check if the currency rate for the exchange exist
         const rate = fx_rates.find(rate =>
             (rate?.baseCurrency?.currencyID?.code === sellCurrency &&
                 rate?.targetCurrency?.currencyID?.code === buyCurrency) ||
             (rate?.baseCurrency?.currencyID?.code === buyCurrency &&
                 rate?.targetCurrency?.currencyID?.code === sellCurrency)
         );
+
+        if (!rate) {
+            setIsValidRate(false);
+            setSelectedRate(null);
+            setBuy(0);
+            setSell(0);
+            return;
+        }
+
+        setIsValidRate(true);
 
         if (buyCurrency === rate?.baseCurrency?.currencyID?.code) {
             setBuy(rate?.baseCurrency?.value || 0.00);
@@ -161,8 +174,8 @@ const FXTransactions = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(null);
-    
+    const [currentPage, setCurrentPage] = useState(1);
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -182,8 +195,14 @@ const FXTransactions = () => {
             if (currencyPairs && currencyPairs.includes('/')) {
                 const [from, to] = currencyPairs.split('/');
                 if (from && to) {
-                    result.fromCurrency = { currencyID: { code: from } };
-                    result.toCurrency = { currencyID: { code: to } };
+                    const currencyPairID = fx_rates.find(rate =>
+                        rate?.baseCurrency?.currencyID?.code === from &&
+                        rate?.targetCurrency?.currencyID?.code === to
+                    );
+
+                    result.fxRateID = currencyPairID?._id
+                    // result.fromCurrency = { currencyID: { code: from } };
+                    // result.toCurrency = { currencyID: { code: to } };
                 }
             }
 
@@ -192,7 +211,7 @@ const FXTransactions = () => {
 
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
-        } else if (currentPage !== null)  {
+        } else {
             dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
@@ -258,6 +277,7 @@ const FXTransactions = () => {
                                     </p>
                                     <input
                                         type="text"
+                                        name='sell'
                                         className='w-full text-2xl md:text-[28px] font-semibold text-secondary focus:outline-none'
                                         value={parseFloat(sell || 0).toFixed(2)}
                                         onChange={(e) => updateSell(e)}
@@ -276,14 +296,19 @@ const FXTransactions = () => {
                             {/* <p className="text-sm text-secondary">{option === 'Buy' ? 'By selling' : 'To buy'}</p> */}
                             <p className="text-sm text-secondary">You Receive</p>
                             <div className='flex items-center justify-between'>
-                                <p className="text-2xl md:text-[28px] font-semibold text-secondary">
-                                    <span className='mr-1 text-black dark:text-gray-500'>
-                                        {selectedRate?.targetCurrency?.currencyID?.symbol || '$'}
-                                    </span>
-                                    {buy?.toLocaleString(undefined, {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }) || "0.00"}</p>
+                                <div className='w-[60%] md:w-[80%] flex items-center gap-0.5'>
+                                    <p className="text-2xl md:text-[28px] font-semibold text-secondary">
+                                        <span className='mr-1 text-black dark:text-gray-500'>
+                                            {selectedRate?.targetCurrency?.currencyID?.symbol || '$'}
+                                        </span>
+                                    </p>
+                                    <input
+                                        type="text"
+                                        className='w-full text-2xl md:text-[28px] font-semibold text-secondary focus:outline-none'
+                                        value={parseFloat(buy || 0).toFixed(2)}
+                                        disabled
+                                    />
+                                </div>
                                 <CountrySelect
                                     currencies={currencies}
                                     loading={rates_loading}
@@ -297,7 +322,7 @@ const FXTransactions = () => {
                     {/* Info Prompt to help the user under the action they want to take */}
                     {(buy !== 0.00 || sell !== 0.00) && !rates_loading &&
                         <div className='flex flex-col md:flex-row md:items-center gap-1 md:gap-2 p-2 px-5 text-sm bg-warning rounded-md'>
-                            <IoIosInformationCircleOutline className='w-5 h-5' />
+                            <IoIosInformationCircleOutline className='hidden md:inline w-5 h-5' />
                             {`You're about to exchange 
                             ${selectedRate?.baseCurrency?.currencyID?.symbol} ${selectedRate?.baseCurrency?.value}
                             (${selectedRate?.baseCurrency?.currencyID?.name}) for
@@ -312,28 +337,30 @@ const FXTransactions = () => {
                     }
 
                     {/* Error Prompt when no currency pair is found  */}
-                    {(buy === 0.00 || sell === 0.00) && !rates_loading &&
+                    {!isValidRate && !rates_loading &&
                         <div className='flex flex-col md:flex-row md:items-center gap-1 md:gap-2 p-2 px-5 text-sm bg-danger rounded-md'>
-                            <BiError className='w-5 h-5' />
+                            <BiError className='hidden md:inline w-5 h-5' />
                             The foreign exchange rate for the selected currency pair is currently unavailable. Please verify the currency codes or try again later.
                         </div>
                     }
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className={`px-4 h-11 md:h-9 bg-primary text-sm rounded-md cursor-pointer 
+                    {isValidRate &&
+                        <button
+                            onClick={() => setIsOpen(true)}
+                            className={`px-4 h-11 md:h-9 bg-primary text-sm rounded-md cursor-pointer 
                             ${rates_loading || (buy == 0.00 || sell == 0.00) && 'opacity-70'}`}
-                        disabled={rates_loading || (buy == 0.00 || sell == 0.00)}
-                    >
-                        {/* {option} Naira */}
-                        Sell {selectedRate?.baseCurrency?.currencyID?.name}
-                    </button>
+                            disabled={rates_loading || (buy == 0.00 || sell == 0.00)}
+                        >
+                            {/* {option} Naira */}
+                            Sell {selectedRate?.baseCurrency?.currencyID?.name}
+                        </button>
+                    }
                 </div>
 
                 {rates_loading ?
                     <FxRatesLoader /> :
-                    (<div className='px-5 py-3 space-y-3 bg-currency border border-gray rounded-xl'>
+                    (<div className='px-3 md:px-5 py-3 space-y-3 bg-currency border border-gray rounded-xl'>
                         <p className='text-sm text-secondary font-light'>Current exchange rates</p>
-                        <div className='flex items-center gap-2 md:gap-10 font-medium overflow-auto'>
+                        <div className='flex items-center gap-2 md:gap-10 font-medium overflow-x-auto hide-scrollbar'>
                             {fx_rates.map((rate, index) => (
                                 <div key={index} className='flex items-center gap-2'>
                                     <p>
@@ -466,7 +493,7 @@ const FXTransactions = () => {
             {/* Pagination */}
             <Pagination
                 className={`${(transactions.length == 0 || loading) ? 'hidden' : 'hidden md:flex'}`}
-                totalPages={metaData?.totalPage}
+                totalPages={metaData?.totalPage || 1}
                 currentPage={currentPage || parseInt(metaData?.currentPage)}
                 onPageChange={handlePageChange}
             />
