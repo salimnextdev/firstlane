@@ -5,7 +5,7 @@ const FxRatesLoader = ({ count = 5 }) => {
     return (
         <div className='px-5 py-3 space-y-3 bg-white border border-gray-200 rounded-xl animate-pulse'>
             <Skeleton className='h-4 w-40 bg-gray-200' />
-            <div className='flex items-center gap-2 md:gap-10 font-medium overflow-auto'>
+            <div className='flex items-center gap-2 md:gap-10 font-medium overflow-auto hide-scrollbar'>
                 {Array.from({ length: count }).map((_, index) => (
                     <div key={index} className='flex items-center gap-2'>
                         {/* Currency code placeholder */}
