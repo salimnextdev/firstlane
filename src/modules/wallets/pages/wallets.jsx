@@ -81,13 +81,14 @@ const Wallets = () => {
         setIsOpen(true);
     };    
 
+    // Removed status filter since all wallet transactions are automatically sucessfull
     const [filters, setFilters] = useState({
-        statuses: '',
+        // statuses: '',
         paymentTypes: '',
     });
 
     const filterOptions = {
-        statuses: ['Successful', 'Pending', 'Failed'],
+        // statuses: ['Successful', 'Pending', 'Failed'],
         paymentTypes: ['Wallet funding', 'Money sent'],
     };
 
@@ -108,7 +109,7 @@ const Wallets = () => {
 
     const handleClearFilters = () => {
         setFilters({
-            statuses: '',
+            // statuses: '',
             paymentTypes: '',
         });
     };
