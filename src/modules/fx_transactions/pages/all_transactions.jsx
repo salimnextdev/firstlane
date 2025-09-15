@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFXRates, fetchFXTransactions, filterFXTransactions } from '@/modules/fx_transactions/state/fxSlice';
@@ -13,12 +12,11 @@ import Pagination from '@/components/Pagination';
 import NoContent from '@/components/NoContent';
 import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 
-const LIMIT = 1;
+const LIMIT = 10;
 
 const AllTransactions = () => {
     useRedirectOnDesktop('/fx-transactions');
 
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
     const { searchTerm } = useSelector((state) => state.search);
@@ -31,8 +29,9 @@ const AllTransactions = () => {
 
     useEffect(() => {
         if (!loading) {
-            dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
-            dispatch(fetchFXRates({ page: 1, limit: LIMIT }));
+            // Commented to avoid multiple fetch call based on useEffect currentPage dependency below
+            // dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            dispatch(fetchFXRates({ page: 1, limit: 50 }));
         }
     }, [dispatch]);
 
@@ -71,8 +70,8 @@ const AllTransactions = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(null);
-    
+    const [currentPage, setCurrentPage] = useState(1);
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -82,7 +81,7 @@ const AllTransactions = () => {
         const getFilterPayload = () => {
             const { statuses, currencyPairs } = filters;
             const result = {};
-            
+
             result.userID = user?._id;
 
             if (statuses) {
@@ -92,8 +91,15 @@ const AllTransactions = () => {
             if (currencyPairs && currencyPairs.includes('/')) {
                 const [from, to] = currencyPairs.split('/');
                 if (from && to) {
-                    result.fromCurrency = { currencyID: { code: from } };
-                    result.toCurrency = { currencyID: { code: to } };
+                    const currencyPairID = fx_rates.find(rate =>
+                        rate?.baseCurrency?.currencyID?.code === from &&
+                        rate?.targetCurrency?.currencyID?.code === to
+                    );
+
+                    result.fxRateID = currencyPairID?._id
+
+                    // result.fromCurrency = { currencyID: { code: from } };
+                    // result.toCurrency = { currencyID: { code: to } };
                 }
             }
 
@@ -102,7 +108,7 @@ const AllTransactions = () => {
 
         if (hasActiveFilters) {
             dispatch(filterFXTransactions(getFilterPayload()));
-        } else if (currentPage !== null) {
+        } else {
             dispatch(fetchFXTransactions({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
@@ -144,7 +150,7 @@ const AllTransactions = () => {
                 {/* Pagination */}
                 <Pagination
                     className={`flex ${(transactions.length == 0 || loading) && 'hidden'}`}
-                    totalPages={metaData?.totalPage}
+                    totalPages={metaData?.totalPage || 1}
                     currentPage={currentPage || parseInt(metaData?.currentPage)}
                     onPageChange={handlePageChange}
                 />
