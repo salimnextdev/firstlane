@@ -29,9 +29,9 @@ export const fetchCollateral = createAsyncThunk(
 
 export const fetchDuration = createAsyncThunk(
   'dropdownOptions/fetchDuration',
-  async (_, { rejectWithValue }) => {
+  async (durationType, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_BASE_URL}/duration?page=1&limit=25`);
+      const response = await api.get(`${API_BASE_URL}/duration/by-any/type/${durationType}?page=1&limit=25`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

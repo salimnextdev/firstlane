@@ -115,7 +115,7 @@ export const useLoanDurations = () => {
 
   useEffect(() => {
     if (data.length === 0 && !loading && !error) {
-      dispatch(fetchDuration());
+      dispatch(fetchDuration('loan'));
     }
   }, [dispatch, data, loading, error]);
 
