@@ -214,124 +214,116 @@ const BankDetails = () => {
             <div className='w-full flex items-center gap-2 md:gap-3 overflow-x-auto hide-scrollbar'>
                 {currency_loading ? (
                     Array.from({ length: 8 }).map((_, index) => (
-                        <Skeleton key={index} className="w-16 h-9 bg-gray-200 rounded-md" />
+                        <Skeleton key={index} className="flex-shrink-0 w-16 h-9 bg-gray-200 rounded-md" />
                     ))
                 ) : [...currencies]
-                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-                        .map(item => (
-                            <button
-                                key={item?._id}
-                                onClick={() => setOption(item?.code)}
-                                // Ensure flex-shrink-0 is added to buttons to prevent them from shrinking and wrapping
-                                className={`flex-shrink-0 w-16 h-9 ${option === item?.code ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
-                            >
-                                {item?.code}
-                            </button>
-                        ))}
+                    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                    .map(item => (
+                        <button
+                            key={item?._id}
+                            onClick={() => setOption(item?.code)}
+                            // Ensure flex-shrink-0 is added to buttons to prevent them from shrinking and wrapping
+                            className={`flex-shrink-0 w-16 h-9 ${option === item?.code ? 'bg-[#D8D9EA] text-primary' : 'border border-gray'} text-sm rounded-md cursor-pointer`}
+                        >
+                            {item?.code}
+                        </button>
+                    ))}
             </div>
 
-            {option === 'NGN' ?
-                <form onSubmit={submitBankData} method="post" className='space-y-4'>
-                    <TextInput
-                        label='Account number'
-                        name='account_number'
-                        className='text-sm'
-                        value={formData.account_number}
-                        onChange={handleChange}
-                        placeholder='0123456789'
-                    />
-                    <SearchInput
-                        label='Bank name'
-                        name='bank_code'
-                        value={formData.bank_code}
-                        onChange={handleChange}
-                        data={bankOptions || []}
-                        placeholder='Select bank'
-                    />
-                    <div className='relative'>
-                        <TextInput
-                            label='Account holder"s name'
-                            name='account_name'
-                            className='text-sm bg-currency'
-                            value={formData.account_name}
-                            placeholder='-  -   -'
-                            disabled
-                        />
-                        {accountLoading && <Loader rotate={360} className='absolute top-1/2 right-5 w-6 h-6 animate-spin' />}
-                        {!accountLoading && formData.account_name &&
-                            <IoIosCheckmarkCircle className='absolute top-1/2 right-5 w-[25px] h-[25px] text-[#0F973D]' />
-                        }
-                    </div>
 
-                    <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
-                        <button
-                            className='w-full md:w-32 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
-                        >
-                            {submitted ?
-                                <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
-                                'Save changes'
-                            }
-                        </button>
-                    </div>
-                </form> :
-
-                <form onSubmit={submitBankData} method='post' className='space-y-4 text-sm'>
-                    <div className='flex flex-col md:flex-row items-center gap-5'>
+            <form onSubmit={submitBankData} method="post" className='space-y-4'>
+                {option === 'NGN' ?
+                    <>
                         <TextInput
                             label='Account number'
                             name='account_number'
+                            className='text-sm'
                             value={formData.account_number}
                             onChange={handleChange}
                             placeholder='0123456789'
                         />
+                        <SearchInput
+                            label='Bank name'
+                            name='bank_code'
+                            value={formData.bank_code}
+                            onChange={handleChange}
+                            data={bankOptions || []}
+                            placeholder='Select bank'
+                        />
+                        <div className='relative'>
+                            <TextInput
+                                label='Account holder"s name'
+                                name='account_name'
+                                className='text-sm bg-currency'
+                                value={formData.account_name}
+                                placeholder='-  -   -'
+                                disabled
+                            />
+                            {accountLoading && <Loader rotate={360} className='absolute top-1/2 right-5 w-6 h-6 animate-spin' />}
+                            {!accountLoading && formData.account_name &&
+                                <IoIosCheckmarkCircle className='absolute top-1/2 right-5 w-[25px] h-[25px] text-[#0F973D]' />
+                            }
+                        </div></>
+                    :
+                    <>
+                        <div className='flex flex-col md:flex-row items-center gap-5'>
+                            <TextInput
+                                label='Account number'
+                                name='account_number'
+                                value={formData.account_number}
+                                onChange={handleChange}
+                                placeholder='0123456789'
+                            />
+                            <TextInput
+                                label='Account holder"s name'
+                                name='account_name'
+                                value={formData.account_name}
+                                onChange={handleChange}
+                                placeholder='0123456789'
+                            />
+                        </div>
+                        <div className='flex flex-col md:flex-row items-center gap-5'>
+                            <TextInput
+                                label='Wire routing'
+                                name='wire_routing'
+                                value={formData.wire_routing}
+                                onChange={handleChange}
+                                placeholder='56789'
+                            />
+                            <TextInput
+                                label='ACH routing'
+                                name='ach_routing'
+                                value={formData.ach_routing}
+                                onChange={handleChange}
+                                placeholder='012345'
+                            />
+                        </div>
+                        <div className='flex flex-col md:flex-row items-center gap-5'>
+                            <SelectInput
+                                label='Account type'
+                                name='account_type'
+                                value={formData.account_type}
+                                onChange={handleChange}
+                                options={accountTypeOptions}
+                                placeholder='Checking'
+                            />
+                            <TextInput
+                                label='Swift code'
+                                name='swift_code'
+                                value={formData.swift_code}
+                                onChange={handleChange}
+                                placeholder='012345'
+                            />
+                        </div>
                         <TextInput
-                            label='Account holder"s name'
-                            name='account_name'
-                            value={formData.account_name}
+                            label='Bank name'
+                            name='bank_name'
+                            value={formData.bank_name}
                             onChange={handleChange}
-                            placeholder='0123456789'
+                            placeholder='Bank name'
                         />
-                    </div>
-                    <div className='flex flex-col md:flex-row items-center gap-5'>
-                        <TextInput
-                            label='Wire routing'
-                            name='wire_routing'
-                            value={formData.wire_routing}
-                            onChange={handleChange}
-                            placeholder='56789'
-                        />
-                        <TextInput
-                            label='ACH routing'
-                            name='ach_routing'
-                            value={formData.ach_routing}
-                            onChange={handleChange}
-                            placeholder='012345'
-                        />
-                    </div>
-                    <div className='flex flex-col md:flex-row items-center gap-5'>
-                        <SelectInput
-                            label='Account type'
-                            name='account_type'
-                            value={formData.account_type}
-                            onChange={handleChange}
-                            options={accountTypeOptions}
-                            placeholder='Checking'
-                        />
-                        <TextInput
-                            label='Swift code'
-                            name='swift_code'
-                            value={formData.swift_code}
-                            onChange={handleChange}
-                            placeholder='012345'
-                        />
-                    </div>
-                    <TextInput
-                        label='Bank name'
-                        name='bank_name'
-                        value={formData.bank_name}
-                        onChange={handleChange}
-                        placeholder='Bank name'
-                    />
+                    </>}
+                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         className='w-full md:w-32 h-11 md:h-9 my-3 md:my-0 px-3 rounded-md bg-primary text-sm cursor-pointer'
                     >
@@ -340,7 +332,8 @@ const BankDetails = () => {
                             'Save changes'
                         }
                     </button>
-                </form>}
+                </div>
+            </form>
         </div>
     );
 };
