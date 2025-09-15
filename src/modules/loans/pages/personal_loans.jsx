@@ -110,7 +110,7 @@ const PersonalLoans = () => {
                     Apply for a personal loan
                 </h2>
 
-                <div className="fixed md:static bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto pr-10 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                <div className="fixed md:static left-0 bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer">
                         {submitted ?
                             <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
