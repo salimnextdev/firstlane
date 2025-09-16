@@ -248,7 +248,7 @@ const MakeInvestment = () => {
                     placeholder='000000'
                 />
 
-                <div className="fixed md:static bottom-0 z-10 w-full h-[71px] pr-10 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         type='button'
                         onClick={investNow}
