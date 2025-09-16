@@ -71,7 +71,7 @@ const Support = () => {
     };
 
     const INITIAL_DATA = {
-        attachment: "",
+        attachment: null,
         message: ""
     };
     const [submitted, setSubmitted] = useState(false);
@@ -84,7 +84,7 @@ const Support = () => {
             const file = files[0];
             setFormData((prev) => ({
                 ...prev,
-                [name]: { file },
+                [name]: file,
             }));
 
             // Preview if it's an image
@@ -147,10 +147,10 @@ const Support = () => {
 
         try {
             let attachment;
-            if (formData.attachment && formData.attachment.file instanceof File) {
-                attachment = await dispatch(uploadFile({ files: formData.attachment.file }));
+            if (formData.attachment) {
+                attachment = await dispatch(uploadFile({ files: formData.attachment }));
                 if (!uploadFile.fulfilled.match(attachment)) {
-                    toast('File Upload Failed',
+                    toast.error('File Upload Failed',
                         { description: attachment.payload.message }
                     );
                     return;
@@ -179,6 +179,7 @@ const Support = () => {
             await dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
             selected?.message && await getConversations(selected); // Fetch conversations for already existing support ticket.
             setFormData(INITIAL_DATA);
+            setPreviewImage(null);
             toast.success(msg);
         } catch (error) {
             toast.error("An error occured", {
@@ -353,21 +354,22 @@ const Support = () => {
                                                     <div className='w-full space-y-1 font-light'>
                                                         <div
                                                             className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`}
+                                                            style={{ borderBottomRightRadius: 0 }}
                                                         >
                                                             <div className='text-sm leading-relaxed'>
                                                                 {selected?.message}
                                                             </div>
                                                         </div>
                                                         {selected?.url &&
-                                                            <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                                            <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
                                                                 <div className='flex items-center gap-3 text-sm'>
                                                                     <File />
                                                                     <div className='space-y-1 text-sm'>
                                                                         <p className='truncate'>{selected?.url?.split('/')?.pop()}</p>
-                                                                        <p className='text-xs text-gray-700'>1 page • PDF • 4mb</p>
+                                                                        <p className='text-xs text-gray-700'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
                                                                     </div>
                                                                 </div>
-                                                                <a href={selected?.url} download>
+                                                                <a href={selected?.url} target='_blank' download>
                                                                     <Upload className="w-full" />
                                                                 </a>
                                                             </div>
@@ -392,21 +394,22 @@ const Support = () => {
                                                                     <div className='w-full space-y-1 font-light'>
                                                                         <div
                                                                             className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`}
+                                                                            style={{ borderBottomRightRadius: 0 }}
                                                                         >
                                                                             <div className='text-sm leading-relaxed'>
                                                                                 {message?.message}
                                                                             </div>
                                                                         </div>
                                                                         {message?.url &&
-                                                                            <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
+                                                                            <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
                                                                                 <div className='flex items-center gap-3 text-sm'>
                                                                                     <File />
                                                                                     <div className='space-y-1 text-sm'>
                                                                                         <p className='truncate'>{message?.url?.split('/')?.pop()}</p>
-                                                                                        <p className='text-xs text-gray-700'>1 page • PDF • 4mb</p>
+                                                                                        <p className='text-xs text-gray-700'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
                                                                                     </div>
                                                                                 </div>
-                                                                                <a href={message?.url} download>
+                                                                                <a href={message?.url} target='_blank' download>
                                                                                     <Upload className="w-full" />
                                                                                 </a>
                                                                             </div>
@@ -431,6 +434,7 @@ const Support = () => {
                                                                     <div className='w-full space-y-1 font-light'>
                                                                         <div
                                                                             className={`w-full p-3 bg-currency rounded-xl md:rounded-2xl`}
+                                                                            style={{ borderTopLeftRadius: 0 }}
                                                                         >
                                                                             <div className='text-sm leading-relaxed'>
                                                                                 {message?.message}
@@ -442,10 +446,10 @@ const Support = () => {
                                                                                     <File />
                                                                                     <div className='space-y-1 text-sm'>
                                                                                         <p className='truncate'>{message?.url?.split('/')?.pop()}</p>
-                                                                                        <p className='text-xs text-secondary'>1 page • PDF • 4mb</p>
+                                                                                        <p className='text-xs text-secondary'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
                                                                                     </div>
                                                                                 </div>
-                                                                                <a href={message?.url} download>
+                                                                                <a href={message?.url} target='_blank' download>
                                                                                     <Upload className="w-full" />
                                                                                 </a>
                                                                             </div>
