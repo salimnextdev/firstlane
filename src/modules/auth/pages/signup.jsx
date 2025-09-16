@@ -16,6 +16,7 @@ import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import PasswordInput from '@/components/FormInputs/PasswordInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
+import { titleOptions } from '@/utils/dropdownOptions';
 import { Loader } from 'lucide-react';
 
 const Signup = () => {
@@ -133,12 +134,7 @@ const Signup = () => {
                                         name="title"
                                         value={formData.title}
                                         onChange={handleChange}
-                                        options={[
-                                            { label: "Mr", value: "Mr" },
-                                            { label: "Mrs", value: "Mrs" },
-                                            { label: "Sir", value: "Sir" },
-                                            { label: "Miss", value: "Miss" },
-                                        ]}
+                                        options={titleOptions}
                                         placeholder="Mr."
                                     />
                                 </div>
