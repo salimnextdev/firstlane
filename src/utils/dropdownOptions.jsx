@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBanks } from '@/modules/wallets/state/walletSlice';
 import {
@@ -8,13 +8,16 @@ import {
   fetchPurpose,
 } from '@/modules/kyc/state/dropdownSlice';
 
+
 export const useBankOptions = () => {
   const dispatch = useDispatch();
   const { banks, loading, error } = useSelector((state) => state.wallet);
+  const [hasTriedFetching, setHasTriedFetching] = useState(false);
 
   useEffect(() => {
-    if (!banks || banks.length === 0 && !loading && !error) {
+    if (!banks || banks.length === 0 && !loading && !error && !hasTriedFetching) {
       dispatch(fetchBanks());
+      setHasTriedFetching(true);
     }
   }, [dispatch, banks, loading, error]);
 
@@ -30,8 +33,10 @@ export const useBankOptions = () => {
 };
 
 export const titleOptions = [
-  { value: 'mr', label: 'Mr' },
-  { value: 'mrs', label: 'Mrs' },
+  { label: "Mr", value: "Mr" },
+  { label: "Mrs", value: "Mrs" },
+  { label: "Sir", value: "Sir" },
+  { label: "Miss", value: "Miss" },
 ];
 
 export const genderOptions = [

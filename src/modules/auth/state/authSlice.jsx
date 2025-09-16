@@ -9,7 +9,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, credentials);
+      const response = await api.post(`${API_BASE_URL}/auth/register`, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
+      const response = await api.post(`${API_BASE_URL}/auth/login`, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -33,7 +33,7 @@ export const verifyAuthentication = createAsyncThunk(
   'auth/verifyAuthentication',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/verify-authentication`, credentials);
+      const response = await api.post(`${API_BASE_URL}/auth/verify-authentication`, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -45,7 +45,7 @@ export const verifyCode = createAsyncThunk(
   'auth/verifyCode',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/verify-code`, credentials);
+      const response = await api.post(`${API_BASE_URL}/auth/verify-code`, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -57,7 +57,7 @@ export const sendCodeToEmail = createAsyncThunk(
   'auth/sendCodeToEmail',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/send-code-to-email`, credentials);
+      const response = await api.post(`${API_BASE_URL}/auth/send-code-to-email`, credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -69,7 +69,7 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, data);
+      const response = await api.post(`${API_BASE_URL}/auth/forgot-password`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
