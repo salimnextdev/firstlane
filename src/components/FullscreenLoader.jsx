@@ -11,6 +11,7 @@ const FullscreenLoader = ({
     onClose
 }) => {
     return (
+        isOpen && 
         <div className="fixed inset-0 z-[9999] !mb-0 flex items-center justify-center bg-white/5 backdrop-blur">
             <div className='space-y-3'>
                 <div class="flex-col gap-4 w-full flex items-center justify-center">
