@@ -126,8 +126,8 @@ const LoanApplications = () => {
 
     useEffect(() => {
         if (Object.keys(filterData).length > 0) {
-            filterData['userID'] = user?._id
-            dispatch(filterLoans({ credentials: filterData, page: currentPage, limit: LIMIT }));
+            const updatedFilterData = {...filterData, userID: user?._id};
+            dispatch(filterLoans({ credentials: updatedFilterData, page: currentPage, limit: LIMIT }));
         } else {
             dispatch(fetchLoans({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
