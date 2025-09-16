@@ -188,9 +188,11 @@ describe('Dropdown Hooks', () => {
   describe('Constant Arrays', () => {
     it('should have correct title options', () => {
       expect(titleOptions).toEqual([
-        { value: 'mr', label: 'Mr' },
-        { value: 'mrs', label: 'Mrs' },
-      ]);
+        { label: "Mr", value: "Mr" },
+        { label: "Mrs", value: "Mrs" },
+        { label: "Sir", value: "Sir" },
+        { label: "Miss", value: "Miss" },
+    ]);
     });
 
     it('should have correct gender options', () => {
