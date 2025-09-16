@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { setSearchTerm } from '@/modules/auth/state/searchSlice';
+import { useTheme } from '@/hooks/ThemeContext';
 
 import { IoIosSearch } from 'react-icons/io';
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
@@ -39,6 +40,8 @@ const Header = ({ isOpen, onClose }) => {
     const path = location.pathname;
     const pageName = path.split("/")[1]?.replace('-', ' ');
 
+    const { theme, toggleTheme } = useTheme();
+
     const Icon = () => {
         const IconComponent = mapper[pageName];
         return <IconComponent className="w-5 h-5" />;
@@ -51,40 +54,6 @@ const Header = ({ isOpen, onClose }) => {
         const { value } = e.target;
         setSearch(value);
         dispatch(setSearchTerm(value));
-    };
-
-    // State to manage the current theme: 'light' or 'dark'
-    const [theme, setTheme] = useState(() => {
-        // 1. Initialize theme from localStorage
-        const savedTheme = localStorage.getItem('theme');
-
-        if (savedTheme) {
-            return savedTheme; // Use saved theme if available
-        } else {
-            // 2. If no saved theme, check for system preference
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            return prefersDark ? 'dark' : 'light'; // Use system preference
-        }
-    });
-
-    // useEffect hook to apply or remove the 'dark' class on the HTML element
-    // and save the theme preference to localStorage
-    useEffect(() => {
-        const htmlElement = document.documentElement; // Get the <html> element
-
-        if (theme === 'dark') {
-            htmlElement.classList.add('dark'); // Add 'dark' class for dark mode
-        } else {
-            htmlElement.classList.remove('dark'); // Remove 'dark' class for light mode
-        }
-
-        // Save the current theme to localStorage
-        localStorage.setItem('theme', theme);
-    }, [theme]); // Re-run this effect whenever the 'theme' state changes
-
-    // Function to toggle between light and dark themes
-    const toggleTheme = () => {
-        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
     };
 
     return (

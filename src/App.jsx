@@ -40,31 +40,11 @@ import KYCVerification from '@/modules/kyc/pages/kyc_layout';
 
 import ScrollToTop from '@/components/ScrollToTop';
 import { Toaster } from './components/ui/sonner';
+import { ThemeProvider } from './hooks/ThemeContext';
 
 function App() {
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme) {
-      return savedTheme;
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return prefersDark ? 'dark' : 'light';
-    }
-  });
-
-  useEffect(() => {
-    const htmlElement = document.documentElement;
-
-    if (theme === 'dark') {
-      htmlElement.classList.add('dark');
-    } else {
-      htmlElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
   return (
+    <ThemeProvider>
     <Router>
       <ScrollToTop />
       <Toaster style={{ top: "10px" }} />
@@ -105,6 +85,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+    </ThemeProvider>
   )
 }
 
