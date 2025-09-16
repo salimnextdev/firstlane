@@ -28,7 +28,7 @@ const Sidebar = () => {
     const [isLogout, setIsLogout] = useState(false);
 
     return (
-        <div className="w-8 md:w-[272px] relative h-screen hidden md:block bg-white fixed left-0 top-0 z-10">
+        <div className="w-8 md:w-[272px] relative h-screen overflow-y-auto hidden md:block bg-white fixed left-0 top-0 z-10">
             <LogoutModal
                 isOpen={isLogout}
                 onClose={setIsLogout}
@@ -89,7 +89,7 @@ const Sidebar = () => {
                     <span className='hidden md:inline'>Settings</span>
                 </NavLink>
             </nav>
-            <div className="absolute bottom-4 left-4 w-11/12">
+            <div className="mt-15 px-4 w-11/12">
                 <SyncInvestmentCard />
 
                 <div className='flex items-center justify-between'>
