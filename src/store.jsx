@@ -6,7 +6,7 @@ import kycSlice from '@/modules/kyc/state/kycSlice';
 import investmentSlice from '@/modules/investments/state/investmentSlice';
 import FXSlice from '@/modules/fx_transactions/state/fxSlice';
 import walletSlice from '@/modules/wallets/state/walletSlice';
-import supportSlice from '@/modules/support/states/supportSlice';
+import supportSlice from '@/modules/support/state/supportSlice';
 
 import currencySlice from '@/modules/fx_transactions/state/currencySlice';
 import adminAccountSlice from '@/modules/fx_transactions/state/adminAccountSlice';
