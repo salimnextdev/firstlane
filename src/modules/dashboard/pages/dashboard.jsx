@@ -181,7 +181,7 @@ const Dashboard = () => {
             </div>
 
             {/* KYC Verification Banner */}
-            {showKYC &&
+            {!loading && showKYC &&
                 <div className={`flex flex-col lg:flex-row justify-between ${KYCBanner[kycStatus].bg} border md:border-[1.5px] ${KYCBanner[kycStatus].border} p-4 rounded-xl`}>
                     <div className='w-full flex flex-row gap-3'>
                         <div className={`w-10 h-10 flex items-center justify-center bg-white border ${KYCBanner[kycStatus].border} rounded-full`}>
@@ -341,12 +341,13 @@ const Dashboard = () => {
                                             <TableCell>
                                                 <span
                                                     className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${transaction?.status === 'successful' ? 'bg-success' :
+                                                ${true ? 'bg-success' :
                                                             transaction?.status === 'pending' ? 'bg-warning' :
                                                                 'bg-danger'
                                                         }`}
                                                 >
-                                                    {transaction?.status || 'N/A'}
+                                                    {/* {transaction?.status || 'N/A'} */}
+                                                    successful
                                                 </span>
                                             </TableCell>
                                             <TableCell>
@@ -381,7 +382,7 @@ const Dashboard = () => {
                                 <TransactionSkeletonCard key={index} />
                             ))
                         ) : transactions.map((transaction, index) => (
-                            <div key={transaction?.reference} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
+                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
                                 <TransactionCard userProfile={userProfile} transaction={transaction} />
                             </div>
                         ))}
