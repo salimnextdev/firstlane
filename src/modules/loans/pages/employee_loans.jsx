@@ -16,6 +16,8 @@ import { Loader } from 'lucide-react';
 
 import { GetCountries, GetState } from 'react-country-state-city';
 import LoanSuccessModal from '../components/loanSuccessCard';
+import StatesInput from '@/components/FormInputs/StatesInput';
+import LGAInput from '@/components/FormInputs/LGAInputs';
 
 const EmployeeLoans = () => {
     const {
@@ -70,6 +72,9 @@ const EmployeeLoans = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if (name == 'nationality' && value !== 'Nigeria') {
+            toast.warning("Please select Nigeria — support for other countries is coming soon.");
+        };
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -267,38 +272,26 @@ const EmployeeLoans = () => {
                         placeholder="Select Nationality"
                     />
 
-                    <SearchInput
-                        label="State"
-                        name="state"
-                        className='text-sm'
+                    <StatesInput
                         value={formData.state}
                         onChange={handleChange}
-                        data={stateList || []}
-                        placeholder="Select State"
+                        isDisabled={formData.nationality !== 'Nigeria'}
                     />
 
-                    <SelectInput
-                        label="LGA"
-                        name="lga"
-                        className='text-sm'
+                    <LGAInput
+                        stateValue={formData.state}
                         value={formData.lga}
                         onChange={handleChange}
-                        options={[
-                            { label: "Mr", value: "Mr" },
-                            { label: "Mrs", value: "Mrs" },
-                            { label: "Sir", value: "Sir" },
-                            { label: "Miss", value: "Miss" },
-                        ]}
-                        placeholder="Select LGA"
+                        isDisabled={formData.nationality !== 'Nigeria'}
                     />
-                    
-                <TextInput
-                    label='Referral code (optional)'
-                    name='referral'
-                    value={formData.referral}
-                    onChange={handleChange}
-                    placeholder='000000'
-                />
+
+                    <TextInput
+                        label='Referral code (optional)'
+                        name='referral'
+                        value={formData.referral}
+                        onChange={handleChange}
+                        placeholder='000000'
+                    />
                 </div>
             </div>
 
