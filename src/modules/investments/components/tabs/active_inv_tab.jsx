@@ -28,7 +28,7 @@ const ActiveInvestmentTab = ({ data }) => {
                         ) : data.map((item, index) => {
                             const investmentProfit = (item?.amount * (item?.investmentID?.interestRate || item?.interestRate)) / 100;
                             const investmentBalance = item?.amount + investmentProfit;
-                            const duration = parseInt(item?.investmentID?.duration[0].split(' ')[0]);
+                            const duration = parseInt(item?.duration || item?.investmentID?.duration[0].split(' ')[0]);
                             const daySoFar = calculateDurationDetails(item?.createdAt, duration)?.daysSoFar;
 
                             const investmentEarned = (investmentProfit * daySoFar) / duration || 0.00;
@@ -70,7 +70,7 @@ const ActiveInvestmentTab = ({ data }) => {
                                         <div className='space-y-1 text-xs md:text-sm'>
                                             <p className='text-secondary'>Investment earned</p>
                                             <p className='text-sm text-success font-medium'>
-                                                ₦{investmentEarned?.toLocaleString(undefined, {
+                                                ₦{item?.interestEarned?.toLocaleString(undefined, {
                                                     minimumFractionDigits: 2,
                                                     maximumFractionDigits: 2
                                                 })}
