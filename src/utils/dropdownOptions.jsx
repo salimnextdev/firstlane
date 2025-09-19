@@ -107,7 +107,7 @@ export const useLoanCollaterals = () => {
   const options = useMemo(() => {
     return data.map((item) => ({
       label: item.name,
-      value: item._id,
+      value: item.name,
     }));
   }, [data]);
 
