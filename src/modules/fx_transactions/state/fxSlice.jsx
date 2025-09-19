@@ -90,6 +90,18 @@ export const addFXTransaction = createAsyncThunk(
   }
 );
 
+export const updateFXTransaction = createAsyncThunk(
+  'fx_transaction/updateFXTransaction',
+  async ({ transactionID, credentials }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`${API_BASE_URL}/fx/${transactionID}`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchFXRates = createAsyncThunk(
   'fx_transaction/fetchFXRates',
   async ({ page, limit }, { rejectWithValue }) => {
