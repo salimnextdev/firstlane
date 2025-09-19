@@ -24,7 +24,6 @@ const EmployeeLoans = () => {
         loanReasons: { options: loanReasons, loading: loadingReasons, error: errorReasons },
         loanDurations: { options: loanDurations, loading: loadingDurations, error: errorDurations },
         loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
-        loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
     } = useLoanDropdowns();
 
     const dispatch = useDispatch();
@@ -93,7 +92,7 @@ const EmployeeLoans = () => {
         if (!formData.employer_income) errors.employer_income = "Employer's income is required";
         if (!formData.address) errors.address = "Employer's address is required";
         if (!formData.state) errors.state = "State is required";
-        if (!formData.lga) errors.lga = "LGA collateral is required";
+        if (!formData.lga) errors.lga = "LGA is required";
         return errors;
     };
 
@@ -113,7 +112,6 @@ const EmployeeLoans = () => {
             purpose: formData.loan_reason,
             tenure: formData.duration,
             repaymentInterval: formData.interval,
-            collateral: formData.collateral,
 
             employerName: formData.employer_name,
             employerPhoneNumber: formData.employer_phone,
