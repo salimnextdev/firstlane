@@ -10,6 +10,7 @@ import supportSlice from '@/modules/support/state/supportSlice';
 
 import currencySlice from '@/modules/fx_transactions/state/currencySlice';
 import adminAccountSlice from '@/modules/fx_transactions/state/adminAccountSlice';
+import adminSettingsSlice from '@/modules/settings/state/adminSettingsSlice';
 
 import dashboardSlice from '@/modules/dashboard/state/dashboardStatsSlice';
 import loanStatsSlice from '@/modules/loans/state/loanStatsSlice';
@@ -29,6 +30,7 @@ const store = configureStore({
     support: supportSlice,
     currency: currencySlice,
     admin_accounts: adminAccountSlice,
+    admin_settings: adminSettingsSlice,
 
     dashboard_stats: dashboardSlice,
     loan_stats: loanStatsSlice,
