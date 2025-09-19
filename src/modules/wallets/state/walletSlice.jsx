@@ -31,7 +31,7 @@ export const verifyAccount = createAsyncThunk(
   'wallet/verifyAccount',
   async ({ accountNumber, bankCode }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`https://goveloox-backend.onrender.com/v1/wallet/verify-account?accountNumber=${accountNumber}&bankCode=${bankCode}`);
+      const response = await api.get(`${API_BASE_URL}/wallet/verify-account?accountNumber=${accountNumber}&bankCode=${bankCode}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
