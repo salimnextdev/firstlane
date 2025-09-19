@@ -86,17 +86,18 @@ export const fetchTransactions = createAsyncThunk(
       const response = await api.get(url);
 
       // Filter out transaction fess from the transaction list response
-      const filteredResponse = {
-        ...response.data,
-        data: {
-          ...response.data.data,
-          transactions: response.data.data.transactions.filter(
-            transaction => !(transaction.type === "D" && transaction.sent_amount === 0)
-          )
-        }
-      };
+      // const filteredResponse = {
+      //   ...response.data,
+      //   data: {
+      //     ...response.data.data,
+      //     transactions: response.data.data.transactions.filter(
+      //       transaction => !(transaction.type === "D" && transaction.sent_amount === 0)
+      //     )
+      //   }
+      // };
 
-      return filteredResponse;
+      // return filteredResponse;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
