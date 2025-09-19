@@ -235,7 +235,7 @@ const Support = () => {
 
             <div className='h-[80vh] flex flex-col md:flex-row md:border border-gray rounded-xl'>
 
-                <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto space-y-2 md:p-3 md:border-r border-gray`}>
+                <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto hide-scrollbar space-y-2 md:p-3 md:border-r border-gray`}>
                     {loading ? <SupportListSkeleton /> :
                         supports.length > 0 ?
                             supports.map((item, index) => (
