@@ -74,7 +74,7 @@ const BusinessLoans = () => {
             purpose: formData.loan_reason,
             tenure: formData.duration,
             repaymentInterval: formData.interval,
-            collateral: formData.others || formData.collateral,
+            collateralID: formData.others || formData.collateral,
             loanType: "business",
             userID: user._id,
             refCode: formData.referral,
