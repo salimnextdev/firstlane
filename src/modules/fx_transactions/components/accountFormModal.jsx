@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBankAccount, fetchBankAccounts, fetchUserProfile, removeBankAccount } from '@/modules/auth/state/authSlice';
 import { verifyAccount } from '@/modules/wallets/state/walletSlice';
+import { updateFXTransaction } from '@/modules/fx_transactions/state/fxSlice';
 
 import {
     Dialog,
@@ -41,6 +42,7 @@ const AccountFormModal = ({
     onClose,
     rate,
     type,
+    transactionID,
     title = "Enter your receiving bank details",
     buttonCLoseText = "Cancel",
     buttonSuccessText = "Proceed"
@@ -181,15 +183,19 @@ const AccountFormModal = ({
         };
 
         const data = option === 'NGN' ? ngnData : otherData;
+        const credentials = {bank: data}
 
         try {
-            const removeCriteria1 = formData.prev_account_number.length === 10;
-            const removeCriteria2 = formData.prev_account_number !== formData.account_number;
-            if (removeCriteria1 && removeCriteria2) {
-                await dispatch(removeBankAccount(formData.prev_account_number)).unwrap();
-            };
+            // Updates User Bank Account Details
+            // const removeCriteria1 = formData.prev_account_number.length === 10;
+            // const removeCriteria2 = formData.prev_account_number !== formData.account_number;
+            // if (removeCriteria1 && removeCriteria2) {
+            //     await dispatch(removeBankAccount(formData.prev_account_number)).unwrap();
+            // };
+            // await dispatch(addBankAccount(data)).unwrap();
 
-            await dispatch(addBankAccount(data)).unwrap();
+            // Passes User Bank Details to FX Transaction Created
+            await dispatch(updateFXTransaction({transactionID, credentials})).unwrap();
             setIsModalOpen(true);
             onClose();
         } catch (error) {

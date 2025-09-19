@@ -47,6 +47,7 @@ const ConfirmModal = ({
         }
     }, [dispatch]);
 
+    const [transactionID, setTransactionID] = useState('');
     const [activeAccount, setActiveAccount] = useState(null);
     useEffect(() => {
         const account = accounts.find(
@@ -93,6 +94,7 @@ const ConfirmModal = ({
         try {
             const resultAction = await dispatch(addFXTransaction(data));
             if (addFXTransaction.fulfilled.match(resultAction)) {
+                setTransactionID(resultAction?.payload?.data?._id);
                 setIsModalOpen(true);
                 onClose();
             } else {
@@ -116,6 +118,7 @@ const ConfirmModal = ({
                 onClose={setIsModalOpen}
                 type={type}
                 rate={rate}
+                transactionID={transactionID}
             />
             <DialogContent
                 className={`z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl 
