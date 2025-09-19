@@ -1,4 +1,5 @@
 import { formatDateShort } from "@/utils/datetimeFormats";
+import { getTransactionType } from "@/utils/genericFunc";
 import React from "react";
 
 const TransactionCard = ({ userProfile, transaction }) => {
@@ -29,7 +30,7 @@ const TransactionCard = ({ userProfile, transaction }) => {
                         maximumFractionDigits: 2,
                     })}</p>
                 <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
-                    {transaction?.type == "D" ? "Money sent" : "Money received"}
+                    {getTransactionType(transaction?.type, transaction?.remarks)}
                 </p>
             </div>
         </div>

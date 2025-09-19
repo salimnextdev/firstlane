@@ -27,3 +27,13 @@ export const resendOTP = async (dispatch, email, type="EmailVerification") => {
         });
     }
 };
+
+export const getTransactionType = (type, remarks) => {
+    if (type === 'C') return 'Money received';
+    if (type === 'D') {
+      if (remarks.toLowerCase().includes('investment')) return 'Investment';
+      if (remarks.toLowerCase().includes('fee')) return 'Fee';
+      return 'Money sent';
+    }
+    return 'Unknown';
+  };

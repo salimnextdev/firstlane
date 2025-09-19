@@ -30,6 +30,7 @@ import NoContent from '@/components/NoContent';
 import { formatDateTime } from '@/utils/datetimeFormats';
 import TransactionSkeletonTable from '../components/TransactionSkeletonTable';
 import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
+import { getTransactionType } from '@/utils/genericFunc';
 
 const KYCBanner = {
     pending: {
@@ -334,7 +335,7 @@ const Dashboard = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
-                                                    {transaction?.type == "D" ? "Money sent" : "Money received"}
+                                                    {getTransactionType(transaction?.type, transaction?.remarks)}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-gray-800">{formatDateTime(transaction?.date)}</TableCell>

@@ -42,6 +42,7 @@ import NoContent from '@/components/NoContent';
 import { Loader } from 'lucide-react';
 import { formatDateTime } from '@/utils/datetimeFormats';
 import { filterTransactions } from '@/utils/filters';
+import { getTransactionType } from '@/utils/genericFunc';
 
 const LIMIT = 10;
 
@@ -79,7 +80,7 @@ const Wallets = () => {
     const openModal = (type) => {
         setModal(type);
         setIsOpen(true);
-    };    
+    };
 
     // Removed status filter since all wallet transactions are automatically sucessfull
     const [filters, setFilters] = useState({
@@ -288,7 +289,7 @@ const Wallets = () => {
                                             })}</TableCell>
                                             <TableCell className="font-light">
                                                 <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
-                                                    {transaction?.type == "D" ? "Money sent" : "Money received"}
+                                                    {getTransactionType(transaction?.type, transaction?.remarks)}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="font-light">{formatDateTime(transaction?.date)}</TableCell>
