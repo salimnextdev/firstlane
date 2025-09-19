@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSupport, fetchSupportConversations, fetchSupports } from '@/modules/support/state/supportSlice';
 import { uploadFile } from '@/modules/kyc/state/kycSlice';
+import { fetchAdminSettings } from '@/modules/settings/state/adminSettingsSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { Check } from 'lucide-react';
@@ -42,10 +43,12 @@ const Support = () => {
         support_loading,
         support_error,
     } = useSelector((state) => state.support);
+    const { settings: settings, loading: settings_loading, error: settings_error } = useSelector((state) => state.admin_settings);
 
     useEffect(() => {
-        if (!loading) {
+        if (!loading || !settings_loading) {
             dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            dispatch(fetchAdminSettings());
         }
     }, [dispatch]);
 
@@ -68,6 +71,11 @@ const Support = () => {
     const handleModalClose = () => {
         setIsOpen(false);
         setSelected({ new: selectedModalOption });
+    };
+
+    const [erroredProductIds, setErroredProductIds] = useState(new Set());
+    const handleImageError = (id) => {
+        setErroredProductIds((prev) => new Set(prev).add(id));
     };
 
     const INITIAL_DATA = {
@@ -237,8 +245,16 @@ const Support = () => {
                                     className={`flex items-center justify-between py-2 md:p-3 ${item?._id === selected?._id && 'bg-currency'} md:hover:bg-gray-100 rounded-md cursor-pointer`}
                                 >
                                     <div className='flex items-center gap-3'>
-                                        <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
-                                            <p className='capitalize'>A</p>
+                                        <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full overflow-hidden'>
+                                            {settings?.plaform.logo && !erroredProductIds.has(item?._id) ? (
+                                                <img
+                                                    className='w-full h-full object-cover rounded-full'
+                                                    src={settings?.plaform.logo}
+                                                    alt='logo'
+                                                    onError={() => handleImageError(item?._id)}
+                                                />
+                                            ) : <p className='capitalize'>A</p>
+                                            }
                                         </div>
                                         <div className='text-sm font-light'>
                                             <p className='font-medium space-x-3'>
@@ -297,7 +313,15 @@ const Support = () => {
                                 <div className='flex items-center gap-3 pb-3 md:p-0 border-b border-gray md:border-0'>
                                     <ArrowLeft onClick={() => setSelected(null)} className='md:hidden cursor-pointer' />
                                     <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
-                                        <p className='capitalize'>A</p>
+                                        {settings?.plaform.logo && !erroredProductIds.has(selected?.subject) ? (
+                                            <img
+                                                className='w-full h-full object-cover rounded-full'
+                                                src={settings?.plaform.logo}
+                                                alt='logo'
+                                                onError={() => handleImageError(selected?.subject)}
+                                            />
+                                        ) : <p className='capitalize'>A</p>
+                                        }
                                     </div>
                                     <div className='flex flex-col items-start text-sm'>
                                         <p className='font-medium'>Admin</p>
@@ -366,7 +390,7 @@ const Support = () => {
                                                                     <File />
                                                                     <div className='space-y-1 text-sm'>
                                                                         <p className='truncate'>{selected?.url?.split('/')?.pop()}</p>
-                                                                        <p className='text-xs text-gray-700'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
+                                                                        <p className='text-xs text-gray-700'>File attached • {message?.url?.split('.')?.pop()?.toUpperCase()}</p>
                                                                     </div>
                                                                 </div>
                                                                 <a href={selected?.url} target='_blank' download>
@@ -406,7 +430,7 @@ const Support = () => {
                                                                                     <File />
                                                                                     <div className='space-y-1 text-sm'>
                                                                                         <p className='truncate'>{message?.url?.split('/')?.pop()}</p>
-                                                                                        <p className='text-xs text-gray-700'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
+                                                                                        <p className='text-xs text-gray-700'>File attached • {message?.url?.split('.')?.pop()?.toUpperCase()}</p>
                                                                                     </div>
                                                                                 </div>
                                                                                 <a href={message?.url} target='_blank' download>
@@ -428,7 +452,15 @@ const Support = () => {
                                                                 <div className='w-11/12 lg:w-8/12 flex items-start gap-2'>
                                                                     <div className='w-1/12 hidden md:block'>
                                                                         <div className='w-[40px] h-[40px] flex items-center justify-center text-black bg-[var(--firstlane-primary-light)] border border-[var(--firstlane-bg-light)] rounded-full'>
-                                                                            <p className='capitalize'>A</p>
+                                                                            {settings?.plaform.logo && !erroredProductIds.has(message._id) ? (
+                                                                                <img
+                                                                                    className='w-full h-full object-cover rounded-full'
+                                                                                    src={settings?.plaform.logo}
+                                                                                    alt='logo'
+                                                                                    onError={() => handleImageError(message._id)}
+                                                                                />
+                                                                            ) : <p className='capitalize'>A</p>
+                                                                            }
                                                                         </div>
                                                                     </div>
                                                                     <div className='w-full space-y-1 font-light'>
@@ -446,7 +478,7 @@ const Support = () => {
                                                                                     <File />
                                                                                     <div className='space-y-1 text-sm'>
                                                                                         <p className='truncate'>{message?.url?.split('/')?.pop()}</p>
-                                                                                        <p className='text-xs text-secondary'>1 page • {message?.url?.split('.')?.pop()?.toUpperCase()} • 4mb</p>
+                                                                                        <p className='text-xs text-secondary'>File attached • {message?.url?.split('.')?.pop()?.toUpperCase()}</p>
                                                                                     </div>
                                                                                 </div>
                                                                                 <a href={message?.url} target='_blank' download>
@@ -476,7 +508,7 @@ const Support = () => {
                         <div className="fixed md:static left-0 bottom-0 z-10 w-full md:w-auto md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                             {selected?.status === 'closed' ?
                                 <div className='hidden md:flex items-center gap-2 w-full p-4 bg-[var(--firstlane-primary-light)] text-black rounded-xl'>
-                                    <FaCircleCheck className='w-5 h-5'/>
+                                    <FaCircleCheck className='w-5 h-5' />
                                     <p className='text-sm font-light'>
                                         This support ticket has been closed by the administrator and can no longer accept responses.
                                     </p>
