@@ -133,14 +133,16 @@ const LoanDetails = () => {
                                 </>
                             }
                             <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
+                                {loanDetails?.loanType == 'personal' || loanDetails?.loanType == 'business' &&
+                                    <div className='w-full md:w-1/2 text-xs space-y-1'>
+                                        <p className='text-secondary'>Collateral</p>
+                                        <p className='text-base font-medium'>{loanDetails?.collateralID || '--'}</p>
+                                    </div>
+                                }
                                 <div className='w-full md:w-1/2 text-xs space-y-1'>
-                                    <p className='text-secondary'>Collateral</p>
-                                    <p className='text-base font-medium'>{loanDetails?.collateralID || '--'}</p>
+                                    <p className='text-secondary'>Note</p>
+                                    <p className='text-base font-medium'>{loanDetails?.notes || '--'}</p>
                                 </div>
-                                {/* <div className='w-full md:w-1/2 text-xs space-y-1'>
-                                <p className='text-secondary'>Note</p>
-                                <p className='text-base font-medium'>{data.note}</p>
-                            </div> */}
                             </div>
                             <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
                                 {loanDetails?.loanType === 'finance' &&
