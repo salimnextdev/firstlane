@@ -120,7 +120,7 @@ const ChangePassword = () => {
                 />
 
 
-                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         // type='button'
                         // onClick={() => setIsOpen(true)}
@@ -164,7 +164,7 @@ const ChangePassword = () => {
                         </button>
                     </div>
 
-                    <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                    <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                         <button
                             className={`w-full md:w-16 h-11 md:h-9 mt-2 bg-primary text-sm rounded-md ${resend ? "opacity-70 cursor-not-allowed" : "cursor-pointer"} hover:bg-opacity-90 transition`}
                             disabled={resend}
