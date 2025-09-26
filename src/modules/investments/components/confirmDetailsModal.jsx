@@ -52,6 +52,7 @@ const ConfirmDetailsModal = ({
             <InvestmentModal
                 isOpen={isModalOpen}
                 onClose={setIsModalOpen}
+                success={true}
                 title='Investment sync successful'
                 description="You investment has now been synced to Firstlane's digital applicaion. 
                 You can access the details of the investment from the comfort of your home."
