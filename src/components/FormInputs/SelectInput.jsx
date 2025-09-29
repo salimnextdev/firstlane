@@ -25,10 +25,10 @@ const SelectInput = ({
                 value={value}
                 onValueChange={(val) => onChange({ target: { name, value: val } })}
             >
-                <SelectTrigger className={`w-full !h-12 mt-1 px-5 font-light border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded shadow-none ${className}`}>
+                <SelectTrigger className={`w-full !h-12 mt-1 px-5 font-light capitalize border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded shadow-none ${className}`}>
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
-                <SelectContent className='bg-white font-light border border-gray-200'>
+                <SelectContent className='bg-white font-light capitalize border border-gray-200'>
                     {options.map((opt) => (
                         <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
