@@ -47,7 +47,7 @@ const Support = () => {
 
     useEffect(() => {
         if (!loading || !settings_loading) {
-            dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            dispatch(fetchSupports({ page: 1, limit: LIMIT }));
             dispatch(fetchAdminSettings());
         }
     }, [dispatch]);
@@ -132,7 +132,7 @@ const Support = () => {
         if (parseInt(metaData?.currentPage) < parseInt(metaData?.totalPage)) {
             const nextPage = currentPage + 1;
             setCurrentPage(nextPage);
-            dispatch(fetchSupports({ key: 'userID', value: user?._id, page: nextPage, limit: LIMIT }));
+            dispatch(fetchSupports({ page: nextPage, limit: LIMIT }));
         }
     };
 
@@ -172,7 +172,7 @@ const Support = () => {
                 "status": "open",
                 "priority": "low",
                 "message": formData.message,
-                "url": attachment.payload?.data[0]?.url || attachment
+                "url": attachment?.payload?.data[0]?.url || attachment
             };
 
             // Only add supportID for existing support, passing it as an empty string will cause errors
@@ -184,7 +184,7 @@ const Support = () => {
             await dispatch(addSupport(data)).unwrap();
             selected?.new && setSelected(null); // Display the support list after creating a new support ticket.
 
-            await dispatch(fetchSupports({ key: 'userID', value: user?._id, page: 1, limit: LIMIT }));
+            await dispatch(fetchSupports({ page: 1, limit: LIMIT }));
             selected?.message && await getConversations(selected); // Fetch conversations for already existing support ticket.
             setFormData(INITIAL_DATA);
             setPreviewImage(null);
