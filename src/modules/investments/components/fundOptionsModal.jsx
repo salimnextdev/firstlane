@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 import FundAccountModal from '@/modules/investments/components/fundAccountModal';
+import BankPaymentModal from './bankPaymentModal';
 import CouponModal from '@/modules/investments/components/couponModal';
 import RadioCheckInput from '@/components/FormInputs/RadioCheckInput';
 
@@ -28,15 +29,18 @@ const FundOptionsModal = ({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isBankModalOpen, setIsBankModalOpen] = useState(false);
+    const [isBankPaymentModalOpen, setIsBankPaymentModalOpen] = useState(false);
     const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(option);
 
-    const handleModal = () => {
+    const handleModal = async () => {
         setIsModalOpen(true);
         onClose();
 
         if (selectedOption === "bank_transfer") {
             setIsBankModalOpen(true);
+        } else if (selectedOption === "bank_payment") {
+            setIsBankPaymentModalOpen(true);
         } else if (selectedOption === "coupon_code") {
             setIsCouponModalOpen(true);
         }
@@ -53,6 +57,13 @@ const FundOptionsModal = ({
                     acc_name: "Alison Eyo",
                     bank_name: "Paystack Titan",
                 }}
+            />}
+
+            {isBankPaymentModalOpen && selectedOption === "bank_payment" && <BankPaymentModal
+                isOpen={isBankPaymentModalOpen}
+                onClose={setIsBankPaymentModalOpen}
+                title="Fund account"
+                description="Enter the amount you would like to deposit into your wallet."
             />}
 
             {isModalOpen && selectedOption === "coupon_code" && <CouponModal
