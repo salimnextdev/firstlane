@@ -140,6 +140,18 @@ export const fundWalletByCoupon = createAsyncThunk(
   }
 );
 
+export const fundWalletByLink = createAsyncThunk(
+  'wallet/fundWalletByLink',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/wallet/fund-account`, credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
