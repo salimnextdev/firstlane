@@ -15,11 +15,36 @@ export const addSupport = createAsyncThunk(
     }
 );
 
+// export const fetchSupports = createAsyncThunk(
+//     'support/fetchSupports',
+//     async ({ key, value, page, limit }, { rejectWithValue }) => {
+//         try {
+//             let url = `${API_BASE_URL}/support/by-any/${key}/${value}`;
+
+//             const params = [];
+//             if (page !== undefined) {
+//                 params.push(`page=${page}`);
+//             }
+//             if (limit !== undefined) {
+//                 params.push(`limit=${limit}`);
+//             }
+
+//             if (params.length > 0) {
+//                 url += `?${params.join('&')}`;
+//             }
+//             const response = await api.get(url);
+//             return response.data;
+//         } catch (error) {
+//             return rejectWithValue(error.response.data);
+//         }
+//     }
+// );
+
 export const fetchSupports = createAsyncThunk(
     'support/fetchSupports',
-    async ({ key, value, page, limit }, { rejectWithValue }) => {
+    async ({ page, limit }, { rejectWithValue }) => {
         try {
-            let url = `${API_BASE_URL}/support/by-any/${key}/${value}`;
+            let url = `${API_BASE_URL}/support/user-admin-support-list`;
 
             const params = [];
             if (page !== undefined) {
