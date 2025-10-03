@@ -115,7 +115,7 @@ const Signup = () => {
 
             <div className="w-full md:w-1/2 my-10 md:my-0 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
                 <div className='w-full lg:w-10/12'>
-                    <div className="hidden md:flex items-center gap-2 mb-6">
+                    <div className="flex items-center gap-2 mb-4 md:mb-6">
                         <img className="w-7" alt="logo" src={logo} />
                         <h1 className="text-lg font-medium text-primary">FirstLane</h1>
                     </div>
@@ -201,7 +201,8 @@ const Signup = () => {
                         </Link>
                     </div>
 
-                    <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
+                    {/* Feature Removed */}
+                    {/* <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
                         <Separator className="flex-1 h-px bg-gray-300" />
                         <span className="whitespace-nowrap font-light">Or continue with</span>
                         <Separator className="flex-1 h-px bg-gray-300" />
@@ -216,7 +217,7 @@ const Signup = () => {
                             <FaFacebook className='text-xl text-[#1877F2]' />
                             <span>Facebook</span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
