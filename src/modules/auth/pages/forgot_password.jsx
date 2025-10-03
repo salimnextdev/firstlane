@@ -43,13 +43,10 @@ const ForgotPassword = () => {
                     description: resultAction.payload.message,
                 });
                 navigate('/reset-password/otp');
-            } else {
-                toast(resultAction.payload.message);
-                return;
-            };
+            }
         } catch (error) {
             toast("An error occured", {
-                description: error.message,
+                description: error?.message || 'Something happened while making this request!',
             });
         } finally {
             setSubmitted(false);
