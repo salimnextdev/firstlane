@@ -242,10 +242,11 @@ const Profile = () => {
                         label="Email Address"
                         name="email"
                         type='email'
-                        className='text-sm'
+                        className='text-sm bg-currency'
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="adam.jude@mail.com"
+                        disabled
                     />
                     <TextInput
                         label="Phone"
