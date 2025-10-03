@@ -285,7 +285,7 @@ const Dashboard = () => {
                         <h2 className="text-[20px] font-medium text-tertiary">Transactions</h2>
                     </div>
 
-                    {(wallet_loading || transactions.length) > 0 ?
+                    {(wallet_loading || transactions?.length) > 0 ?
                         <div className="overflow-x-auto text-secondary">
                             <Table>
                                 <TableHeader>
@@ -376,7 +376,7 @@ const Dashboard = () => {
             <div className='md:hidden space-y-4'>
                 <p className='text-base font-medium'>Transactions</p>
 
-                {(wallet_loading || transactions.length) > 0 ? (
+                {(wallet_loading || transactions?.length) > 0 ? (
                     <div className='space-y-2' id='mobile_transaction_card'>
                         {wallet_loading ? (
                             Array.from({ length: 6 }).map((_, index) => (
