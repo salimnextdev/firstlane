@@ -71,10 +71,11 @@ Users can access flexible credit options tailored to individual and business nee
 
    
    VITE_API_BASE_URL=your_api_base_url
-
+   VITE_BASE_URL=your_frontend_url
 
 2. Environment variables explanation:
    - VITE_API_BASE_URL: Primary API endpoint for the application
+   - VITE_BASE_URL: Hosted frontend url
 
 ## Project Structure
 
