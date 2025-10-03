@@ -184,7 +184,7 @@ const Support = () => {
             await dispatch(addSupport(data)).unwrap();
             selected?.new && setSelected(null); // Display the support list after creating a new support ticket.
 
-            await dispatch(fetchSupports({ page: 1, limit: LIMIT }));
+            !selected?.message && await dispatch(fetchSupports({ page: 1, limit: LIMIT })); // Only fetch supports list for new ticket.
             selected?.message && await getConversations(selected); // Fetch conversations for already existing support ticket.
             setFormData(INITIAL_DATA);
             setPreviewImage(null);
