@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { loginUser } from '@/modules/auth/state/authSlice';
-import { getCookie } from '@/utils/cookieUtils';
+import { getCookie, setCookie } from '@/utils/cookieUtils';
 import { toast } from "sonner";
 
 import logo from '@/assets/images/logo.png';
@@ -82,13 +82,16 @@ const Signin = () => {
             const resultAction = await dispatch(loginUser(data));
             if (loginUser.fulfilled.match(resultAction)) {
                 navigate(redirectUrl || '/dashboard', { replace: true });
+            } else if (resultAction.payload?.message === 'Email not verified') {
+                setCookie('user', JSON.stringify({email: formData.email}))
+                navigate('/verify-account', { state: { from: '/signin' } })
             } else {
-                toast(resultAction.payload.message);
+                toast(resultAction.payload?.message);
                 return;
             };
         } catch (error) {
             toast("An error occured", {
-                description: resultAction.payload.message,
+                description: resultAction.payload?.message,
             });
         } finally {
             setSubmitted(false);
@@ -101,7 +104,7 @@ const Signin = () => {
 
             <div className="w-full md:w-1/2 my-10 md:my-0 px-5 md:px-10 flex items-center justify-center md:text-center md:text-left">
                 <div className='w-full lg:w-10/12'>
-                    <div className="hidden md:flex items-center gap-2 mb-6">
+                    <div className="flex items-center gap-2 mb-4 md:mb-6">
                         <img className="w-7" alt="logo" src={logo} />
                         <h1 className="text-xl font-medium text-primary">FirstLane</h1>
                     </div>
@@ -152,7 +155,8 @@ const Signin = () => {
                         </Link>
                     </div>
 
-                    <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
+                    {/* Feature Removed */}
+                    {/* <div className="flex items-center justify-center gap-4 text-sm text-secondary my-5 mt-8">
                         <Separator className="flex-1 h-px bg-gray-300" />
                         <span className="whitespace-nowrap font-light">Or sign up with</span>
                         <Separator className="flex-1 h-px bg-gray-300" />
@@ -167,7 +171,7 @@ const Signin = () => {
                             <FaFacebook className='text-xl text-[#1877F2]' />
                             <span>Facebook</span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
