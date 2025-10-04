@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useDispatch } from 'react-redux';
 import { uploadFile } from '@/modules/kyc/state/kycSlice';
@@ -10,10 +10,11 @@ import SelectInput from '@/components/FormInputs/SelectInput';
 import FileInput from '@/components/FormInputs/FileInput';
 import BackButton from '@/components/BackButton';
 import LoanSuccessModal from '../components/loanSuccessCard';
-import { useLoanDropdowns } from '@/utils/dropdownOptions';
+import { useBankOptions, useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import SearchInput from '@/components/FormInputs/searchInput';
 
 const FinanceLoans = () => {
     const {
@@ -22,6 +23,8 @@ const FinanceLoans = () => {
         loanIntervals: { options: loanIntervals, loading: loadingIntervals, error: errorIntervals },
         loanCollaterals: { options: loanCollaterals, loading: loadingCollaterals, error: errorCollaterals },
     } = useLoanDropdowns();
+
+    const { bankOptions, loading, error } = useBankOptions();
 
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
@@ -34,6 +37,9 @@ const FinanceLoans = () => {
         duration: "",
         interval: "",
         collateral: "",
+        account_number: "",
+        bank_name: "",
+        bank_code: "",
         invoice: null,
         referral: "",
     });
@@ -48,6 +54,21 @@ const FinanceLoans = () => {
         }));
     };
 
+    useEffect(() => {
+        const selectedBank = bankOptions.find(
+            (option) => option.value === formData.bank_code
+        );
+        const newBankName = selectedBank ? selectedBank.label : '';
+
+        // Only update if the bank_name has actually changed to avoid unnecessary re-renders
+        if (newBankName !== formData.bank_name) {
+            setFormData((prev) => ({
+                ...prev,
+                bank_name: newBankName,
+            }));
+        }
+    }, [formData.bank_code, bankOptions]);
+
     const validateForm = () => {
         const errors = {};
         if (!checked) errors.checked = "Please check the consent box";
@@ -56,6 +77,8 @@ const FinanceLoans = () => {
         if (!formData.duration) errors.duration = "Loan duration is required";
         if (!formData.interval) errors.interval = "Loan interval is required";
         if (!formData.invoice) errors.invoice = "Vendor's invoice is required";
+        if (!formData.account_number) errors.account_number = "Vendor's account number is required";
+        if (!formData.bank_code) errors.bank_code = "Vendor's bank name is required";
         return errors;
     };
 
@@ -90,6 +113,9 @@ const FinanceLoans = () => {
                 tenure: formData.duration,
                 repaymentInterval: formData.interval,
                 vendorInvoice: documentUpload.payload?.data[0]?.url || documentUpload,
+                vendorAccountNumber: formData.account_number,
+                vendorBankName: formData.bank_name,
+                vendorBankCode: formData.bank_code,
                 loanType: "asset-finance",
                 userID: user._id,
                 refCode: formData.referral,
@@ -174,6 +200,28 @@ const FinanceLoans = () => {
                         onChange={handleChange}
                         options={loanIntervals}
                         placeholder="Select repayment"
+                    />
+                </div>
+
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
+                    <TextInput
+                        label="Vendor account number"
+                        name="account_number"
+                        className='text-sm'
+                        value={formData.account_number}
+                        onChange={handleChange}
+                        placeholder="0000000000"
+                        maxLength={10}
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                    />
+                    <SearchInput
+                        label="Vendor bank name"
+                        name='bank_code'
+                        value={formData.bank_code}
+                        onChange={handleChange}
+                        data={bankOptions || []}
+                        placeholder='Select bank'
                     />
                 </div>
 
