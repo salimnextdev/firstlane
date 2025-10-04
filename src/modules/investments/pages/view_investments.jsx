@@ -97,7 +97,7 @@ const ViewInvestment = () => {
     const [pastInvestments, setPastInvestments] = useState([]);
 
     useEffect(() => {
-        setActiveInvestments(investments.filter(investment => investment.status === "pending"));
+        setActiveInvestments(investments.filter(investment => investment.status === "active"));
         setPastInvestments(investments.filter(investment => investment.status === "completed"));
     }, [investments])
 
