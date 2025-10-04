@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
@@ -16,11 +16,14 @@ import { Loader } from 'lucide-react';
 const VerifyAccount = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const prevPage = location?.state?.from;
+
     const user = JSON.parse(getCookie('user') || null);
     if (!user) {
         return <Navigate to="/signup" />
     };
-    
+
     // Redirect to dashboard, when user is loggedIn
     const token = getCookie('token') || null;
     if (token) {
@@ -49,7 +52,7 @@ const VerifyAccount = () => {
     }, [countdown]);
 
     const handleResend = () => {
-        if (!resend) return;
+        if (!resend && !prevPage) return;
         resendOTP();
         setCountdown(50);
         setResend(false);
@@ -88,7 +91,7 @@ const VerifyAccount = () => {
 
     const resendOTP = async () => {
         const data = {
-            "userID": user?.userID || '',
+            // "userID": user?.userID || '', // Optional
             "email": user?.email || '',
             "type": "EmailVerification"
         };
@@ -97,7 +100,7 @@ const VerifyAccount = () => {
             const resultAction = await dispatch(sendCodeToEmail(data));
             if (sendCodeToEmail.fulfilled.match(resultAction)) {
                 toast("OTP sent successfully!", {
-                    description: resultAction.payload.message,
+                    description: 'Enter the code to continue with verification.',
                 });
             } else {
                 toast(resultAction.payload.message);
@@ -139,13 +142,13 @@ const VerifyAccount = () => {
 
                         <div className="flex items-center justify-between text-sm">
                             <p className="text-secondary">
-                                {!resend && `${countdown}secs`}
+                                {!resend && !prevPage && `${countdown}secs`}
                             </p>
                             <button
                                 type="button"
                                 onClick={handleResend}
-                                disabled={!resend}
-                                className={`text-primary font-medium ${!resend ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                disabled={!resend && !prevPage}
+                                className={`text-primary font-medium ${!resend && !prevPage ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                                     }`}
                             >
                                 Resend OTP
@@ -154,7 +157,7 @@ const VerifyAccount = () => {
 
                         <button
                             className={`w-full h-11 mt-2 bg-[#3E4095] text-white font-normal rounded-md cursor-pointer hover:bg-opacity-90 transition`}
-                        // disabled={resend}
+                            disabled={submitted}
                         >
                             {submitted ?
                                 <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
