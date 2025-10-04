@@ -12,14 +12,18 @@ const WalletCard = ({ transaction }) => {
                         maximumFractionDigits: 2,
                     })}
                 </p>
-                <p className="text-xs md:text-sm text-gray-500">{formatDateShort(transaction?.date)}</p>
+                <p className="text-xs md:text-sm text-gray-500">
+                    {formatDateShort(transaction?.createdAt || transaction?.date) || '--'}
+                </p>
             </div>
             <div className='flex flex-col items-end gap-1'>
-                <p className={`text-xs font-medium capitalize ${true ? 'text-success' :
-                    transaction?.status === 'pending' ? 'text-warning' :
-                        'text-danger'
-                    }`}>{"successsful" || transaction?.status}</p>
-                <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
+                <p className={`text-xs font-medium capitalize 
+                ${transaction?.status === 'paid' ? 'text-success' :
+                        transaction?.status === 'pending' ? 'text-warning' :
+                            'text-danger'
+                    }`}>{transaction?.status || '--'}
+                </p>
+                <p className="px-3 py-1 text-xs font-normal rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600 capitalize">
                     {getTransactionType(transaction?.type, transaction?.remarks)}
                 </p>
             </div>

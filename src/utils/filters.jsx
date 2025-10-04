@@ -1,6 +1,10 @@
 // Mapper to help filter based on backend format
+// const paymentTypesMap = {
+//   'Wallet funding': 'C',
+//   'Money sent': 'D'
+// };
 const paymentTypesMap = {
-  'Wallet funding': 'C',
+  'Wallet funding': 'deposit',
   'Money sent': 'D'
 };
 
@@ -21,8 +25,13 @@ export const filterTransactions = ({
   
       const matchesSearch =
         !searchTerm ||
-        (transaction?.reference?.toLowerCase().includes(searchTerm) ||
-          transaction?.description?.toLowerCase().includes(searchTerm) ||
+        (
+          // transaction?.reference?.toLowerCase().includes(searchTerm) ||
+          // transaction?.description?.toLowerCase().includes(searchTerm) ||
+          transaction?._id?.toLowerCase().includes(searchTerm) ||
+          transaction?.type?.toLowerCase().includes(searchTerm) ||
+          transaction?.senderAccountNumber?.toLowerCase().includes(searchTerm) ||
+          transaction?.senderBank?.toLowerCase().includes(searchTerm) ||
           String(transaction.amount).includes(searchTerm));
   
       return matchesStatus && matchesPaymentType && matchesSearch;

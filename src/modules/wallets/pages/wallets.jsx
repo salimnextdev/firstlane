@@ -84,12 +84,12 @@ const Wallets = () => {
 
     // Removed status filter since all wallet transactions are automatically sucessfull
     const [filters, setFilters] = useState({
-        // statuses: '',
+        statuses: '',
         paymentTypes: '',
     });
 
     const filterOptions = {
-        // statuses: ['Successful', 'Pending', 'Failed'],
+        statuses: ['Successful', 'Pending', 'Failed'],
         paymentTypes: ['Wallet funding', 'Money sent'],
     };
 
@@ -110,7 +110,7 @@ const Wallets = () => {
 
     const handleClearFilters = () => {
         setFilters({
-            // statuses: '',
+            statuses: '',
             paymentTypes: '',
         });
     };
@@ -283,26 +283,28 @@ const Wallets = () => {
                                             <TableCell className="p-4">
                                                 <Checkbox />
                                             </TableCell>
-                                            <TableCell className="font-light">₦{transaction?.amount?.toLocaleString(undefined, {
+                                            <TableCell className="font-light">
+                                                ₦{transaction?.amount?.toLocaleString(undefined, {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2,
-                                            })}</TableCell>
+                                            }) || '--'}</TableCell>
                                             <TableCell className="font-light">
-                                                <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
+                                                <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600 capitalize">
                                                     {getTransactionType(transaction?.type, transaction?.remarks)}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="font-light">{formatDateTime(transaction?.date)}</TableCell>
+                                            <TableCell className="font-light">
+                                                {formatDateTime(transaction?.createdAt || transaction?.date) || '--'}
+                                            </TableCell>
                                             <TableCell>
                                                 <span
                                                     className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${true ? 'bg-success' :
+                                                ${transaction.status === 'paid' ? 'bg-success' :
                                                             transaction.status === 'pending' ? 'bg-warning' :
                                                                 'bg-danger'
                                                         }`}
                                                 >
-                                                    {/* {transaction?.status || 'N/A'} */}
-                                                    successsful
+                                                    {transaction?.status || 'N/A'}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="w-[5%] px-6 py-4 relative">
@@ -317,7 +319,7 @@ const Wallets = () => {
                                                         </button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="w-40 z-10 bg-white text-left rounded-xl border border-gray-200 cursor-pointer">
-                                                        <DropdownMenuItem onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
+                                                        <DropdownMenuItem onClick={() => navigate(`/wallets/all/${transaction?._id}`)}>
                                                             <span className='font-light cursor-pointer'>View details</span>
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -356,7 +358,7 @@ const Wallets = () => {
                                 <WalletSkeletonCard key={index} />
                             ))
                         ) : transactions.map((transaction, index) => (
-                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
+                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?._id}`)}>
                                 <WalletCard transaction={transaction} />
                             </div>
 
@@ -375,7 +377,7 @@ const Wallets = () => {
             {/* Pagination */}
             <Pagination
                 className={`${(transactions.length == 0 || transaction_loading) ? 'hidden' : 'hidden md:flex'}`}
-                totalPages={metaData?.total_pages}
+                totalPages={metaData?.totalPage}
                 currentPage={currentPage || parseInt(metaData?.current_page)}
                 onPageChange={handlePageChange}
             />

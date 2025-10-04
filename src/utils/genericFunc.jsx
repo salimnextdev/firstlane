@@ -3,7 +3,7 @@ import { sendCodeToEmail } from "@/modules/auth/state/authSlice";
 import { toast } from "sonner";
 import { getCookie } from "./cookieUtils";
 
-export const resendOTP = async (dispatch, email, type="EmailVerification") => {
+export const resendOTP = async (dispatch, email, type = "EmailVerification") => {
     const user = JSON.parse(getCookie('user') || null);
     const data = {
         "userID": user?._id || '',
@@ -28,12 +28,21 @@ export const resendOTP = async (dispatch, email, type="EmailVerification") => {
     }
 };
 
+// export const getTransactionType = (type, remarks) => {
+//     if (type === 'C') return 'Money received';
+//     if (type === 'D') {
+//       if (remarks.toLowerCase().includes('investment')) return 'Investment';
+//       if (remarks.toLowerCase().includes('fee')) return 'Fee';
+//       return 'Money sent';
+//     }
+//     return 'Unknown';
+//   };
+
 export const getTransactionType = (type, remarks) => {
-    if (type === 'C') return 'Money received';
-    if (type === 'D') {
-      if (remarks.toLowerCase().includes('investment')) return 'Investment';
-      if (remarks.toLowerCase().includes('fee')) return 'Fee';
-      return 'Money sent';
+    // if (type === 'C') return 'Money received';
+    if (type === 'deposit') {
+        return 'Wallet funding';
+    } else {
+        return type
     }
-    return 'Unknown';
-  };
+};

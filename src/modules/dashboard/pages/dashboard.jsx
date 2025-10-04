@@ -307,7 +307,7 @@ const Dashboard = () => {
                                         Array.from({ length: 6 }).map((_, index) => (
                                             <TransactionSkeletonTable key={index} />
                                         ))
-                                    ) : transactions.map((transaction) => (
+                                    ) : transactions?.slice(0, 10)?.map((transaction) => (
                                         <TableRow key={transaction?._id} className="border-b border-gray">
                                             <TableCell className="p-4">
                                                 <Checkbox />
@@ -335,21 +335,23 @@ const Dashboard = () => {
                                                 })}
                                             </TableCell>
                                             <TableCell>
-                                                <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600">
+                                                <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600 capitalize">
                                                     {getTransactionType(transaction?.type, transaction?.remarks)}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-gray-800">{formatDateTime(transaction?.date)}</TableCell>
+                                            <TableCell className="text-gray-800">
+                                                {formatDateTime(transaction?.createdAt || transaction?.date) || '--'}
+                                            </TableCell>
                                             <TableCell>
                                                 <span
                                                     className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${true ? 'bg-success' :
+                                                ${transaction?.status === 'paid' ? 'bg-success' :
                                                             transaction?.status === 'pending' ? 'bg-warning' :
                                                                 'bg-danger'
                                                         }`}
                                                 >
-                                                    {/* {transaction?.status || 'N/A'} */}
-                                                    successful
+                                                    {transaction?.status || 'N/A'}
+                                                    {/* successful */}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
@@ -383,8 +385,8 @@ const Dashboard = () => {
                             Array.from({ length: 6 }).map((_, index) => (
                                 <TransactionSkeletonCard key={index} />
                             ))
-                        ) : transactions.map((transaction, index) => (
-                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?.reference}`)}>
+                        ) : transactions?.slice(0, 10)?.map((transaction, index) => (
+                            <div key={index} onClick={() => navigate(`/wallets/all/${transaction?._id}`)}>
                                 <TransactionCard userProfile={userProfile} transaction={transaction} />
                             </div>
                         ))}
