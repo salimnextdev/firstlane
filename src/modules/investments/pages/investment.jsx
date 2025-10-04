@@ -136,13 +136,18 @@ const Investment = () => {
                             ))
                         ) : (investment_plans.map((item, index) => {
                             const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
+                            const lowDuration = duration < 1;
+                            const readableDuration = lowDuration
+                                    ? 'less than 1 month'
+                                    : `${duration} month${duration >= 2 ? 's' : ''}`;
+
                             return (
                                 <div key={index} className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
                                     <p className='text-xs text-secondary'>Investment Duration</p>
                                     <p className='text-xl font-medium space-x-1'>
                                         <span>{item?.duration[0]}</span>
                                         <span className='text-sm text-secondary font-light'>
-                                            ({duration + ` month${duration > 1 ? 's' : ''}`})
+                                            ({readableDuration})
                                         </span>
                                     </p>
 

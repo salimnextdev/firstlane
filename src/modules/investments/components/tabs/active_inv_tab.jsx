@@ -29,6 +29,11 @@ const ActiveInvestmentTab = ({ data }) => {
                             const investmentProfit = (item?.amount * (item?.investmentID?.interestRate || item?.interestRate)) / 100;
                             const investmentBalance = item?.amount + investmentProfit;
                             const duration = parseInt(item?.duration || item?.investmentID?.duration[0].split(' ')[0]);
+                            const lowDuration = (duration / 30) < 1;
+                            const readableDuration = lowDuration
+                                    ? 'less than 1 month'
+                                    : `${duration} month${duration >= 2 ? 's' : ''}`;
+
                             const daySoFar = calculateDurationDetails(item?.createdAt, duration)?.daysSoFar;
 
                             const investmentEarned = (investmentProfit * daySoFar) / duration || 0.00;
@@ -38,7 +43,7 @@ const ActiveInvestmentTab = ({ data }) => {
                                     <p className='text-lg font-medium space-x-1'>
                                         <span>{item?.investmentID?.duration[0]}</span>
                                         <span className='text-sm text-secondary font-light'>
-                                            ({duration / 30 + ` month${(duration / 30) > 1 ? 's' : ''}`})
+                                            ({readableDuration})
                                         </span>
                                     </p>
 
