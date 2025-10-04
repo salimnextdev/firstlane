@@ -24,7 +24,7 @@ const KYCVerification = () => {
         }
     }, [dispatch]);
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [step, setStep] = useState(1);
     useEffect(() => {
         if (kycStatus) {
