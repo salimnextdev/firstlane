@@ -190,12 +190,13 @@ const Dashboard = () => {
                         </div>
                         <div className='w-10/12 text-black leading-relaxed'>
                             <p className="text-sm md:text-base font-medium">{KYCBanner[kycStatus].title}</p>
-                            {kycStatus === 'failed' ?
+                            {
+                            // kycStatus === 'failed' ?
                                 <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
                                     <p className='text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
                                     <IoIosArrowRoundForward className="w-5 h-5 text-gray-500" />
-                                </div> :
-                                <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
+                                </div>
+                                // : <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
                             }
                             <p className="hidden md:block text-sm text-[#667085] text-wrap font-light leading-relaxed">
                                 {KYCBanner[kycStatus].description}
