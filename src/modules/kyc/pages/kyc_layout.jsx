@@ -32,6 +32,7 @@ const KYCVerification = () => {
             {level >= 4 ? navigate('/dashboard') : setStep(level + 1)};
             setIsOpen(false);
         }
+        kyc_error && setIsOpen(false); // Close loader on request failure
     }, [kycStatus]);
 
     const nextStep = () => setStep((prevStep) => prevStep + 1);
