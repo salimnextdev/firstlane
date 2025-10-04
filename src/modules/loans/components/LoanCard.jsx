@@ -15,7 +15,7 @@ const LoadCard = ({ loan }) => {
                 >
                     {loan?.status}
                 </p>
-                <p className="text-sm md:text-base font-medium text-gray-800">{loan?.purpose}</p>
+                <p className="text-sm md:text-base font-medium text-gray-800 capitalize">{loan?.purpose}</p>
                 <p className="text-xs md:text-sm text-gray-500">{formatDateShort(loan?.createdAt)}</p>
             </div>
             <div className='flex flex-col items-end gap-1'>
@@ -26,7 +26,7 @@ const LoadCard = ({ loan }) => {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })}</p>
-                <p className="px-3 py-1 text-xs font-normal capitalize rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600">
+                <p className="px-3 py-1 text-xs font-normal capitalize rounded-full bg-[#F2F4F7] border border-[#D0D5DD] text-gray-600 capitalize">
                     {loan?.loanType + ' loan'}
                 </p>
             </div>
