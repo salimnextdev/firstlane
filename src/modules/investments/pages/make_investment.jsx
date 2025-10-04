@@ -70,7 +70,7 @@ const MakeInvestment = () => {
         const errors = {};
         if (!formData.amount) errors.amount = "Amount is required";
         if (!formData.interval) errors.interval = "Interval is required";
-        if (formData.amount > balance) errors.amount = "Insufficient funds";
+        // if (formData.amount > balance) errors.amount = "Insufficient funds";
         return errors;
     };
 
@@ -117,8 +117,8 @@ const MakeInvestment = () => {
     };
 
     const InsufficientBalance = balance?.available_balance < investment_plan?.minAmount
-    const btnDisabled = submitted || balance_loading || InsufficientBalance;
-    // const btnDisabled = submitted || balance_loading;
+    // const btnDisabled = submitted || balance_loading || InsufficientBalance;
+    const btnDisabled = submitted || balance_loading;
 
     return (
         <div className="space-y-4">
@@ -248,7 +248,7 @@ const MakeInvestment = () => {
                     placeholder='000000'
                 />
 
-                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         type='button'
                         onClick={investNow}
