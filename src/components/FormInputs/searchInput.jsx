@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import React, { useState, useEffect, useCallback } from "react";
 import Select from "react-select";
 
@@ -15,6 +16,36 @@ import Select from "react-select";
  * @param {string} [props.className=''] - Additional CSS classes for the container div.
  * @param {object} rest - Any other props to pass directly to the react-select component.
  */
+
+const CustomLoader = (props) => {
+    return (
+        <div
+            {...props.innerProps}
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '8px',
+                fontSize: '14px',
+                color: '#666',
+            }}
+            className="text-gray-500"
+        >
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Loading suggestions...
+        </div>
+    );
+};
+
+// NoOptionsMessage component (can be customized if needed)
+const NoOptionsMessage = (props) => {
+    return (
+        <div {...props.innerProps} style={{ padding: '8px 12px', textAlign: 'center', color: '#999' }}>
+            No matching options
+        </div>
+    );
+};
+
 const SearchInput = ({
     label,
     name,
@@ -23,6 +54,7 @@ const SearchInput = ({
     data = [], // Expect data in { value: '', label: '' } format
     placeholder = 'Search...',
     className = "",
+    loading,
     ...rest
 }) => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -131,6 +163,11 @@ const SearchInput = ({
                 onInputChange={handleInputChange} // Callback for when user types in the search box
                 onChange={handleSelectChange} // Callback for when user selects an item from the dropdown
                 options={filteredOptions} // The list of options to display in the dropdown (filtered by input)
+                components={{
+                    LoadingMessage: CustomLoader, // Use the custom Lucide Loader component
+                    NoOptionsMessage: NoOptionsMessage, // Show "No matching options" when not loading and no results
+                }}
+                isLoading={loading} // Tell react-select that we are loading
                 isClearable // Allows clearing the selected value
                 placeholder={placeholder}
                 {...rest} // Spread any additional props to react-select
