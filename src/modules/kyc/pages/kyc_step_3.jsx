@@ -151,7 +151,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     />
                 </div>
 
-                <PlacesInput
+                {/* <PlacesInput
                     label="Residential address"
                     name="address"
                     className='text-sm'
@@ -159,6 +159,15 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                     onChange={(address) => {
                         setFormData({ ...formData, ['address']: address });
                     }}
+                    placeholder="No 8 Amadu Bello Way, Wuse"
+                /> */}
+
+                <TextInput
+                    label="Residential address"
+                    name="address"
+                    className='text-sm'
+                    value={formData.address}
+                    onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
