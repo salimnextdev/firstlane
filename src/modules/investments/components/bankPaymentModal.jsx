@@ -41,7 +41,7 @@ const BankPaymentModal = ({
                 }
             ))
             if (fundWalletByLink.fulfilled.match(resultAction)) {
-                const paymentUrl = resultAction.payload?.data;
+                const paymentUrl = resultAction.payload?.data?.link || resultAction.payload?.data;
                 if (paymentUrl) {
                     window.open(paymentUrl, "_blank");
                 }
