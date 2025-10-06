@@ -31,6 +31,7 @@ import { formatDateTime } from '@/utils/datetimeFormats';
 import TransactionSkeletonTable from '../components/TransactionSkeletonTable';
 import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 import { getTransactionType } from '@/utils/genericFunc';
+import { isRejected } from '@reduxjs/toolkit';
 
 const KYCBanner = {
     pending: {
@@ -49,6 +50,17 @@ const KYCBanner = {
             "We need to verify your documents and details to enjoy the features on FirstLane like finance investments, \
         loans and FX transactions. After successful verification, you would not have to upload any document again.",
         buttonText: "Verify now",
+        bg: "bg-[#FBEAEA]",
+        border: "border-[#CB1A14]",
+        text: "text-[#CB1A14]",
+    },
+    rejected: {
+        title: "KYC Verification Rejected",
+        short_description: "Click here to verify your business",
+        description:
+            "We need to verify your documents and details to enjoy the features on FirstLane like finance investments, \
+        loans and FX transactions. After successful verification, you would not have to upload any document again.",
+        buttonText: "Resubmit",
         bg: "bg-[#FBEAEA]",
         border: "border-[#CB1A14]",
         text: "text-[#CB1A14]",
@@ -127,6 +139,10 @@ const Dashboard = () => {
         } else if (userProfile && userProfile?.verifications?.status === 'failed') {
             setKycStatus('failed');
             setShowKYC(true);
+        } else if (userProfile && userProfile?.verifications?.status === 'rejected') {
+            setKycStatus('rejected');
+            KYCBanner.rejected.description = userProfile?.verifications?.notes
+            setShowKYC(true);
         };
     }, [userProfile]);
 
@@ -191,12 +207,12 @@ const Dashboard = () => {
                         <div className='w-10/12 text-black leading-relaxed'>
                             <p className="text-sm md:text-base font-medium">{KYCBanner[kycStatus].title}</p>
                             {
-                            // kycStatus === 'failed' ?
-                                <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
-                                    <p className='text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
-                                    <IoIosArrowRoundForward className="w-5 h-5 text-gray-500" />
-                                </div>
-                                // : <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
+                                (userProfile?.verifications?.level === 4 || userProfile?.verifications?.status === 'pending') ?
+                                    <p className='md:hidden text-xs font-light'>{KYCBanner[kycStatus].short_description}</p> :
+                                    <div onClick={() => navigate('/kyc-verification')} className='md:hidden flex items-center gap-3'>
+                                        <p className='text-xs font-light'>{KYCBanner[kycStatus].short_description}</p>
+                                        <IoIosArrowRoundForward className="w-5 h-5 text-gray-500" />
+                                    </div>
                             }
                             <p className="hidden md:block text-sm text-[#667085] text-wrap font-light leading-relaxed">
                                 {KYCBanner[kycStatus].description}
