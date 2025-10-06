@@ -15,6 +15,7 @@ const SelectInput = ({
     options = [],
     placeholder = "Select an option",
     className = "",
+    ...rest
 }) => {
     return (
         <div className="w-full">
@@ -24,6 +25,7 @@ const SelectInput = ({
             <Select
                 value={value}
                 onValueChange={(val) => onChange({ target: { name, value: val } })}
+                {...rest}
             >
                 <SelectTrigger className={`w-full !h-12 mt-1 px-5 font-light capitalize border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded shadow-none ${className}`}>
                     <SelectValue placeholder={placeholder} />
