@@ -22,6 +22,8 @@ import { GetCountries, GetState } from 'react-country-state-city';
 
 const KYCStep1 = ({ nextStep }) => {
     const dispatch = useDispatch();
+    
+    const { kycStatus: userKYC, loading: kyc_loading, error: kyc_error } = useSelector((state) => state.kyc);
     const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
     useEffect(() => {
         if (!loading) {
@@ -47,21 +49,21 @@ const KYCStep1 = ({ nextStep }) => {
 
     useEffect(() => {
         setFormData({
-            profile_image: userProfile?.profileImage,
-            title: userProfile?.title || "",
-            firstname: userProfile?.firstname || "",
-            lastname: userProfile?.lastname || "",
-            email: userProfile?.email || "",
-            phone: userProfile?.phone || "",
-            date_of_birth: userProfile?.dob || new Date(),
-            gender: userProfile?.gender || "",
-            marital_status: userProfile?.maritalStatus || "",
-            address: userProfile?.residentialAddress || "",
-            nationality: userProfile?.country || "",
-            state: userProfile?.state || "",
-            lga: userProfile?.localGovernmentArea || "",
+            profile_image: userKYC?.profileImage,
+            title: userKYC?.title || "",
+            firstname: userKYC?.firstname || "",
+            lastname: userKYC?.lastname || "",
+            email: userKYC?.email || "",
+            phone: userKYC?.phone || "",
+            date_of_birth: userKYC?.dob || new Date(),
+            gender: userKYC?.gender || "",
+            marital_status: userKYC?.maritalStatus || "",
+            address: userKYC?.residentialAddress || "",
+            nationality: userKYC?.country || "",
+            state: userKYC?.state || "",
+            lga: userKYC?.localGovernmentArea || "",
         })
-    }, [userProfile]);
+    }, [userKYC]);
 
     const [countriesList, setCountriesList] = useState([]);
     const [stateList, setStateList] = useState([]);

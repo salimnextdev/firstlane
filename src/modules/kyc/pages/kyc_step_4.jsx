@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { kycLevel4, uploadFile } from '@/modules/kyc/state/kycSlice';
 
 import FileInput from '@/components/FormInputs/FileInput';
@@ -11,6 +11,7 @@ import { Loader } from 'lucide-react';
 
 const KYCStep4 = ({ prevStep }) => {
     const dispatch = useDispatch();
+    const { kycStatus: userKYC, loading: kyc_loading, error: kyc_error } = useSelector((state) => state.kyc);
 
     const [isModalOpen, setModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -19,6 +20,14 @@ const KYCStep4 = ({ prevStep }) => {
         document2: null,
         document3: null,
     });
+
+    useEffect(() => {
+        setFormData({
+            document1: userKYC?.bankStatement?.[0]?.documentUrl,
+            document2: userKYC?.bankStatement?.[1]?.documentUrl || null,
+            document3: userKYC?.bankStatement?.[2]?.documentUrl || null,
+        })
+    }, [userKYC]);
 
     const handleChange = (e) => {
         const { name, files } = e.target;
@@ -30,7 +39,7 @@ const KYCStep4 = ({ prevStep }) => {
 
     const validateForm = () => {
         const errors = {};
-        if (!formData.document1) errors.document1 = "State of account is required";
+        if (!formData.document1) errors.document1 = "Statement of account is required";
         return errors;
     };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { kycLevel3 } from '@/modules/kyc/state/kycSlice';
 
 import { BsArrowLeft } from 'react-icons/bs';
@@ -15,6 +15,7 @@ import { genderOptions, nextOfKinOptions, titleOptions } from '@/utils/dropdownO
 
 const KYCStep3 = ({ prevStep, nextStep }) => {
     const dispatch = useDispatch();
+    const { kycStatus: userKYC, loading: kyc_loading, error: kyc_error } = useSelector((state) => state.kyc);
 
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
@@ -26,6 +27,18 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
         phone: "",
         address: "",
     });
+
+    useEffect(() => {
+        setFormData({
+            title: userKYC?.nextOfKin?.title || "",
+            firstname: userKYC?.nextOfKin?.firstName || "",
+            lastname: userKYC?.nextOfKin?.lastName || "",
+            relationship: userKYC?.nextOfKin?.relationship || "",
+            gender: userKYC?.nextOfKin?.gender || "",
+            phone: userKYC?.nextOfKin?.phoneNumber || "",
+            address: userKYC?.nextOfKin?.residentialAddress || "",
+        })
+    }, [userKYC]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,7 +79,7 @@ const KYCStep3 = ({ prevStep, nextStep }) => {
                 relationship: formData.relationship,
                 gender: formData.gender,
                 phoneNumber: formData.phone,
-                residentialAddress: formData.address?.display_name || '',
+                residentialAddress: formData.address?.display_name || formData.address,
             }
         };
 

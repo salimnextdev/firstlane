@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { kycLevel2, uploadFile } from '@/modules/kyc/state/kycSlice';
 
 import TextInput from '@/components/FormInputs/TextInput';
@@ -14,6 +14,7 @@ import { Loader } from 'lucide-react';
 
 const KYCStep2 = ({ prevStep, nextStep }) => {
     const dispatch = useDispatch();
+    const { kycStatus: userKYC, loading: kyc_loading, error: kyc_error } = useSelector((state) => state.kyc);
 
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
@@ -24,6 +25,17 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
         bvn: "",
         document: null,
     });
+
+    useEffect(() => {
+        setFormData({
+            id_type: userKYC?.idType || "",
+            id_number: userKYC?.idNumber || "",
+            issue_date: userKYC?.issueDate || "",
+            expiry_date: userKYC?.expiryDate || "",
+            bvn: userKYC?.bvn || "",
+            document: null,
+        })
+    }, [userKYC]);
 
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
@@ -70,7 +82,7 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
 
                 if (!uploadFile.fulfilled.match(documentUpload)) {
                     toast.error('Document Upload Failed',
-                        { description: documentUpload.payload.message }
+                        { description: documentUpload.payload?.message || 'Something went wrong. Please try again.' }
                     );
                     return;
                 }
@@ -88,12 +100,12 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
             if (kycLevel2.fulfilled.match(resultAction)) {
                 nextStep();
             } else {
-                toast.error(resultAction.payload.message);
+                toast.error(resultAction.payload?.message || 'Something went wrong. Please try again.');
                 return;
             };
         } catch (error) {
             toast.error("An error occured", {
-                description: error.message,
+                description: error?.message || 'Something went wrong. Please try again.',
             });
         } finally {
             setSubmitted(false);
