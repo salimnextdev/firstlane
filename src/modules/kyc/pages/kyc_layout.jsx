@@ -29,9 +29,12 @@ const KYCVerification = () => {
     useEffect(() => {
         if (kycStatus) {
             const level = parseInt(kycStatus?.level?.split('level')[1] || 0);
-            {level >= 4 ? navigate('/dashboard') : setStep(level + 1)};
+            {kycStatus.status === 'verified' || (kycStatus.status === 'pending' && kycStatus.level === 4) ? 
+                navigate('/dashboard') :
+                level >= 4 ? setStep(1) : // Redirect user's with rejected kyc back to the first page
+                setStep(level + 1)};
             setIsOpen(false);
-        }
+        } else { setIsOpen(false) }
         kyc_error && setIsOpen(false); // Close loader on request failure
     }, [kycStatus]);
 
