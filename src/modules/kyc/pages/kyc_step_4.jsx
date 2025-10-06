@@ -122,7 +122,10 @@ const KYCStep4 = ({ prevStep }) => {
                     </svg>
                 </div>
                 <p className="text-sm text-[#667085] text-wrap font-light leading-relaxed">
-                    We would be requesting for your statements of account for the last 6 months
+                    We would be requesting for your statements of account for the past 6 months
+                </p>
+                <p className="text-sm text-[#667085] text-wrap font-light leading-relaxed">
+                    Supported file formats: .pdf, .doc, .docx, .xls, .xlsx
                 </p>
             </div>
 
@@ -131,21 +134,21 @@ const KYCStep4 = ({ prevStep }) => {
                     <FileInput
                         label='Statement of account'
                         name='document1'
-                        accept='.pdf'
+                        accept='.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document1}
                         onChange={handleChange}
                     />
                     <FileInput
                         label='Supporting document 1 (optional)'
                         name='document2'
-                        accept='.pdf'
+                        accept='.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document2}
                         onChange={handleChange}
                     />
                     <FileInput
                         label='Supporting document 2 (optional)'
                         name='document3'
-                        accept='.pdf'
+                        accept='.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document3}
                         onChange={handleChange}
                     />
