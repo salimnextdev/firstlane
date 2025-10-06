@@ -85,7 +85,12 @@ const Profile = () => {
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
         if (name == 'nationality' && value !== 'Nigeria') {
-            toast.warning("Please select Nigeria — support for other countries is coming soon.");
+            setFormData((prev) => ({
+                ...prev,
+                state: 'others',
+                lga: 'others',
+            }));
+            toast.warning("States and LGA are disabled for countries other than Nigeria");
         };
         setFormData((prev) => ({
             ...prev,
@@ -107,9 +112,9 @@ const Profile = () => {
         if (!formData.date_of_birth) errors.date_of_birth = "Date of Birth is required";
         if (!formData.marital_status) errors.marital_status = " is required";
         if (!formData.address) errors.address = "Residential address is required";
-        // if (!formData.nationality) errors.nationality = "Nationality is required";
-        // if (!formData.state) errors.state = "State is required";
-        // if (!formData.lga) errors.lga = "LGA is required";
+        if (!formData.nationality) errors.nationality = "Nationality is required";
+        if (!formData.state) errors.state = "State is required";
+        if (!formData.lga) errors.lga = "LGA is required";
         return errors;
     };
 
@@ -289,7 +294,7 @@ const Profile = () => {
                     />
                 </div>
 
-                <PlacesInput
+                {/* <PlacesInput
                     label="Residential address"
                     name="address"
                     className='text-sm'
@@ -297,6 +302,15 @@ const Profile = () => {
                     onChange={(address) => {
                         setFormData({ ...formData, ['address']: address });
                     }}
+                    placeholder="No 8 Amadu Bello Way, Wuse"
+                /> */}
+
+                <TextInput
+                    label="Residential address"
+                    name="address"
+                    className='text-sm'
+                    value={formData.address}
+                    onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
@@ -322,18 +336,42 @@ const Profile = () => {
                             placeholder="Select State"
                         /> */}
 
-                        <StatesInput
-                            value={formData.state}
-                            onChange={handleChange}
-                            isDisabled={formData.nationality !== 'Nigeria'}
-                        />
+                        {formData.nationality === 'Nigeria' ?
+                            <>
+                                <StatesInput
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    fetch={formData.nationality == 'Nigeria'}
+                                    isDisabled={formData.nationality !== 'Nigeria'}
+                                />
 
-                        <LGAInput
-                            stateValue={formData.state}
-                            value={formData.lga}
-                            onChange={handleChange}
-                            isDisabled={formData.nationality !== 'Nigeria'}
-                        />
+                                <LGAInput
+                                    stateValue={formData.state}
+                                    value={formData.lga}
+                                    onChange={handleChange}
+                                    fetch={formData.nationality == 'Nigeria'}
+                                    isDisabled={formData.nationality !== 'Nigeria'}
+                                />
+                            </> :
+                            <>
+                                <TextInput
+                                    label="State"
+                                    name="state"
+                                    className='text-sm'
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    disabled
+                                />
+                                <TextInput
+                                    label="LGA"
+                                    name="lga"
+                                    className='text-sm'
+                                    value={formData.lga}
+                                    onChange={handleChange}
+                                    disabled
+                                />
+                            </>
+                        }
                     </div>
                 </div>
 

@@ -80,8 +80,13 @@ const EmployeeLoans = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name == 'nationality' && value !== 'Nigeria') {
-            toast.warning("Please select Nigeria — support for other countries is coming soon.");
-        };
+            setFormData((prev) => ({
+                ...prev,
+                state: 'others',
+                lga: 'others',
+            }));
+            toast.warning("States and LGA are disabled for countries other than Nigeria");
+        }
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -259,7 +264,7 @@ const EmployeeLoans = () => {
                     />
                 </div>
 
-                <PlacesInput
+                {/* <PlacesInput
                     label="Employer's address"
                     name="address"
                     className='text-sm'
@@ -267,6 +272,15 @@ const EmployeeLoans = () => {
                     onChange={(address) => {
                         setFormData({ ...formData, ['address']: address });
                     }}
+                    placeholder="No 8 Amadu Bello Way, Wuse"
+                /> */}
+
+                <TextInput
+                    label="Employer's address"
+                    name="address"
+                    className='text-sm'
+                    value={formData.address}
+                    onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
@@ -281,18 +295,43 @@ const EmployeeLoans = () => {
                         placeholder="Select Nationality"
                     />
 
-                    <StatesInput
-                        value={formData.state}
-                        onChange={handleChange}
-                        isDisabled={formData.nationality !== 'Nigeria'}
-                    />
+                    {formData.nationality === 'Nigeria' ?
+                        <>
+                            <StatesInput
+                                value={formData.state}
+                                onChange={handleChange}
+                                isDisabled={formData.nationality !== 'Nigeria'}
+                            />
 
-                    <LGAInput
-                        stateValue={formData.state}
-                        value={formData.lga}
-                        onChange={handleChange}
-                        isDisabled={formData.nationality !== 'Nigeria'}
-                    />
+                            <LGAInput
+                                stateValue={formData.state}
+                                value={formData.lga}
+                                onChange={handleChange}
+                                fetch={formData.nationality == 'Nigeria'}
+                                isDisabled={formData.nationality !== 'Nigeria'}
+                            />
+                        </> :
+                        <>
+                            <TextInput
+                                label="State"
+                                name="state"
+                                className='text-sm'
+                                value={formData.state}
+                                onChange={handleChange}
+                                placeholder='Lagos'
+                                disabled
+                            />
+                            <TextInput
+                                label="LGA"
+                                name="lga"
+                                className='text-sm'
+                                value={formData.lga}
+                                onChange={handleChange}
+                                placeholder='Apapa'
+                                disabled
+                            />
+                        </>
+                    }
 
                     <TextInput
                         label='Referral code (optional)'

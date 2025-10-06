@@ -83,7 +83,12 @@ const KYCStep1 = ({ nextStep }) => {
     const handleChange = (e) => {
         const { name, type, files, value } = e.target;
         if (name == 'nationality' && value !== 'Nigeria') {
-            toast.warning("Please select Nigeria — support for other countries is coming soon.");
+            setFormData((prev) => ({
+                ...prev,
+                state: 'others',
+                lga: 'others',
+            }));
+            toast.warning("States and LGA are disabled for countries other than Nigeria");
         };
         setFormData((prev) => ({
             ...prev,
@@ -128,7 +133,7 @@ const KYCStep1 = ({ nextStep }) => {
 
                 if (!uploadFile.fulfilled.match(profileUpload)) {
                     toast('Profile Upload Failed',
-                        { description: profileUpload.payload.message }
+                        { description: profileUpload.payload?.message || 'Something went wrong. Please try again.' }
                     );
                     return;
                 }
@@ -149,12 +154,12 @@ const KYCStep1 = ({ nextStep }) => {
             if (kycLevel1.fulfilled.match(resultAction)) {
                 nextStep();
             } else {
-                toast.error(resultAction.payload.message);
+                toast.error(resultAction.payload?.message || 'Something went wrong. Please try again.');
                 return;
             };
         } catch (error) {
             toast.error("An error occured", {
-                description: error.message,
+                description: error?.message || 'Something went wrong. Please try again.',
             });
         } finally {
             setSubmitted(false);
@@ -279,7 +284,7 @@ const KYCStep1 = ({ nextStep }) => {
                     />
                 </div>
 
-                <PlacesInput
+                {/* <PlacesInput
                     label="Residential address"
                     name="address"
                     className='text-sm'
@@ -287,6 +292,15 @@ const KYCStep1 = ({ nextStep }) => {
                     onChange={(address) => {
                         setFormData({ ...formData, ['address']: address });
                     }}
+                    placeholder="No 8 Amadu Bello Way, Wuse"
+                /> */}
+
+                <TextInput
+                    label="Residential address"
+                    name="address"
+                    className='text-sm'
+                    value={formData.address}
+                    onChange={handleChange}
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 />
 
@@ -302,32 +316,47 @@ const KYCStep1 = ({ nextStep }) => {
                     />
 
                     <div className='w-full flex items-center gap-3'>
-                        {/* <SearchInput
-                            label="State"
-                            name="state"
-                            className='text-sm'
-                            value={formData.state}
-                            onChange={handleChange}
-                            data={stateList || []}
-                            placeholder="Select State"
-                        /> */}
+                        {formData.nationality === 'Nigeria' ?
+                            <>
+                                <StatesInput
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    isDisabled={formData.nationality !== 'Nigeria'}
+                                />
 
-                        <StatesInput
-                            value={formData.state}
-                            onChange={handleChange}
-                            isDisabled={formData.nationality !== 'Nigeria'}
-                        />
-
-                        <LGAInput
-                            stateValue={formData.state}
-                            value={formData.lga}
-                            onChange={handleChange}
-                            isDisabled={formData.nationality !== 'Nigeria'}
-                        />
+                                <LGAInput
+                                    stateValue={formData.state}
+                                    value={formData.lga}
+                                    onChange={handleChange}
+                                    fetch={formData.nationality == 'Nigeria'}
+                                    isDisabled={formData.nationality !== 'Nigeria'}
+                                />
+                            </> :
+                            <>
+                                <TextInput
+                                    label="State"
+                                    name="state"
+                                    className='text-sm'
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    placeholder='Lagos'
+                                    disabled
+                                />
+                                <TextInput
+                                    label="LGA"
+                                    name="lga"
+                                    className='text-sm'
+                                    value={formData.lga}
+                                    onChange={handleChange}
+                                    placeholder='Apapa'
+                                    disabled
+                                />
+                            </>
+                        }
                     </div>
                 </div>
 
-                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
+                <div className="fixed md:static left-0 bottom-0 z-10 w-full h-[71px] px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
                     <button
                         className='w-full md:w-36 h-11 md:h-9 mt-3 px-3 text-sm rounded-md bg-primary cursor-pointer'
                         disabled={submitted}
