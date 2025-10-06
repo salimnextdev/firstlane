@@ -71,7 +71,7 @@ const DateInput = ({
             fromDate={minDate}
             toDate={maxDate} 
             classNames={{
-              month: "text-sm font-light"
+              month: "text-sm font-light text-gray-500"
             }}
           />
         </PopoverContent>
