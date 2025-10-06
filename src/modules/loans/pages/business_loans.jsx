@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addLoan } from '@/modules/loans/state/loanSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
@@ -13,6 +13,7 @@ import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+import { fetchAdminSettings } from '@/modules/settings/state/adminSettingsSlice';
 
 const BusinessLoans = () => {
     const {
@@ -24,6 +25,13 @@ const BusinessLoans = () => {
 
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user'));
+
+    const { settings, loading: settings_loading, error: settings_error } = useSelector((state) => state.admin_settings);
+    useEffect(() => {
+        if (!settings || !settings_loading) {
+            dispatch(fetchAdminSettings());
+        }
+    }, [dispatch]);
 
     const [isOpen, setIsModalOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -112,7 +120,10 @@ const BusinessLoans = () => {
                 </h2>
 
                 <div className="fixed md:static left-0 bottom-0 md:bottom-auto z-10 w-full md:w-auto h-[71px] md:h-auto px-5 md:px-0 bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
-                    <button className="w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer">
+                    <button
+                        className={`w-full md:w-40 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer ${(submitted || !settings) && 'opacity-70'}`}
+                        disabled={submitted || !settings}
+                    >
                         {submitted ?
                             <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
                             'Submit application'
@@ -195,7 +206,8 @@ const BusinessLoans = () => {
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>
                 <input onChange={() => setChecked(!checked)} type="checkbox" name='checked' className='w-5 h-5 accent-[#3E4095] cursor-pointer' />
-                <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount which is due and outstanding under this agreement, I will pay additional 12% par annum</p>
+                <p>I declare that the above information capture, is correct and complete in every respect and any failure by me to pay any amount
+                    which is due and outstanding under this agreement, I will pay additional {settings?.loanSettings?.businessLoanInterestRate || '--'}% per annum</p>
             </div>
 
         </form>
