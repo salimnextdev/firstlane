@@ -4,18 +4,24 @@ import { fetchLGA } from '@/modules/kyc/state/kycSlice';
 import SearchInput from './searchInput';
 import { toast } from 'sonner';
 
-const LGAInput = ({ stateValue, value, onChange, ...props }) => {
+const LGAInput = ({ stateValue, value, onChange, fetch = true, ...props }) => {
   const dispatch = useDispatch();
-  const { lga_loading } = useSelector((state) => state.kyc);
+  const [lga_loading, setLgaLoading] = useState(false);
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
+    if (!fetch || !stateValue || stateValue === 'others') {
+      setOptions([]);
+      return;
+    }
+
     const fetchLGAOptions = async () => {
       if (!stateValue) {
         setOptions([]);
         return;
       }
 
+      setLgaLoading(true);
       try {
         const resultAction = await dispatch(fetchLGA(stateValue));
         if (fetchLGA.fulfilled.match(resultAction)) {
@@ -28,11 +34,13 @@ const LGAInput = ({ stateValue, value, onChange, ...props }) => {
       } catch (err) {
         toast.error("An unexpected error occurred while fetching LGAs");
         setOptions([]);
+      } finally {
+        setLgaLoading(false);
       }
     };
 
     fetchLGAOptions();
-  }, [stateValue, dispatch]);
+  }, [stateValue, dispatch, value, fetch]);
 
   return (
     <SearchInput

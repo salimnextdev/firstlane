@@ -6,11 +6,12 @@ import { toast } from 'sonner';
 
 const StatesInput = ({ value, onChange, ...props }) => {
   const dispatch = useDispatch();
-  const { states_loading } = useSelector((state) => state.kyc);
+  const [states_loading, setStatesLoading] = useState(false);
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
     const fetchStateOptions = async () => {
+      setStatesLoading(true);
       try {
         const resultAction = await dispatch(fetchStates());
         if (fetchStates.fulfilled.match(resultAction)) {
@@ -23,6 +24,8 @@ const StatesInput = ({ value, onChange, ...props }) => {
       } catch (err) {
         toast.error("An unexpected error occurred while fetching States");
         setOptions([]);
+      } finally {
+        setStatesLoading(false);
       }
     };
 
