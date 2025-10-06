@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { IoIosSearch } from 'react-icons/io';
+import { IoIosRefresh, IoIosSearch } from 'react-icons/io';
 import { BsArrowRight } from 'react-icons/bs';
 import { ReactComponent as Wallet } from '@/assets/icons/wallet.svg';
 import { ReactComponent as WalletPlus } from '@/assets/icons/wallet-plus.svg';
@@ -70,6 +70,10 @@ const Wallets = () => {
             }))
         }
     }, [dispatch]);
+
+    const refreshBalance = async () => {
+        await dispatch(fetchBalance(user?._id));
+    };
 
     const [transactions, setTransactions] = useState([]);
     const [search, setSearch] = useState('');
@@ -155,35 +159,43 @@ const Wallets = () => {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black text-white p-5 rounded-xl">
                 <div className="flex justify-between">
-                    <div className=''>
+                    <div className='w-full'>
                         <p className="text-sm text-gray-300 mb-2">Wallet balance</p>
-                        <div className='flex items-center gap-5 justify-between mt-5'>
-                            <p className="text-xl md:text-2xl font-semibold">
-                                {statsView ? (
-                                    loading ? (
-                                        <Loader rotate={360} className='w-8 h-8 animate-spin mx-auto' />
+                        <div className='flex items-center justify-between mt-5'>
+                            <div className='flex items-center gap-5 justify-between'>
+                                <p className="text-xl md:text-2xl font-semibold">
+                                    {statsView ? (
+                                        loading ? (
+                                            <Loader rotate={360} className='w-8 h-8 animate-spin mx-auto' />
+                                        ) : (
+                                            // Add an explicit check if balance?.available_balance is NOT a number
+                                            typeof balance?.available_balance === 'number'
+                                                ? '₦' + (balance.available_balance ?? 0.00).toLocaleString(undefined, {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                })
+                                                : '₦0.00' // Or '₦...' or another temporary placeholder
+                                        )
                                     ) : (
-                                        // Add an explicit check if balance?.available_balance is NOT a number
-                                        typeof balance?.available_balance === 'number'
-                                            ? '₦' + (balance.available_balance ?? 0.00).toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })
-                                            : '₦0.00' // Or '₦...' or another temporary placeholder
-                                    )
-                                ) : (
-                                    '*************'
-                                )}
-                            </p>
-                            {loading ? null : statsView ?
-                                <EyeClose
-                                    onClick={() => setStatsView(!statsView)}
-                                    className="text-secondary cursor-pointer"
-                                /> :
-                                <EyeOpen
-                                    onClick={() => setStatsView(!statsView)}
-                                    className="text-secondary cursor-pointer"
-                                />
+                                        '*************'
+                                    )}
+                                </p>
+                                {loading ? null : statsView ?
+                                    <EyeClose
+                                        onClick={() => setStatsView(!statsView)}
+                                        className="text-secondary cursor-pointer"
+                                    /> :
+                                    <EyeOpen
+                                        onClick={() => setStatsView(!statsView)}
+                                        className="text-secondary cursor-pointer"
+                                    />
+                                }
+                            </div>
+
+                            {!loading &&
+                                <p onClick={refreshBalance}>
+                                    <IoIosRefresh className='w-7 h-7 text-secondary cursor-pointer' />
+                                </p>
                             }
                         </div>
                     </div>
@@ -285,9 +297,9 @@ const Wallets = () => {
                                             </TableCell>
                                             <TableCell className="font-light">
                                                 ₦{transaction?.amount?.toLocaleString(undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            }) || '--'}</TableCell>
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                }) || '--'}</TableCell>
                                             <TableCell className="font-light">
                                                 <span className="px-3 py-1 text-xs font-normal rounded-full bg-gray-100 text-gray-600 capitalize">
                                                     {getTransactionType(transaction?.type, transaction?.remarks)}
