@@ -121,7 +121,7 @@ export const fetchTransactions = createAsyncThunk(
   'wallet/fetchTransactions',
   async ({ userID, from, to, page, limit }, { rejectWithValue }) => {
     try {
-      let url = `${API_BASE_URL}/wallet`;
+      let url = `${API_BASE_URL}/wallet/by-any/userID/${userID}`;
 
       const params = [];
       if (page !== undefined) {
