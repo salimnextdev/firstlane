@@ -16,6 +16,8 @@ import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 import SearchInput from '@/components/FormInputs/searchInput';
 import { fetchAdminSettings } from '@/modules/settings/state/adminSettingsSlice';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
+import { verifyAccount } from '@/modules/wallets/state/walletSlice';
 
 const FinanceLoans = () => {
     const {
@@ -38,6 +40,7 @@ const FinanceLoans = () => {
     }, [dispatch]);
 
     const [isOpen, setIsModalOpen] = useState(false);
+    const [accountLoading, setAccountLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         amount: "",
@@ -48,6 +51,7 @@ const FinanceLoans = () => {
         account_number: "",
         bank_name: "",
         bank_code: "",
+        account_name: "",
         invoice: null,
         referral: "",
     });
@@ -61,6 +65,53 @@ const FinanceLoans = () => {
             [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
+
+    useEffect(() => {
+        const verifyBankDetails = async () => {
+            if (
+                formData.account_number &&
+                formData.account_number.length === 10 &&
+                formData.bank_code
+            ) {
+                setFormData((prev) => ({
+                    ...prev,
+                    account_name: "loading...",
+                }));
+                setAccountLoading(true);
+
+                try {
+                    const resultAction = await dispatch(verifyAccount({
+                        accountNumber: formData.account_number,
+                        bankCode: formData.bank_code,
+                    }));
+
+                    if (verifyAccount.fulfilled.match(resultAction)) {
+                        setFormData((prev) => ({
+                            ...prev,
+                            account_name: resultAction.payload.data.account_name, // Access account_name from payload
+                        }));
+                    } else {
+                        setFormData((prev) => ({
+                            ...prev,
+                            account_name: "",
+                        }));
+                    }
+                } catch (error) {
+                    toast.error('An unexpected error occurred during verification.');
+                    setFormData((prev) => ({
+                        ...prev,
+                        account_name: "",
+                    }));
+                } finally {
+                    setAccountLoading(false);
+                }
+            }
+        };
+
+        // Call the async function
+        verifyBankDetails();
+
+    }, [formData.account_number, formData.bank_code, dispatch]);
 
     useEffect(() => {
         const selectedBank = bankOptions.find(
@@ -86,6 +137,7 @@ const FinanceLoans = () => {
         if (!formData.interval) errors.interval = "Loan interval is required";
         if (!formData.invoice) errors.invoice = "Vendor's invoice is required";
         if (!formData.account_number) errors.account_number = "Vendor's account number is required";
+        if (!formData.account_name) errors.account_name = "Vendor's account is not valid";
         if (!formData.bank_code) errors.bank_code = "Vendor's bank name is required";
         return errors;
     };
@@ -237,13 +289,20 @@ const FinanceLoans = () => {
                 </div>
 
                 <div className='w-full flex flex-col md:flex-row items-center gap-3'>
-                    <FileInput
-                        label='Invoice of item from vendor'
-                        name='invoice'
-                        value={formData.invoice}
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                    />
+                    <div className='w-full relative'>
+                        <TextInput
+                            label='Vendor holder"s name'
+                            name='account_name'
+                            className='text-sm bg-currency'
+                            value={formData.account_name}
+                            placeholder='-  -   -'
+                            disabled
+                        />
+                        {accountLoading && <Loader rotate={360} className='absolute top-1/2 right-5 w-6 h-6 animate-spin' />}
+                        {!accountLoading && formData.account_name &&
+                            <IoIosCheckmarkCircle className='absolute top-1/2 right-5 w-[25px] h-[25px] text-[#0F973D]' />
+                        }
+                    </div>
 
                     <TextInput
                         label='Referral code (optional)'
@@ -253,6 +312,15 @@ const FinanceLoans = () => {
                         placeholder='000000'
                     />
                 </div>
+
+                <FileInput
+                    label='Invoice of item from vendor'
+                    name='invoice'
+                    className='w-full md:w-1/2'
+                    value={formData.invoice}
+                    onChange={handleChange}
+                    accept=".pdf,image/*"
+                />
 
                 <p className='md:w-1/2 mt-2 text-sm text-secondary'>
                     You need to upload an invoice of the asset you want to purchase which would contain the account details of the vendor of this asset.
