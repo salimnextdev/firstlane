@@ -31,7 +31,7 @@ import { formatDateTime } from '@/utils/datetimeFormats';
 import TransactionSkeletonTable from '../components/TransactionSkeletonTable';
 import TransactionSkeletonCard from '../components/TransactionSkeletonCard';
 import { getTransactionType } from '@/utils/genericFunc';
-import { isRejected } from '@reduxjs/toolkit';
+import { filterTransactions } from '@/utils/filters';
 
 const KYCBanner = {
     pending: {
@@ -72,12 +72,13 @@ const LIMIT = 10;
 const Dashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { searchTerm } = useSelector((state) => state.search);
     const user = JSON.parse(getCookie('user') || null);
 
     const { stats: stats, loading: stats_loading, error: stats_error } = useSelector((state) => state.dashboard_stats);
     const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
     const {
-        transactions: transactions,
+        transactions: all_transactions,
         metaData: metaData,
         transaction_loading: wallet_loading,
         transaction_error: wallet_error
@@ -93,6 +94,16 @@ const Dashboard = () => {
             }))
         }
     }, [dispatch]);
+
+    const [transactions, setTransactions] = useState([]);
+    useEffect(() => {
+        const filtered = filterTransactions({
+            transactions: all_transactions,
+            search: searchTerm,
+        });
+
+        setTransactions(filtered);
+    }, [searchTerm, all_transactions]);
 
     const cardData = [
         {
