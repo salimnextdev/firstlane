@@ -191,6 +191,18 @@ export const fundWalletByLink = createAsyncThunk(
   }
 );
 
+export const verifyTransaction = createAsyncThunk(
+  'wallet/verifyTransaction',
+  async (transactionID, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/wallet/verify-fund/${transactionID}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
