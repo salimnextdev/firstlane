@@ -1,7 +1,12 @@
 import React from "react";
 import { sendCodeToEmail } from "@/modules/auth/state/authSlice";
+import { verifyTransaction } from "@/modules/wallets/state/walletSlice";
 import { toast } from "sonner";
 import { getCookie } from "./cookieUtils";
+
+export const verifyWalletTransaction = async (dispatch, reference) => {
+    await dispatch(verifyTransaction(reference));
+}
 
 export const resendOTP = async (dispatch, email, type = "EmailVerification") => {
     const user = JSON.parse(getCookie('user') || null);
