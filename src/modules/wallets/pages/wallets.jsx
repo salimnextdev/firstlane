@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBalance, fetchTransactions } from '@/modules/wallets/state/walletSlice';
+import { fetchBalance, fetchTransactions, verifyTransaction } from '@/modules/wallets/state/walletSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import {
@@ -42,14 +42,22 @@ import NoContent from '@/components/NoContent';
 import { Loader } from 'lucide-react';
 import { formatDateTime } from '@/utils/datetimeFormats';
 import { filterTransactions } from '@/utils/filters';
-import { getTransactionType } from '@/utils/genericFunc';
+import { getTransactionType, verifyWalletTransaction } from '@/utils/genericFunc';
 
 const LIMIT = 10;
 
 const Wallets = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
+    const reference = searchParams.get("tx_ref");
     const user = JSON.parse(getCookie('user') || null);
+
+    useEffect(() => {
+        if (reference) {
+            verifyWalletTransaction(dispatch, reference);
+        }
+    }, [reference]);
 
     const {
         balance: balance,
@@ -61,13 +69,8 @@ const Wallets = () => {
         transaction_error: transaction_error,
     } = useSelector((state) => state.wallet);
     useEffect(() => {
-        if (!loading || !transaction_loading) {
+        if (!loading) {
             dispatch(fetchBalance(user?._id));
-            dispatch(fetchTransactions({
-                userID: user?._id,
-                page: 1,
-                limit: LIMIT,
-            }))
         }
     }, [dispatch]);
 
@@ -120,13 +123,13 @@ const Wallets = () => {
     };
 
     const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     useEffect(() => {
-        if (currentPage !== null) {
+        if (!transaction_loading) {
             dispatch(fetchTransactions({
                 userID: user?._id,
                 page: currentPage,
@@ -309,15 +312,23 @@ const Wallets = () => {
                                                 {formatDateTime(transaction?.createdAt || transaction?.date) || '--'}
                                             </TableCell>
                                             <TableCell>
-                                                <span
-                                                    className={`px-3 py-1 text-xs font-normal capitalize rounded-full
+                                                {transaction.status?.toLowerCase() === 'pending' ?
+                                                    <span
+                                                        className={`px-3 py-1 text-xs font-normal capitalize rounded-full bg-neutral cursor-pointer`}
+                                                        onClick={() => verifyWalletTransaction(dispatch, transaction?.reference)}
+                                                    >
+                                                        {/* {transaction?.status || 'N/A'} */}
+                                                        verify
+                                                    </span> :
+                                                    <span
+                                                        className={`px-3 py-1 text-xs font-normal capitalize rounded-full
                                                 ${transaction.status === 'paid' ? 'bg-success' :
-                                                            transaction.status === 'pending' ? 'bg-warning' :
-                                                                'bg-danger'
-                                                        }`}
-                                                >
-                                                    {transaction?.status || 'N/A'}
-                                                </span>
+                                                    transaction.status === 'pending' ? 'bg-warning' :
+                                                        'bg-danger'
+                                                }`}
+                                                    >
+                                                        {transaction?.status || 'N/A'}
+                                                    </span>}
                                             </TableCell>
                                             <TableCell className="w-[5%] px-6 py-4 relative">
                                                 <DropdownMenu>
