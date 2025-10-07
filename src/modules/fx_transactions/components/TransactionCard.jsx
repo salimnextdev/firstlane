@@ -28,7 +28,7 @@ const TransactionCard = ({ userProfile, transaction }) => {
                             'text-danger'
                     }`}>
                     {/* {transaction?.type === 'D' ? '-' : '+'} */}
-                    {transaction?.type !== 'deposit' ? '-' : '+'}
+                    {transaction?.type === 'deposit' ? '+' : transaction?.type === 'withdrawal' ? '-' : ''}
                     ₦{transaction.amount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
