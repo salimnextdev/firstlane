@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 const Notifications = () => {
   const [notifications, setNotifications] = useState({
     email: true,
-    push: false,
     sms: true,
   });
 
@@ -16,7 +15,6 @@ const Notifications = () => {
 
   const settings = [
     { label: 'Email Notifications', key: 'email' },
-    { label: 'Push Notifications', key: 'push' },
     { label: 'SMS Notifications', key: 'sms' },
   ];
 
@@ -27,6 +25,7 @@ const Notifications = () => {
           <p className="text-base font-normal">{label}</p>
           <button
             onClick={() => handleToggle(key)}
+            disabled
             className={`relative inline-flex h-[16px] w-7 items-center rounded-full cursor-pointer transition-colors ${notifications[key] ? 'bg-primary' : 'bg-[#D9D9D9]'
               }`}>
             <span
