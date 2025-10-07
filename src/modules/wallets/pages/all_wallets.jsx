@@ -29,26 +29,16 @@ const AllWallets = () => {
         transaction_loading: transaction_loading,
         transaction_error: transaction_error,
     } = useSelector((state) => state.wallet);
-    useEffect(() => {
-        if (!transaction_loading) {
-            dispatch(fetchTransactions({
-                userID: user?._id,
-                page: 1,
-                limit: LIMIT,
-            }))
-        }
-    }, [dispatch]);
 
     const [transactions, setTransactions] = useState([]);
 
-    // Removed status filter since all wallet transactions are automatically sucessfull
     const [filters, setFilters] = useState({
-        // statuses: '',
+        statuses: '',
         paymentTypes: '',
     });
 
     const filterOptions = {
-        // statuses: ['Successful', 'Pending', 'Failed'],
+        statuses: ['Successful', 'Pending', 'Failed'],
         paymentTypes: ['Wallet funding', 'Money sent'],
     };
 
@@ -67,7 +57,7 @@ const AllWallets = () => {
 
     const handleClearFilters = () => {
         setFilters({
-            // statuses: '',
+            statuses: '',
             paymentTypes: '',
         });
     };
@@ -83,7 +73,7 @@ const AllWallets = () => {
     }, [metaData]);
 
     useEffect(() => {
-        if (currentPage !== 1) {
+        if (!transaction_loading) {
             dispatch(fetchTransactions({
                 userID: user?._id,
                 page: currentPage,
