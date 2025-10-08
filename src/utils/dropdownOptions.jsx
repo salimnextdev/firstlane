@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBanks } from '@/modules/wallets/state/walletSlice';
 import {
@@ -14,12 +14,16 @@ export const useBankOptions = () => {
   const { banks, loading, error } = useSelector((state) => state.wallet);
   const [hasTriedFetching, setHasTriedFetching] = useState(false);
 
+  const fetchBankData = useCallback(() => {
+    dispatch(fetchBanks());
+    setHasTriedFetching(true);
+  }, [dispatch]);
+
   useEffect(() => {
-    if (!banks || banks.length === 0 && !loading && !error && !hasTriedFetching) {
-      dispatch(fetchBanks());
-      setHasTriedFetching(true);
+    if ((!banks || banks.length === 0) && !loading && !error && !hasTriedFetching) {
+      fetchBankData();
     }
-  }, [dispatch, banks, loading, error]);
+  }, [banks, loading, error, hasTriedFetching, fetchBankData]);
 
   const bankOptions = useMemo(() => {
     if (!banks) return [];
@@ -29,7 +33,7 @@ export const useBankOptions = () => {
     }));
   }, [banks]);
 
-  return { bankOptions, loading, error };
+  return { bankOptions, loading, error, refetch: fetchBankData };
 };
 
 export const titleOptions = [
