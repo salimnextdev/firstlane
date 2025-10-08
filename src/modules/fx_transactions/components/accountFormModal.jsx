@@ -61,7 +61,7 @@ const AccountFormModal = ({
     const option = type === 'Sell' ? 'NGN' : (rate?.targetCurrency?.currencyID?.code || 'USD');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { bankOptions, loading, error } = useBankOptions();
+    const { bankOptions, loading, error, refetch } = useBankOptions();
     const [accountLoading, setAccountLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState(INITIAL_DATA);
@@ -183,7 +183,7 @@ const AccountFormModal = ({
         };
 
         const data = option === 'NGN' ? ngnData : otherData;
-        const credentials = {bank: data}
+        const credentials = { bank: data }
 
         try {
             // Updates User Bank Account Details
@@ -195,7 +195,7 @@ const AccountFormModal = ({
             // await dispatch(addBankAccount(data)).unwrap();
 
             // Passes User Bank Details to FX Transaction Created
-            await dispatch(updateFXTransaction({transactionID, credentials})).unwrap();
+            await dispatch(updateFXTransaction({ transactionID, credentials })).unwrap();
             setIsModalOpen(true);
             onClose();
         } catch (error) {
@@ -250,6 +250,13 @@ const AccountFormModal = ({
                             data={bankOptions || []}
                             placeholder='Select bank'
                         />
+                        {!bankOptions &&
+                            <p
+                                onClick={refetch}
+                                className='mt-1 flex justify-end text-xs text-tertiary cursor-pointer'
+                            >Refresh banks</p>
+                        }
+
                         <div className='relative'>
                             <TextInput
                                 label='Account holder"s name'
