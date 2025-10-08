@@ -19,7 +19,7 @@ const ActiveInvestmentTab = ({ data }) => {
                 onClose={setIsOpen}
             />
             <div>
-                {investments.length > 0 ? (
+                {data.length > 0 ? (
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-2'>
                         {loading ? (
                             Array.from({ length: 6 }).map((_, index) => (
