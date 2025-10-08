@@ -112,53 +112,47 @@ export const calculateDurationDetails = (createdDateString, durationLimitInDays)
         return '';
     }
 
-    // Define the number of milliseconds in one day and one hour for calculations
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
     const millisecondsPerHour = 1000 * 60 * 60;
 
-    // 1. Parse the created date string into a Date object
     const createdDate = new Date(createdDateString);
+    const now = new Date();
 
-    // 2. Get the current date and time
-    const now = new Date(); // This will be the actual current time when the function runs
+    // Calculate the fixed end date
+    const endDate = new Date(createdDate.getTime() + durationLimitInDays * millisecondsPerDay);
 
-    // 3. Calculate the difference in milliseconds between now and the created date
-    const differenceInMilliseconds = now.getTime() - createdDate.getTime();
+    // Clamp "now" to not go beyond the end date
+    const effectiveNow = now > endDate ? endDate : now;
 
-    // 4. Convert the difference from milliseconds to days (float)
+    // Calculate time difference based on the clamped current time
+    const differenceInMilliseconds = effectiveNow.getTime() - createdDate.getTime();
+
     const durationSoFarInDays = differenceInMilliseconds / millisecondsPerDay;
-
-    // 5. Calculate whole days and remaining hours
     const totalHoursSoFar = differenceInMilliseconds / millisecondsPerHour;
+
     const daysSoFar = Math.floor(totalHoursSoFar / 24);
-    const hoursSoFar = Math.floor(totalHoursSoFar % 24); // Use Math.floor to get whole hours
+    const hoursSoFar = Math.floor(totalHoursSoFar % 24);
 
-    // 6. Determine if the duration is within the specified limit
-    const isWithinDurationLimit = durationSoFarInDays <= durationLimitInDays;
+    // Determine if we're still within the investment period
+    const isWithinDurationLimit = now <= endDate;
 
-    // 7. Calculate the exact end date based on the created date and the duration limit
-    const endDate = new Date(createdDate.getTime() + (durationLimitInDays * millisecondsPerDay));
-
-    // 8. Calculate days remaining or days overdue
+    // Calculate days remaining or overdue (based on actual now, not clamped time)
     let daysRemaining = 0;
     let daysOverdue = 0;
 
     if (isWithinDurationLimit) {
-        // If within the limit, calculate how many days are left
-        daysRemaining = durationLimitInDays - durationSoFarInDays;
+        daysRemaining = (endDate.getTime() - now.getTime()) / millisecondsPerDay;
     } else {
-        // If past the limit, calculate how many days it is overdue
-        daysOverdue = durationSoFarInDays - durationLimitInDays;
+        daysOverdue = (now.getTime() - endDate.getTime()) / millisecondsPerDay;
     }
 
-    // Return an object with all the calculated details
     return {
-        durationSoFarInDays: parseFloat(durationSoFarInDays.toFixed(2)), // Total duration as a float (e.g., 1.5 days)
-        daysSoFar: daysSoFar, // Whole days (e.g., 1 day)
-        hoursSoFar: hoursSoFar, // Remaining hours (e.g., 12 hours)
-        isWithinDurationLimit: isWithinDurationLimit,
+        durationSoFarInDays: parseFloat(durationSoFarInDays.toFixed(2)),
+        daysSoFar,
+        hoursSoFar,
+        isWithinDurationLimit,
         daysRemaining: parseFloat(daysRemaining.toFixed(2)),
         daysOverdue: parseFloat(daysOverdue.toFixed(2)),
-        // endDate: endDate?.toISOString() // Return end date in ISO format for consistency
+        // endDate: endDate.toISOString(),
     };
-}
+};
