@@ -56,8 +56,8 @@ Users can access flexible credit options tailored to individual and business nee
 1. Clone the repository:
 
    bash
-   git clone https://github.com/jamfortetechnologies/Veegil-Frontend.git
-   cd campaign-management-system
+   git clone https://github.com/jamfortetechnologies/firstlane-user-frontend.git
+   cd firstlane-user-frontend
    
 
 2. Install dependencies:
@@ -69,9 +69,8 @@ Users can access flexible credit options tailored to individual and business nee
 
 1. Create a .env file in the root directory with the required environment variables:
 
-   
-   VITE_API_BASE_URL=your_api_base_url
-   VITE_BASE_URL=your_frontend_url
+   - VITE_API_BASE_URL=your_api_base_url
+   - VITE_BASE_URL=your_frontend_url
 
 2. Environment variables explanation:
    - VITE_API_BASE_URL: Primary API endpoint for the application
