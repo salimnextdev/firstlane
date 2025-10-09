@@ -31,6 +31,18 @@ export const fetchNotifications = createAsyncThunk(
     }
 );
 
+export const fetchUnreadNotificationsCount = createAsyncThunk(
+    'user/fetchUnreadNotificationsCount',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`${API_BASE_URL}/users/notification/unread-count`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 export const markAllAsRead = createAsyncThunk(
     'user/markAllAsRead',
     async (_, { rejectWithValue }) => {
@@ -47,6 +59,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState: {
         notifications: [],
+        count: 0,
         metaData: null,
         loading: false,
         error: null,
@@ -66,6 +79,11 @@ export const userSlice = createSlice({
             .addCase(fetchNotifications.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            .addCase(fetchUnreadNotificationsCount.fulfilled, (state, action) => {
+                state.count = action.payload?.data?.count; // Retrieve the unread notification count from the response
+                state.loading = false;
             })
     }
 });

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUnreadNotificationsCount } from '@/modules/auth/state/userSlice';
 import { setSearchTerm } from '@/modules/auth/state/searchSlice';
 import { useTheme } from '@/hooks/ThemeContext';
 
@@ -42,6 +43,11 @@ const Header = ({ isOpen, onClose }) => {
 
     const { theme, toggleTheme } = useTheme();
 
+    const { count: notificationCount } = useSelector((state) => state.user);
+    useEffect(() => {
+        dispatch(fetchUnreadNotificationsCount());
+    }, [dispatch])
+
     const Icon = () => {
         const IconComponent = mapper[pageName];
         return <IconComponent className="w-5 h-5" />;
@@ -81,7 +87,14 @@ const Header = ({ isOpen, onClose }) => {
                             className="w-full h-[40px] pl-10 pr-4 py-2 rounded-md border border-gray text-sm focus:outline-none"
                         />
                     </div>
-                    <Bell onClick={() => setNotificationOpen(true)} className="cursor-pointer" />
+
+                    <div className='relative'>
+                        <Bell onClick={() => setNotificationOpen(true)} className="cursor-pointer" />
+                        {notificationCount > 0 && (
+                            <span className="absolute top-1 right-1 bg-secondary w-2 h-2 rounded-full"></span>
+                        )}
+                    </div>
+
                     {theme === 'light' ?
                         <MdOutlineLightMode onClick={toggleTheme} className="w-6 h-6 text-gray-500 cursor-pointer" /> :
                         <MdLightMode onClick={toggleTheme} className="w-6 h-6 text-gray-300 cursor-pointer" />
