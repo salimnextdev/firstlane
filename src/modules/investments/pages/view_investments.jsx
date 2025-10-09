@@ -96,10 +96,20 @@ const ViewInvestment = () => {
     const [activeInvestments, setActiveInvestments] = useState([]);
     const [pastInvestments, setPastInvestments] = useState([]);
 
+    // Sort Investment from frontend : Newest first
     useEffect(() => {
-        setActiveInvestments(investments.filter(investment => investment.status === "active"));
-        setPastInvestments(investments.filter(investment => investment.status === "completed"));
-    }, [investments])
+        const active = investments
+            .filter(investment => investment.status === "active")
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+        const past = investments
+            .filter(investment => investment.status === "completed")
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+        setActiveInvestments(active);
+        setPastInvestments(past);
+    }, [investments]);
+    
 
     const [currentTab, setCurrentTab] = useState("active_investment");
 
