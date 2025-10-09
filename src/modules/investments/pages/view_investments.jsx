@@ -88,7 +88,7 @@ const ViewInvestment = () => {
     const user = JSON.parse(getCookie('user') || null);
     const { investments: investments, loading: loading, error: error } = useSelector((state) => state.investment);
     useEffect(() => {
-        if (!loading) {
+        if (!loading && investments.length === 0) {
             dispatch(fetchInvestments(user?._id));
         }
     }, [dispatch]);
