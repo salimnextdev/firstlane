@@ -14,12 +14,16 @@ import FundOptionsModal from '@/modules/investments/components/fundOptionsModal'
 import InvestmentSkeletonCard from '../components/investmentSkeletonCard';
 import NoContent from '@/components/NoContent';
 import { Loader } from 'lucide-react';
+import Pagination from '@/components/Pagination';
+
+const LIMIT = 9;
 
 const Investment = () => {
     const dispatch = useDispatch();
     const user = JSON.parse(getCookie('user') || null);
     const {
         investments: investments,
+        metaData: metaData,
         investment_plans: investment_plans,
         loading: loading, error: error
     } = useSelector((state) => state.investment);
@@ -29,12 +33,23 @@ const Investment = () => {
         if (!loading) {
             dispatch(fetchBalance(user?._id));
             dispatch(fetchInvestments(user?._id));
-            dispatch(fetchInvestmentPlans());
         }
     }, [dispatch]);
 
     const [isOpen, setIsOpen] = useState(false);
     const [statsView, setStatsView] = useState(true);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    useEffect(() => {
+        if (!loading) {
+            dispatch(fetchInvestmentPlans({ page: currentPage, limit: LIMIT }))
+        }
+    }, [currentPage]);
 
     return (
         <div className="relative space-y-2 md:space-y-6">
@@ -138,8 +153,8 @@ const Investment = () => {
                             const duration = parseInt(item?.duration[0].split(' ')[0]) / 30
                             const lowDuration = duration < 1;
                             const readableDuration = lowDuration
-                                    ? 'less than 1 month'
-                                    : `${duration} month${duration >= 2 ? 's' : ''}`;
+                                ? 'less than 1 month'
+                                : `${duration} month${duration >= 2 ? 's' : ''}`;
 
                             return (
                                 <div key={index} className='p-3 md:p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
@@ -176,6 +191,14 @@ const Investment = () => {
                         }))}
                     </div>}
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                className={`flex ${(investment_plans.length == 0 || metaData.total <= LIMIT || loading) && 'hidden'}`}
+                totalPages={metaData?.totalPage}
+                currentPage={currentPage || parseInt(metaData?.currentPage)}
+                onPageChange={handlePageChange}
+            />
         </div>
     );
 };
