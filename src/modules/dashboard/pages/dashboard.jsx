@@ -141,7 +141,7 @@ const Dashboard = () => {
         if (userProfile && userProfile?.verifications?.status === 'verified') {
             setKycStatus('pending');
             setShowKYC(false);
-        } else if (!userProfile?.verifications) {
+        } else if (userProfile && !userProfile?.verifications) {
             setKycStatus('failed');
             setShowKYC(true);
         } else if (userProfile && userProfile?.verifications?.status === 'pending') {
