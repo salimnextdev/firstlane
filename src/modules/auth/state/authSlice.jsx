@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from '@/middlewares/interceptor';
 import { setCookie, getCookie, removeCookie } from '@/utils/cookieUtils';
 
-const API_BASE_URL = import.meta.env.VITE_API_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',

@@ -182,7 +182,7 @@ The theme implementation is located in src/hooks/ThemeContext.jsx and uses a dat
 
 The application interacts with a single primary API:
 
-1. Primary API (VITE_API_API_BASE_URL): Handles core functionality including authentication, user management, and main features.
+1. Primary API (VITE_API_BASE_URL): Handles core functionality including authentication, user management, and main features.
 
 For detailed API documentation, please refer to:
 
