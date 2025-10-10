@@ -14,6 +14,7 @@ import { ReactComponent as Send } from '@/assets/icons/sent.svg';
 import { ReactComponent as Upload } from '@/assets/icons/upload.svg';
 import { ReactComponent as ChatPlus } from '@/assets/icons/chat-plus.svg';
 import { ReactComponent as ArrowLeft } from '@/assets/icons/arrow-left.svg';
+import SupportImage from '@/assets/images/support.png';
 
 import SupportModal from '@/modules/support/components/supportModal';
 import BackButton from '@/components/BackButton';
@@ -124,7 +125,7 @@ const Support = () => {
 
     const validateForm = () => {
         const errors = {};
-        if (!selected && !selectedModalOption) errors.selectedModalOption = "Please select a support type!";
+        if (!selected && !selectedModalOption) errors.selectedModalOption = "Click on 'start a new chat' to select support type!";
         return errors;
     };
 
@@ -284,7 +285,7 @@ const Support = () => {
                                 icon="support"
                                 title="No support ticket found"
                                 description="You currently have no support tickets. Once you create a ticket, it will appear here."
-                                className="h-full"
+                                className="md:h-full"
                             />
                     }
 
@@ -345,22 +346,26 @@ const Support = () => {
                             {/* Chat Area */}
                             <div className={`mt-5 mb-24 md:mb-0 w-full space-y-3 ${selected ? 'md:h-[60vh]' : 'md:h-[65vh]'} overflow-y-auto cursor-pointer`}>
                                 {(selected?.new ?
-                                    (<div className='w-full h-[60vh] md:h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                        <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
+                                    (<div className='w-full h-[60vh] md:h-[40vh] md:mt-16 flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                        {/* <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
                                             <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
-                                        </div>
-                                        <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                            Start typing to open or reply a support conversation.
+                                        </div> */}
+                                        <img className='w-42 h-42' src={SupportImage} alt="support" />
+                                        <p className='w-full md:w-7/12 mx-8 md:mx-0 text-sm md:text-base text-secondary'>
+                                            Need assistance? Start typing to begin or continue a conversation with our support team.
+                                            We're here to help with any questions or concerns.
                                         </p>
                                     </div>) :
                                     sortedConversations.length === 0 && !selected?.message ?
                                         (
-                                            <div className='w-full h-[40vh] flex flex-col items-center justify-center gap-5 text-center font-light'>
-                                                <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
+                                            <div className='w-full h-[40vh] md:mt-16 flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                                {/* <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
                                                     <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
-                                                </div>
-                                                <p className='mx-8 md:mx-0 text-sm md:text-base text-secondary'>
-                                                    Select a support ticket to view conversations!
+                                                </div> */}
+                                                <img className='w-42 h-42' src={SupportImage} alt="support" />
+                                                <p className='w-full md:w-7/12 mx-8 md:mx-0 text-sm md:text-base text-secondary'>
+                                                    Need help? Click 'Start a new chat' to begin a support request.
+                                                    Or, choose a support ticket from the list to view past conversations and replies.
                                                 </p>
                                             </div>
                                         ) :
