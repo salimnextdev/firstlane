@@ -86,12 +86,12 @@ const Signin = () => {
                 setCookie('user', JSON.stringify({email: formData.email}))
                 navigate('/verify-account', { state: { from: '/signin' } })
             } else {
-                toast(resultAction.payload?.message);
+                toast(resultAction.payload?.message || 'An unexpected error occurred while loading the page.');
                 return;
             };
         } catch (error) {
             toast("An error occured", {
-                description: resultAction.payload?.message,
+                description: resultAction.payload?.message || 'An unexpected error occurred while loading the page.',
             });
         } finally {
             setSubmitted(false);
