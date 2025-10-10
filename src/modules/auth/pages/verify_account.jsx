@@ -13,6 +13,8 @@ import AuthImageContainer from '@/components/AuthImageContainer';
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 const VerifyAccount = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -29,6 +31,22 @@ const VerifyAccount = () => {
     if (token) {
         return <Navigate to="/dashboard" />
     };
+
+    // Manually refetch the userID because it is needed to resendOTP code to customer.
+    const [userID, setUserID] = useState('');
+    useEffect(() => {
+        if (prevPage) {
+          (async () => {
+            try {
+              const res = await fetch(`${API_BASE_URL}/users/by-any/email/${user?.email}`);
+              const { data } = await res.json();
+              data?.[0]?._id && setUserID(data[0]._id);
+            } catch (err) {
+              toast.error('Failed to fetch users ID:', err);
+            }
+          })();
+        }
+      }, [prevPage]);
 
     const [submitted, setSubmitted] = useState(false);
     const [OTP, setOTP] = useState();
@@ -51,9 +69,9 @@ const VerifyAccount = () => {
         return () => clearTimeout(timer);
     }, [countdown]);
 
-    const handleResend = () => {
+    const handleResend = async () => {
         if (!resend && !prevPage) return;
-        resendOTP();
+        await resendOTP();
         setCountdown(50);
         setResend(false);
     };
@@ -63,7 +81,7 @@ const VerifyAccount = () => {
         setSubmitted(true);
 
         const data = {
-            "userID": user?.userID || '',
+            "userID": user?.userID ?? userID ?? '',
             "code": OTP.replace('-', ''),
             "type": "EmailVerification"
         };
@@ -91,7 +109,7 @@ const VerifyAccount = () => {
 
     const resendOTP = async () => {
         const data = {
-            // "userID": user?.userID || '', // Optional
+            "userID": user?.userID ?? userID ?? '', // Important: If not passed OTP code received would fail verification.
             "email": user?.email || '',
             "type": "EmailVerification"
         };
