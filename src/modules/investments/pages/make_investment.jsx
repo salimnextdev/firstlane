@@ -70,6 +70,21 @@ const MakeInvestment = () => {
         const errors = {};
         if (!formData.amount) errors.amount = "Amount is required";
         if (!formData.interval) errors.interval = "Interval is required";
+        if (formData.amount < investment_plan?.minAmount) {
+            errors.minAmount = `Amount must be at least ₦${investment_plan?.minAmount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}, 
+            based on the selected investment plan.`;
+        }
+        if (formData.amount > investment_plan?.maxAmount) {
+            errors.maxAmount = `Amount must not exceed ₦${investment_plan?.maxAmount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}, 
+            based on the selected investment plan.`;
+        }
+
         // if (formData.amount > balance) errors.amount = "Insufficient funds";
         return errors;
     };
