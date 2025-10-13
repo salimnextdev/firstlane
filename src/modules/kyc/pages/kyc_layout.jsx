@@ -45,7 +45,7 @@ const KYCVerification = () => {
         1: "Personal Details",
         2: "Means of Identification",
         3: "Next of Kin",
-        4: "Documents"
+        4: "Address Verification Documents"
     }
 
     return (
