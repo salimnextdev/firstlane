@@ -29,7 +29,7 @@ const KYCVerification = () => {
     useEffect(() => {
         if (kycStatus) {
             const level = parseInt(kycStatus?.level?.split('level')[1] || 0);
-            {kycStatus.status === 'verified' || (kycStatus.status === 'pending' && kycStatus.level === 4) ? 
+            {kycStatus.status === 'verified' || (kycStatus.status === 'pending' && level === 4) ? 
                 navigate('/dashboard') :
                 level >= 4 ? setStep(1) : // Redirect user's with rejected kyc back to the first page
                 setStep(level + 1)};
@@ -45,7 +45,7 @@ const KYCVerification = () => {
         1: "Personal Details",
         2: "Means of Identification",
         3: "Next of Kin",
-        4: "Documents"
+        4: "Address Verification Documents"
     }
 
     return (
