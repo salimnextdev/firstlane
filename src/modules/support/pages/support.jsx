@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 import SupportChatSkeleton from '../components/supportChatSkeleton';
 import { HiOutlineChatBubbleBottomCenterText } from 'react-icons/hi2';
+import { PiArrowUpRightLight } from "react-icons/pi";
 import { formatDateToday } from '@/utils/datetimeFormats';
 import { IoIosClose } from 'react-icons/io';
 import NoContent from '@/components/NoContent';
@@ -421,14 +422,16 @@ const Support = () => {
                                                             <div className='w-full flex justify-end'>
                                                                 <div className='w-11/12 lg:w-8/12 flex items-end gap-2'>
                                                                     <div className='w-full space-y-1 font-light'>
-                                                                        <div
-                                                                            className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`}
-                                                                            style={{ borderBottomRightRadius: 0 }}
-                                                                        >
-                                                                            <div className='text-sm leading-relaxed'>
-                                                                                {message?.message}
+                                                                        {message?.message &&
+                                                                            <div
+                                                                                className={`w-full p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`}
+                                                                                style={{ borderBottomRightRadius: 0 }}
+                                                                            >
+                                                                                <div className='text-sm leading-relaxed'>
+                                                                                    {message?.message}
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
+                                                                        }
                                                                         {message?.url &&
                                                                             <div className={`w-full flex items-center justify-between p-3 bg-[#A9E7FF] text-black rounded-xl md:rounded-2xl`} style={{ borderBottomRightRadius: 0 }}>
                                                                                 <div className='flex items-center gap-3 text-sm'>
@@ -439,7 +442,7 @@ const Support = () => {
                                                                                     </div>
                                                                                 </div>
                                                                                 <a href={message?.url} target='_blank' download>
-                                                                                    <Upload className="w-full" />
+                                                                                    <PiArrowUpRightLight className="w-5 h-5" />
                                                                                 </a>
                                                                             </div>
                                                                         }
@@ -469,14 +472,16 @@ const Support = () => {
                                                                         </div>
                                                                     </div>
                                                                     <div className='w-full space-y-1 font-light'>
-                                                                        <div
-                                                                            className={`w-full p-3 bg-currency rounded-xl md:rounded-2xl`}
-                                                                            style={{ borderTopLeftRadius: 0 }}
-                                                                        >
-                                                                            <div className='text-sm leading-relaxed'>
-                                                                                {message?.message}
+                                                                        {message?.message &&
+                                                                            <div
+                                                                                className={`w-full p-3 bg-currency rounded-xl md:rounded-2xl`}
+                                                                                style={{ borderTopLeftRadius: 0 }}
+                                                                            >
+                                                                                <div className='text-sm leading-relaxed'>
+                                                                                    {message?.message}
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
+                                                                        }
                                                                         {message?.url &&
                                                                             <div className={`w-full flex items-center justify-between p-3 bg-currency rounded-2xl`} style={{ borderTopLeftRadius: 0 }}>
                                                                                 <div className='flex items-center gap-3 text-sm'>
@@ -487,7 +492,7 @@ const Support = () => {
                                                                                     </div>
                                                                                 </div>
                                                                                 <a href={message?.url} target='_blank' download>
-                                                                                    <Upload className="w-full" />
+                                                                                    <PiArrowUpRightLight className="w-5 h-5" />
                                                                                 </a>
                                                                             </div>
                                                                         }
