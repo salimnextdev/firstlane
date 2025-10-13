@@ -15,13 +15,14 @@ import {
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SearchInput from '@/components/FormInputs/searchInput';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
+import { IoIosCheckmarkCircle, IoIosInformationCircleOutline } from 'react-icons/io';
 import SendOTPModal from '@/modules/wallets/components/OTPModal';
 import { useBankOptions } from '@/utils/dropdownOptions';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 import { getCookie } from '@/utils/cookieUtils';
+import { calculateTransferFee } from '@/utils/genericFunc';
 
 const INITIAL_DATA = {
     amount: "",
@@ -122,12 +123,20 @@ const SendMoneyModal = ({
 
     }, [formData.account_number, formData.bank_code, dispatch]);
 
+    const [fee, setFee] = useState(0);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
+
+        // const numericValue = value.replace(/[^0-9]/g, ''); // Force 
+        if (name === 'amount') {
+            const calculatedFee = calculateTransferFee(Number(value));
+            console.log(calculatedFee);
+            setFee(calculatedFee);
+        }
     };
 
     const validateForm = () => {
@@ -189,17 +198,38 @@ const SendMoneyModal = ({
                     </DialogHeader>
 
                     <form method="post" className='space-y-4'>
-                        <div className='relative'>
-                            <TextInput
-                                label='Amount'
-                                name='amount'
-                                className='pl-8'
-                                value={formData.amount}
-                                onChange={handleChange}
-                                placeholder='0.00'
-                            />
-                            <span className='absolute top-1/2 left-5'>₦</span>
+                        <div>
+                            <div className='relative'>
+                                <span className='absolute top-9 md:top-10.5 left-4 text-secondary'>₦</span>
+                                <TextInput
+                                    label='Amount'
+                                    name='amount'
+                                    type='number'
+                                    className={`md:h-15 pl-7 pr-36 font-medium no-spinner`}
+                                    value={formData.amount}
+                                    onChange={handleChange}
+                                    placeholder='0.00'
+                                    inputMode='numeric'
+                                    pattern='[0-9]*'
+                                />
+                                <p className="absolute top-9 md:top-10.5 right-4 text-sm text-secondary space-x-1">
+                                    <span className='font-light'>Fee:</span>
+                                    <span>-₦{(fee || 0.00).toLocaleString(undefined, {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}</span>
+                                </p>
+                            </div>
+                            {/* Help Text */}
+                            <div className='mt-1 flex items-start gap-1 text-[var(--firstlane-warning)]'>
+                                {/* <IoIosInformationCircleOutline className='w-5 h-5' /> */}
+                                <p className='text-sm font-light'>
+                                    A transfer fee applies to all withdrawals.
+                                    VAT is included in the total fee.
+                                </p>
+                            </div>
                         </div>
+
                         <TextInput
                             label='Account number'
                             name='account_number'

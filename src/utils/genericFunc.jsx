@@ -51,3 +51,19 @@ export const getTransactionType = (type, remarks) => {
         return type
     }
 };
+
+export const calculateTransferFee = (amount) => {
+    if (!amount || isNaN(amount)) return 0;
+
+    let baseFee = 0;
+
+    if (amount <= 5000) {
+        baseFee = 10;
+    } else if (amount <= 50000) {
+        baseFee = 25;
+    } else {
+        baseFee = 50;
+    }
+
+    return baseFee;
+};
