@@ -27,6 +27,13 @@ import NoContent from './NoContent';
 const mapper = {
   'KYC': KYC,
   'User': User,
+  "loan": Loan,
+  "investment": Investment,
+  "fx": Transaction,
+  "wallets": Wallet,
+  "support": Support,
+  "settings": Setting,
+  "kyc verification": KYC
 }
 
 const NotificationPanel = ({ isOpen, onClose }) => {
