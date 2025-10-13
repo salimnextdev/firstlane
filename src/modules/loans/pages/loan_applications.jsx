@@ -29,6 +29,7 @@ import NoContent from '@/components/NoContent';
 import LoanSkeletonCard from '../components/loanSkeletonCard';
 import LoanSkeletonTable from '../components/loanSkeletonTable';
 import { formatDateTime } from '@/utils/datetimeFormats';
+import { toast } from 'sonner';
 
 const LIMIT = 10;
 
@@ -133,8 +134,15 @@ const LoanApplications = () => {
         }
     }, [currentPage, filters]);
 
-    const makeLoanRepayment = async (loanID) => {
-        await dispatch(repayLoan(loanID));
+    const makeLoanRepayment = async (loanDetails) => {
+        await dispatch(repayLoan(loanDetails?._id)).unwrap();
+        toast.success("Loan Repayment", {
+            description: `You have successfully repaid the ${loanDetails?.repaymentInterval} sum of 
+            ${loanDetails?.payments?.[0]?.amount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`,
+        })
     };
 
     return (
@@ -242,7 +250,7 @@ const LoanApplications = () => {
                                                     <span className='font-light cursor-pointer'>View details</span>
                                                 </DropdownMenuItem>
                                                 {loan?.status === 'approved' &&
-                                                    <DropdownMenuItem onClick={() => makeLoanRepayment(loan?._id)} >
+                                                    <DropdownMenuItem onClick={() => makeLoanRepayment(loan)} >
                                                         <span className='font-light cursor-pointer'>Repay Loan</span>
                                                     </DropdownMenuItem>
                                                 }

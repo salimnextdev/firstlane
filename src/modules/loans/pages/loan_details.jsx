@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLoanByID } from '@/modules/loans/state/loanSlice';
+import { fetchLoanByID, repayLoan } from '@/modules/loans/state/loanSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { ReactComponent as Download } from '@/assets/icons/download.svg';
@@ -10,6 +10,8 @@ import { useParams } from 'react-router-dom';
 import { formatDateTime } from '@/utils/datetimeFormats';
 import LoanSkeletonDetails from '../components/loanSkeletonDetails';
 import NoContent from '@/components/NoContent';
+import { Loader } from 'lucide-react';
+import { toast } from 'sonner';
 
 const data = {
     amount: 10000.00,
@@ -39,6 +41,17 @@ const LoanDetails = () => {
         }
     }, [dispatch]);
 
+    const makeLoanRepayment = async () => {
+        await dispatch(repayLoan(loanDetails?._id)).unwrap();
+        toast.success("Loan Repayment", {
+            description: `You have successfully repaid the ${loanDetails?.repaymentInterval} sum of 
+            ${loanDetails?.payments?.[0]?.amount?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`,
+        })
+    };
+
     return (
         <div className="space-y-5">
             <BackButton />
@@ -51,7 +64,7 @@ const LoanDetails = () => {
                 loanDetails ?
                     (<div className='p-5 border border-gray rounded-xl'>
                         <span className={`px-3 py-1 text-xs capitalize rounded-full 
-                    ${loanDetails?.status === 'approved' ? 'bg-success' :
+                    ${['approved', 'paid'].includes(loanDetails?.status) ? 'bg-success' :
                                 loanDetails?.status === 'pending' ? 'bg-warning' :
                                     'bg-danger'
                             }`}>
@@ -159,6 +172,19 @@ const LoanDetails = () => {
                         </div> */}
                             </div>
                         </div>
+
+                        {loanDetails?.status === 'approved' &&
+                            <button
+                                className={`w-full md:w-32 h-11 md:h-9 mt-3 md:mt-0 px-3 rounded-md bg-primary text-sm text-white cursor-pointer ${submitted && 'opacity-70'}`}
+                                onClick={()=> makeLoanRepayment()}
+                                disabled={submitted}
+                            >
+                                {submitted ?
+                                    <Loader rotate={360} className='text-xl animate-spin mx-auto' /> :
+                                    'Repay Loan'
+                                }
+                            </button>
+                        }
                     </div>) : (
                         <NoContent
                             icon="loans"
