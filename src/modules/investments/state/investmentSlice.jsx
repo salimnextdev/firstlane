@@ -88,6 +88,18 @@ export const syncInvestments = createAsyncThunk(
   }
 );
 
+export const refreshInvestStatus = createAsyncThunk(
+  'investment/refreshInvestStatus',
+  async (investmentID, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`${API_BASE_URL}/investments/${investmentID}/refresh-status`, {});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const investmentSlice = createSlice({
   name: 'investment',
   initialState: {
