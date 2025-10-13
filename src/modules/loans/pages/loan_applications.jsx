@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLoans, filterLoans } from '@/modules/loans/state/loanSlice';
+import { fetchLoans, filterLoans, repayLoan } from '@/modules/loans/state/loanSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import {
@@ -119,19 +119,23 @@ const LoanApplications = () => {
 
     const [totalPages, setTotalPages] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     useEffect(() => {
         if (Object.keys(filterData).length > 0) {
-            const updatedFilterData = {...filterData, userID: user?._id};
+            const updatedFilterData = { ...filterData, userID: user?._id };
             dispatch(filterLoans({ credentials: updatedFilterData, page: currentPage, limit: LIMIT }));
         } else {
             dispatch(fetchLoans({ key: 'userID', value: user?._id, page: currentPage, limit: LIMIT }));
         }
     }, [currentPage, filters]);
+
+    const makeLoanRepayment = async (loanID) => {
+        await dispatch(repayLoan(loanID));
+    };
 
     return (
         <div className="space-y-5">
@@ -208,12 +212,12 @@ const LoanApplications = () => {
                                             {loan?.loanType}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="px-6 py-4">{loan?.purpose}</TableCell>
+                                    <TableCell className="px-6 py-4 capitalize">{loan?.purpose}</TableCell>
                                     <TableCell className="px-6 py-4">{formatDateTime(loan?.createdAt)}</TableCell>
                                     <TableCell className="px-6 py-4">
                                         <span
                                             className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${loan?.status === 'approved' ? 'bg-success' :
+                                                ${['approved', 'paid'].includes(loan?.status) ? 'bg-success' :
                                                     loan?.status === 'pre-approved' ? 'bg-neutral' :
                                                         loan?.status === 'pending' ? 'bg-warning' :
                                                             'bg-danger'
@@ -237,6 +241,11 @@ const LoanApplications = () => {
                                                 <DropdownMenuItem onClick={() => navigate(`/loans/applications/${loan.id}`)}>
                                                     <span className='font-light cursor-pointer'>View details</span>
                                                 </DropdownMenuItem>
+                                                {loan?.status === 'approved' &&
+                                                    <DropdownMenuItem onClick={() => makeLoanRepayment(loan?._id)} >
+                                                        <span className='font-light cursor-pointer'>Repay Loan</span>
+                                                    </DropdownMenuItem>
+                                                }
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

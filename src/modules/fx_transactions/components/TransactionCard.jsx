@@ -24,6 +24,7 @@ const TransactionCard = ({ userProfile, transaction }) => {
             <div className='flex flex-col items-end gap-1'>
                 <p className={`text-sm font-medium 
                     ${transaction?.status === 'paid' ? 'text-success' :
+                        (transaction?.type === 'loan' && transaction?.status === 'completed') ? 'text-danger' :
                         transaction?.status === 'pending' ? 'text-warning' :
                             'text-danger'
                     }`}>

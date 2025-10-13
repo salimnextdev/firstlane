@@ -322,7 +322,7 @@ const Wallets = () => {
                                                     </span> :
                                                     <span
                                                         className={`px-3 py-1 text-xs font-normal capitalize rounded-full
-                                                ${transaction.status === 'paid' ? 'bg-success' :
+                                                ${['completed', 'paid'].includes(transaction?.status) ? 'bg-success' :
                                                     transaction.status === 'pending' ? 'bg-warning' :
                                                         'bg-danger'
                                                 }`}

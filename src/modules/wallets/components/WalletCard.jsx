@@ -18,7 +18,7 @@ const WalletCard = ({ transaction }) => {
             </div>
             <div className='flex flex-col items-end gap-1'>
                 <p className={`text-xs font-medium capitalize 
-                ${transaction?.status === 'paid' ? 'text-success' :
+                ${['completed', 'paid'].includes(transaction?.status) ? 'text-success' :
                         transaction?.status === 'pending' ? 'text-warning' :
                             'text-danger'
                     }`}>{transaction?.status || '--'}
