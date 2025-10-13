@@ -7,7 +7,7 @@ const LoadCard = ({ loan }) => {
             <div className="space-y-1">
                 <p
                     className={`inline-block mb-2 px-3 py-1 text-xs font-normal capitalize rounded-full
-                            ${loan?.status === 'approved' ? 'bg-success' :
+                            ${['approved', 'paid'].includes(loan?.status) ? 'bg-success' :
                             loan?.status === 'pre-approved' ? 'bg-neutral' :
                                 loan?.status === 'pending' ? 'bg-warning' :
                                     'bg-danger'
@@ -19,7 +19,8 @@ const LoadCard = ({ loan }) => {
                 <p className="text-xs md:text-sm text-gray-500">{formatDateShort(loan?.createdAt)}</p>
             </div>
             <div className='flex flex-col items-end gap-1'>
-                <p className={`text-xs font-medium ${loan?.status === 'approved' ? 'text-success' :
+                <p className={`text-xs font-medium ${
+                    ['approved', 'paid'].includes(loan?.status) ? 'text-success' :
                     loan?.status === 'pending' ? 'text-warning' :
                         'text-danger'
                     }`}>₦{(loan?.amountRequested || 0.00)?.toLocaleString(undefined, {
