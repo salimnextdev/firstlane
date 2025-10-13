@@ -106,9 +106,15 @@ const MakeInvestment = () => {
 
     const submitInvestment = async () => {
         setSubmitted(true);
+        const raw = investment_plan?.duration?.[0]; // e.g. "1 day", "100 months"
+        const [num, unitRaw] = raw?.split(" ") ?? [];
+        const unit = unitRaw?.replace(/s$/, "") + "s"; // force plural
+        const final = num && unit ? `${num} ${unit}` : undefined;
+
         const data = {
             investmentID: investment_plan?._id,
             amount: parseFloat(formData.amount),
+            duration: final,
             repaymentInterval: formData.interval,
             refCode: formData.referral,
         };
