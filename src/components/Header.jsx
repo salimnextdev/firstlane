@@ -43,10 +43,10 @@ const Header = ({ isOpen, onClose }) => {
 
     const { theme, toggleTheme } = useTheme();
 
-    const { count: notificationCount } = useSelector((state) => state.user);
+    const { count: notificationCount, notifications: notifications } = useSelector((state) => state.user);
     useEffect(() => {
         dispatch(fetchUnreadNotificationsCount());
-    }, [dispatch])
+    }, [dispatch, notifications])
 
     const Icon = () => {
         const IconComponent = mapper[pageName];
