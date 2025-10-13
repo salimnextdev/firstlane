@@ -131,36 +131,36 @@ const KYCStep4 = ({ prevStep }) => {
                     </svg>
                 </div>
                 <p className="text-sm text-[#667085] text-wrap font-light leading-relaxed">
-                    We would be requesting for your statements of account for the past 6 months
+                    We would be requesting for either your statement of account for the past 6 months or a recent utility bill
                 </p>
                 <p className="text-sm text-[#667085] text-wrap font-light leading-relaxed">
-                    Supported file formats: .pdf, .doc, .docx, .xls, .xlsx
+                    Supported file formats: .png, .jpg, .jpeg, .pdf, .doc, .docx, .xls, .xlsx
                 </p>
             </div>
 
             <form onSubmit={submitKYC} method='post' className='w-full space-y-4'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
                     <FileInput
-                        label='Statement of account'
+                        label='Upload Address Verification Document'
                         name='document1'
-                        accept='.pdf,.doc,.docx,.xls,.xlsx'
+                        accept='.png,.jpg,.jpeg,.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document1}
                         onChange={handleChange}
                     />
-                    <FileInput
-                        label='Supporting document 1 (optional)'
+                    {/* <FileInput
+                        label='Utility Bill'
                         name='document2'
-                        accept='.pdf,.doc,.docx,.xls,.xlsx'
+                        accept='.png,.jpg,.jpeg,.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document2}
                         onChange={handleChange}
                     />
                     <FileInput
-                        label='Supporting document 2 (optional)'
+                        label='Supporting document (optional)'
                         name='document3'
                         accept='.pdf,.doc,.docx,.xls,.xlsx'
                         value={formData.document3}
                         onChange={handleChange}
-                    />
+                    /> */}
                 </div>
 
                 <div className="fixed md:static bottom-0 z-10 w-full bg-gray-50 dark:bg-[var(--firstlane-bg)] border-t md:border-0 border-gray">
