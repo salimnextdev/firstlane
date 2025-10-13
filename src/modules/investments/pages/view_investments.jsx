@@ -2,86 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInvestments } from '@/modules/investments/state/investmentSlice';
+import { fetchInvestments, refreshInvestStatus } from '@/modules/investments/state/investmentSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ActiveInvestmentTab from '@/modules/investments/components/tabs/active_inv_tab';
 import PastInvestmentTab from '@/modules/investments/components/tabs/past_inv_tab';
 import BackButton from '@/components/BackButton';
-
-const data = [
-    {
-        days: 90,
-        months: 3,
-        investment: 10000.00,
-        balance: 30000.00,
-        earned: 30000.00,
-        interest: 3,
-        type: "active_investment",
-        withdrawn: true
-    },
-    {
-        days: 180,
-        months: 6,
-        investment: 10000.00,
-        balance: 1020000.00,
-        earned: 30000.00,
-        interest: 3,
-        type: "past_investment",
-        withdrawn: true
-    },
-    {
-        days: 180,
-        months: 6,
-        investment: 10000.00,
-        balance: 1020000.00,
-        earned: 30000.00,
-        interest: 3,
-        type: "active_investment",
-        withdrawn: true
-    },
-    {
-        days: 360,
-        months: 12,
-        investment: 10000.00,
-        balance: 205000.00,
-        earned: 15000.00,
-        interest: 3,
-        type: "active_investment",
-        withdrawn: true
-    },
-    {
-        days: 360,
-        months: 12,
-        investment: 10000.00,
-        balance: 205000.00,
-        earned: 15000.00,
-        interest: 3,
-        type: "past_investment",
-        withdrawn: false
-    },
-    {
-        days: 540,
-        months: 18,
-        investment: 10000.00,
-        balance: 60000.00,
-        earned: 30000.00,
-        interest: 3,
-        type: "past_investment",
-        withdrawn: true
-    },
-    {
-        days: 720,
-        months: 24,
-        investment: 10000.00,
-        balance: 30000.00,
-        earned: 30000.00,
-        interest: 3,
-        type: "active_investment",
-        withdrawn: true
-    },
-]
 
 const ViewInvestment = () => {
     const dispatch = useDispatch();
@@ -116,6 +43,13 @@ const ViewInvestment = () => {
     // const DATA = data.filter(item => item.type === currentTab);
     const DATA = currentTab === "active_investment" ? activeInvestments : pastInvestments;
 
+    const [submitted, setSubmitted] = useState(false);
+    const refreshInvest = async (investmentID) => {
+        setSubmitted(true);
+        await dispatch(refreshInvestStatus(investmentID)).unwrap();
+        setSubmitted(false);
+    };
+
     return (
         <div className="relative space-y-4">
             <BackButton />
@@ -143,7 +77,7 @@ const ViewInvestment = () => {
                 </TabsList>
 
                 <TabsContent value="active_investment">
-                    <ActiveInvestmentTab data={DATA} />
+                    <ActiveInvestmentTab data={DATA} refreshInvest={refreshInvest} />
                 </TabsContent>
                 <TabsContent value="past_investment">
                     <PastInvestmentTab data={DATA} />
