@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { addLoan } from '@/modules/loans/state/loanSlice';
+import { uploadFile } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
 import SearchInput from '@/components/FormInputs/searchInput';
+import FileInput from '@/components/FormInputs/FileInput';
 import PlacesInput from '@/components/FormInputs/PlacesInput';
 import BackButton from '@/components/BackButton';
 import { useLoanDropdowns } from '@/utils/dropdownOptions';
@@ -54,6 +56,7 @@ const EmployeeLoans = () => {
         state: "",
         lga: "",
         referral: "",
+        bank_statement: null,
     });
 
     const [checked, setChecked] = useState(false);
@@ -78,7 +81,7 @@ const EmployeeLoans = () => {
     }, [dispatch, formData.nationality]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, type, files, value } = e.target;
         if (name == 'nationality' && value !== 'Nigeria') {
             setFormData((prev) => ({
                 ...prev,
@@ -89,7 +92,7 @@ const EmployeeLoans = () => {
         }
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
 
@@ -106,6 +109,7 @@ const EmployeeLoans = () => {
         if (!formData.address) errors.address = "Employer's address is required";
         if (!formData.state) errors.state = "State is required";
         if (!formData.lga) errors.lga = "LGA is required";
+        if (!formData.bank_statement) errors.bank_statement = "Bank statement is required";
         return errors;
     };
 
@@ -120,26 +124,40 @@ const EmployeeLoans = () => {
         };
 
         setSubmitted(true);
-        const loanData = {
-            amountRequested: formData.amount,
-            purpose: formData.loan_reason,
-            tenure: formData.duration,
-            repaymentInterval: formData.interval,
-
-            employerName: formData.employer_name,
-            employerPhoneNumber: formData.employer_phone,
-            employerGrade: formData.employer_grade,
-            monthlyIncome: formData.employer_income,
-            employerAddress: formData.address?.display_name || formData.address,
-            state: formData.state,
-            lga: formData.lga,
-
-            loanType: "employee",
-            userID: user._id,
-            refCode: formData.referral,
-        };
 
         try {
+            let documentUpload;
+            if (formData.bank_statement && formData.bank_statement.file instanceof File) {
+                documentUpload = await dispatch(uploadFile({ files: formData.bank_statement.file }));
+
+                if (!uploadFile.fulfilled.match(documentUpload)) {
+                    toast.error('Document Upload Failed',
+                        { description: documentUpload.payload.message }
+                    );
+                    return;
+                }
+            } else { documentUpload = formData.bank_statement };
+
+            const loanData = {
+                amountRequested: formData.amount,
+                purpose: formData.loan_reason,
+                tenure: formData.duration,
+                repaymentInterval: formData.interval,
+
+                employerName: formData.employer_name,
+                employerPhoneNumber: formData.employer_phone,
+                employerGrade: formData.employer_grade,
+                monthlyIncome: formData.employer_income,
+                employerAddress: formData.address?.display_name || formData.address,
+                state: formData.state,
+                lga: formData.lga,
+                bankStatement: documentUpload.payload?.data[0]?.url || documentUpload,
+
+                loanType: "employee",
+                userID: user._id,
+                refCode: formData.referral,
+            };
+
             const resultAction = await dispatch(addLoan(loanData));
             if (addLoan.fulfilled.match(resultAction)) {
                 toast.success("Loan application submitted successfully");
@@ -275,14 +293,25 @@ const EmployeeLoans = () => {
                     placeholder="No 8 Amadu Bello Way, Wuse"
                 /> */}
 
-                <TextInput
-                    label="Employer's address"
-                    name="address"
-                    className='text-sm'
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="No 8 Amadu Bello Way, Wuse"
-                />
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
+                    <TextInput
+                        label="Employer's address"
+                        name="address"
+                        className='text-sm'
+                        value={formData.address}
+                        onChange={handleChange}
+                        placeholder="No 8 Amadu Bello Way, Wuse"
+                    />
+
+                    <FileInput
+                        label='Bank Statement'
+                        name='bank_statement'
+                        className='text-sm'
+                        value={formData.bank_statement}
+                        onChange={handleChange}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
+                    />
+                </div>
 
                 <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <SearchInput

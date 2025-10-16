@@ -54,6 +54,7 @@ const FinanceLoans = () => {
         account_name: "",
         invoice: null,
         referral: "",
+        bank_statement: null,
     });
 
     const [checked, setChecked] = useState(false);
@@ -139,6 +140,7 @@ const FinanceLoans = () => {
         if (!formData.account_number) errors.account_number = "Vendor's account number is required";
         if (!formData.account_name) errors.account_name = "Vendor's account is not valid";
         if (!formData.bank_code) errors.bank_code = "Vendor's bank name is required";
+        if (!formData.bank_statement) errors.bank_statement = "Bank statement is required";
         return errors;
     };
 
@@ -146,36 +148,45 @@ const FinanceLoans = () => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
-            Object.values(validationErrors).map(error => {
-                toast.warning(error);
-            });
+            Object.values(validationErrors).forEach((error) => toast.warning(error));
             return;
-        };
+        }
 
         setSubmitted(true);
 
-        try {
-            let documentUpload;
-            if (formData.invoice && formData.invoice.file instanceof File) {
-                documentUpload = await dispatch(uploadFile({ files: formData.invoice.file }));
+        const handleFileUpload = async (fileInput, label = 'Document') => {
+            if (fileInput?.file instanceof File) {
+                const result = await dispatch(uploadFile({ files: fileInput.file }));
 
-                if (!uploadFile.fulfilled.match(documentUpload)) {
-                    toast.error('Document Upload Failed',
-                        { description: documentUpload.payload.message }
-                    );
-                    return;
+                if (!uploadFile.fulfilled.match(result)) {
+                    toast.error(`${label} upload failed`, {
+                        description: result.payload?.message || 'Something went wrong',
+                    });
+                    throw new Error(`${label} upload failed`);
                 }
-            } else { documentUpload = formData.invoice };
+
+                return result.payload.data[0].url;
+            }
+
+            return fileInput;
+        };
+
+        try {
+            const [invoiceUrl, statementUrl] = await Promise.all([
+                handleFileUpload(formData.bank_statement, 'Bank Statement'),
+                handleFileUpload(formData.invoice, 'Vendor Invoice'),
+            ]);
 
             const loanData = {
                 amountRequested: formData.amount,
                 purpose: formData.loan_reason,
                 tenure: formData.duration,
                 repaymentInterval: formData.interval,
-                vendorInvoice: documentUpload.payload?.data[0]?.url || documentUpload,
+                vendorInvoice: invoiceUrl,
                 vendorAccountNumber: formData.account_number,
                 vendorBankName: formData.bank_name,
                 vendorBankCode: formData.bank_code,
+                bankStatement: statementUrl,
                 loanType: "asset-finance",
                 userID: user._id,
                 refCode: formData.referral,
@@ -186,12 +197,11 @@ const FinanceLoans = () => {
                 toast.success("Loan application submitted successfully");
                 setIsModalOpen(true);
             } else {
-                toast.error(resultAction.payload.message);
-                return;
-            };
+                toast.error(resultAction.payload?.message || 'Something went wrong');
+            }
         } catch (error) {
-            toast.error("An error occured", {
-                description: error.message,
+            toast.error("An error occurred", {
+                description: error?.message || 'Something went wrong',
             });
         } finally {
             setSubmitted(false);
@@ -304,6 +314,31 @@ const FinanceLoans = () => {
                         }
                     </div>
 
+                    <FileInput
+                        label='Bank Statement'
+                        name='bank_statement'
+                        className='text-sm'
+                        value={formData.bank_statement}
+                        onChange={handleChange}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
+                    />
+                </div>
+
+                <div className='w-full flex flex-col md:flex-row items-start gap-3'>
+                    <div className='w-full'>
+                        <FileInput
+                            label='Invoice of item from vendor'
+                            name='invoice'
+                            value={formData.invoice}
+                            onChange={handleChange}
+                            accept=".pdf,image/*"
+                        />
+
+                        <p className='mt-2 text-sm text-secondary'>
+                            You need to upload an invoice of the asset you want to purchase which would contain the account details of the vendor of this asset.
+                        </p>
+                    </div>
+
                     <TextInput
                         label='Referral code (optional)'
                         name='referral'
@@ -312,19 +347,6 @@ const FinanceLoans = () => {
                         placeholder='000000'
                     />
                 </div>
-
-                <FileInput
-                    label='Invoice of item from vendor'
-                    name='invoice'
-                    className='w-full md:w-1/2'
-                    value={formData.invoice}
-                    onChange={handleChange}
-                    accept=".pdf,image/*"
-                />
-
-                <p className='md:w-1/2 mt-2 text-sm text-secondary'>
-                    You need to upload an invoice of the asset you want to purchase which would contain the account details of the vendor of this asset.
-                </p>
             </div>
 
             <div className='flex md:items-center gap-4 md:pr-8 text-sm text-secondary font-light'>

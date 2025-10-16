@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { addLoan } from '@/modules/loans/state/loanSlice';
+import { uploadFile } from '@/modules/kyc/state/kycSlice';
 import { getCookie } from '@/utils/cookieUtils';
 
 import TextInput from '@/components/FormInputs/TextInput';
 import SelectInput from '@/components/FormInputs/SelectInput';
+import FileInput from '@/components/FormInputs/FileInput';
 import BackButton from '@/components/BackButton';
 import { useLoanDropdowns } from '@/utils/dropdownOptions';
 
@@ -40,6 +42,7 @@ const PersonalLoans = () => {
         duration: "",
         interval: "",
         collateral: "",
+        bank_statement: null,
         referral: "",
         others: "",
     });
@@ -47,10 +50,10 @@ const PersonalLoans = () => {
     const [checked, setChecked] = useState(false);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, type, files, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: type === 'file' ? { file: files[0] } : value,
         }));
     };
 
@@ -62,6 +65,7 @@ const PersonalLoans = () => {
         if (!formData.duration) errors.duration = "Loan duration is required";
         if (!formData.interval) errors.interval = "Loan interval is required";
         if (!formData.collateral) errors.collateral = "Loan collateral is required";
+        if (!formData.bank_statement) errors.bank_statement = "Bank statement is required";
         return errors;
     };
 
@@ -76,18 +80,32 @@ const PersonalLoans = () => {
         };
 
         setSubmitted(true);
-        const loanData = {
-            amountRequested: formData.amount,
-            purpose: formData.loan_reason,
-            tenure: formData.duration,
-            repaymentInterval: formData.interval,
-            collateralID: formData.others || formData.collateral,
-            loanType: "personal",
-            userID: user._id,
-            refCode: formData.referral,
-        };
 
         try {
+            let documentUpload;
+            if (formData.bank_statement && formData.bank_statement.file instanceof File) {
+                documentUpload = await dispatch(uploadFile({ files: formData.bank_statement.file }));
+
+                if (!uploadFile.fulfilled.match(documentUpload)) {
+                    toast.error('Document Upload Failed',
+                        { description: documentUpload.payload.message }
+                    );
+                    return;
+                }
+            } else { documentUpload = formData.bank_statement };
+
+            const loanData = {
+                amountRequested: formData.amount,
+                purpose: formData.loan_reason,
+                tenure: formData.duration,
+                repaymentInterval: formData.interval,
+                collateralID: formData.others || formData.collateral,
+                bankStatement: documentUpload.payload?.data[0]?.url || documentUpload,
+                loanType: "personal",
+                userID: user._id,
+                refCode: formData.referral,
+            };
+
             const resultAction = await dispatch(addLoan(loanData));
             if (addLoan.fulfilled.match(resultAction)) {
                 toast.success("Loan application submitted successfully");
@@ -193,14 +211,25 @@ const PersonalLoans = () => {
                     />
                 </div>
 
-                <TextInput
-                    label='Referral code (optional)'
-                    name='referral'
-                    className='w-full md:w-1/2'
-                    value={formData.referral}
-                    onChange={handleChange}
-                    placeholder='000000'
-                />
+                <div className='w-full flex flex-col md:flex-row items-center gap-3'>
+                    <FileInput
+                        label='Bank Statement'
+                        name='bank_statement'
+                        className='text-sm'
+                        value={formData.bank_statement}
+                        onChange={handleChange}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
+                    />
+
+                    <TextInput
+                        label='Referral code (optional)'
+                        name='referral'
+                        className='text-sm'
+                        value={formData.referral}
+                        onChange={handleChange}
+                        placeholder='000000'
+                    />
+                </div>
             </div>
 
             <div className='flex md:items-center gap-4 text-sm pr-8 text-secondary font-light'>
