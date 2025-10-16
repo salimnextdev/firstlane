@@ -134,7 +134,6 @@ const SendMoneyModal = ({
         // const numericValue = value.replace(/[^0-9]/g, ''); // Force 
         if (name === 'amount') {
             const calculatedFee = calculateTransferFee(Number(value));
-            console.log(calculatedFee);
             setFee(calculatedFee);
         }
     };
