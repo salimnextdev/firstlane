@@ -91,6 +91,18 @@ export const repayLoan = createAsyncThunk(
   }
 );
 
+export const repayAllLoan = createAsyncThunk(
+  'loan/repayAllLoan',
+  async (loanID, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`${API_BASE_URL}/loan/process-repayment/${loanID}/all`, {});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const loanSlice = createSlice({
   name: 'loan',
   initialState: {
@@ -153,6 +165,19 @@ export const loanSlice = createSlice({
         state.loading = false;
       })
       .addCase(repayLoan.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(repayAllLoan.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(repayAllLoan.fulfilled, (state, action) => {
+        // state.loanDetails = action.payload.data[0] // Retrieve the a single loan from the response
+        state.loading = false;
+      })
+      .addCase(repayAllLoan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
