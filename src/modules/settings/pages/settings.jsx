@@ -145,10 +145,10 @@ const Settings = () => {
                 <p className="hidden md:block text-sm text-gray-500 font-light my-1">Make changes to your Firstlane experience</p>
             </div>
 
-            <div className='h-screen md:border border-gray rounded-xl'>
+            <div className='md:h-screen md:border border-gray rounded-xl'>
                 <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full h-full flex flex-col md:flex-row">
                     <div className={`${selected && 'hidden md:block'} md:border-r border-gray`}>
-                        <TabsList className="w-full md:w-[384px] h-full md:h-1/2 flex flex-col gap-2 md:px-5">
+                        <TabsList className="w-full md:w-[384px] h-full md:h-auto md:mt-4 flex flex-col gap-2 md:px-5">
                             {/* Profile Tab */}
                             <div
                                 onClick={() => setSelected(true)}
