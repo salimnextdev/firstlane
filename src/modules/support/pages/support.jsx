@@ -235,9 +235,9 @@ const Support = () => {
                 </button>
             </div>
 
-            <div className='h-[80vh] flex flex-col md:flex-row md:border border-gray rounded-xl'>
+            <div className='h-[80vh] h-auto flex flex-col md:flex-row md:border border-gray rounded-xl'>
 
-                <div className={`w-full md:w-6/12 h-full ${selected && 'hidden md:block'} overflow-y-auto hide-scrollbar space-y-2 md:p-3 md:border-r border-gray`}>
+                <div className={`w-full md:w-6/12 h-auto ${selected && 'hidden md:block'} overflow-y-auto hide-scrollbar space-y-2 md:p-3 md:border-r border-gray`}>
                     {loading ? <SupportListSkeleton /> :
                         supports.length > 0 ?
                             supports.map((item, index) => (
@@ -359,7 +359,7 @@ const Support = () => {
                                     </div>) :
                                     sortedConversations.length === 0 && !selected?.message ?
                                         (
-                                            <div className='w-full h-[40vh] md:mt-16 flex flex-col items-center justify-center gap-5 text-center font-light'>
+                                            <div className='w-full h-[40vh] h-full flex flex-col items-center justify-center gap-5 text-center font-light'>
                                                 {/* <div className="w-15 h-15 bg-[var(--firstlane-primary-light)] text-black rounded-full flex items-center justify-center">
                                                     <HiOutlineChatBubbleBottomCenterText className="w-8 h-8" />
                                                 </div> */}
