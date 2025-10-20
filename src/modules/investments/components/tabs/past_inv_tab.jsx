@@ -88,7 +88,8 @@ const PastInvestmentTab = ({ data }) => {
                                         </div>
                                     </div>
 
-                                    {/* {item?.withdrawn ?
+                                    {/* {item?.withdrawn ? */}
+                                    {!item?.withdrawalDate ?
                                         <button
                                             onClick={() => setIsOpen(true)}
                                             className="inline-flex items-center justify-center gap-3 px-4 h-9 md:h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
@@ -99,7 +100,7 @@ const PastInvestmentTab = ({ data }) => {
                                             className="px-4 h-9 md:h-8 text-sm text-[#E4E7EC] border border-[var(--firstlane-currency)] rounded-md cursor-pointer">
                                             Investment Withdraw
                                         </button>
-                                    } */}
+                                    }
                                 </div>
                             )
                         })}
