@@ -18,13 +18,18 @@ const SuccessModal = ({
     title = "Transfer successful",
     amount,
     name,
+    transaction,
     buttonCLoseText = "View reciept",
     buttonSuccessText = `Return to ${type === 'send' ? 'Wallets' : 'Investment'}`
 }) => {
     const navigate = useNavigate();
     const Goto = () => {
         onClose();
-        navigate(type === 'send' ? '/wallets' : '/investment')
+        if (buttonCLoseText === "View reciept") {
+            navigate(`/wallet/receipt/${transaction?._id}`);
+            return;
+        };
+        navigate(type === 'send' ? '/wallets' : '/investment');
     };
 
     return (

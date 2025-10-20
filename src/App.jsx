@@ -41,6 +41,7 @@ import KYCVerification from '@/modules/kyc/pages/kyc_layout';
 import ScrollToTop from '@/components/ScrollToTop';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from './hooks/ThemeContext';
+import ReceiptPage from './modules/wallets/components/receipt';
 
 function App() {
   return (
@@ -79,6 +80,8 @@ function App() {
           <Route path="/wallets" element={<Wallets />} />
           <Route path="/wallets/all" element={<AllWallets />} />
           <Route path="/wallets/all/:ID" element={<WalletDetails />} />
+          <Route path="/wallets/receipt/:ID" element={<ReceiptPage />} />
+
           <Route path="/support" element={<Support />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/kyc-verification" element={<KYCVerification />} />

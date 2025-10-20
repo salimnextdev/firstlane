@@ -31,6 +31,7 @@ const SendOTPModal = ({
     buttonSuccessText = "Confirm OTP"
 }) => {
     const dispatch = useDispatch();
+    const [transaction, setTransaction] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [submitted, setSubmitted] = useState(false);
@@ -77,6 +78,7 @@ const SendOTPModal = ({
             const resultAction = await dispatch(sendMoney(data));
             if (sendMoney.fulfilled.match(resultAction)) {
                 setIsModalOpen(true);
+                setTransaction(resultAction?.payload?.data?.[0] || resultAction?.payload?.data || resultAction?.payload);
                 onClose();
                 
                 // Clear formdata
@@ -102,6 +104,7 @@ const SendOTPModal = ({
                 type={type}
                 amount={formData.amount}
                 name={type === "send" ? formData.account_name : ""}
+                transaction={transaction}
             />
             <DialogContent className="z-50 md:p-6 md:px-8 bg-white border border-gray rounded-xl md:max-w-md mx-auto">
                 <div className="space-y-5">
