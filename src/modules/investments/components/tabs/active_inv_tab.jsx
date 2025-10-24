@@ -7,8 +7,9 @@ import FundAccountModal from '@/modules/investments/components/fundAccountModal'
 import InvestmentSkeletonCard from '../investmentSkeletonCard';
 import NoContent from '@/components/NoContent';
 import { calculateDurationDetails } from '@/utils/datetimeFormats';
+import { BsArrowRight } from 'react-icons/bs';
 
-const ActiveInvestmentTab = ({ data }) => {
+const ActiveInvestmentTab = ({ data, refreshInvest }) => {
     const { investments: investments, loading: loading, error: error } = useSelector((state) => state.investment);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -89,6 +90,15 @@ const ActiveInvestmentTab = ({ data }) => {
                                             {daySoFar + (daySoFar === 1 ? ' day' : ' days')}
                                         </p>
                                     </div>
+
+                                    {daySoFar >= duration &&
+                                        <button
+                                            onClick={() => refreshInvest(item?._id)}
+                                            className="inline-flex items-center justify-center gap-3 mt-5 px-4 h-9 md:h-8 bg-primary text-sm font-medium rounded-md cursor-pointer hover:bg-primary/90 transition">
+                                            <span>Refresh Status</span>
+                                            <BsArrowRight className="w-4 h-4" />
+                                        </button> 
+                                    }
                                 </div>
                             )
                         }
