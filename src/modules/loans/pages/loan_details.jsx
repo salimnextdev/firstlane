@@ -162,10 +162,11 @@ const LoanDetails = () => {
                                             )}
                                         </div>
 
-                                        <div className='w-full md:w-1/2 text-xs space-y-1'>
-                                            <p className='text-secondary'>Proof of payment</p>
+                                        {loanDetails?.proofOfPayment && (
+                                            <div className='w-full md:w-1/2 text-xs space-y-1'>
+                                                <p className='text-secondary'>Proof of payment</p>
 
-                                            {loanDetails?.proofOfPayment && (
+
                                                 <a
                                                     href={loanDetails.proofOfPayment}
                                                     target="_blank"
@@ -177,14 +178,14 @@ const LoanDetails = () => {
                                                     </span>
                                                     <Download className='cursor-pointer' />
                                                 </a>
-                                            )}
-                                        </div>
+                                            </div>
+                                        )}
                                     </>
                                 )}
 
                             </div>
 
-                            
+
                             <div className='flex flex-col md:flex-row md:items-center justify-between gap-5'>
                                 {(loanDetails?.loanType?.toLowerCase() === 'personal' || loanDetails?.loanType === 'business') &&
                                     <div className='w-full md:w-1/2 text-xs space-y-1'>
