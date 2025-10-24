@@ -199,7 +199,7 @@ const LoanDetails = () => {
                             </div>
                         </div>
 
-                        {loanDetails?.status?.toLowerCase() === 'approved' && (
+                        {['approved', 'overdue'].includes(loanDetails?.status?.toLowerCase()) && (
                             <div className='flex flex-col md:flex-row items-center gap-3 md:gap-5 mt-5'>
                                 <button
                                     className='w-full md:w-auto h-11 md:h-9 px-3 rounded-md bg-primary text-sm text-white cursor-pointer'
