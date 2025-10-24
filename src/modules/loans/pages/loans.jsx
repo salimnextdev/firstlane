@@ -99,15 +99,15 @@ const Loans = () => {
                     <h2 className="text-2xl font-semibold">Loans</h2>
                     <p className="text-sm text-gray-500 my-1 font-light">Track and manage your loans safely 💰</p>
                 </div>
-                <div className='w-1/4 flex items-center gap-3'>
+                <div className='flex items-center gap-3'> {/* w-1/4 */}
                     <button
                         onClick={() => navigate('/loans/applications')}
-                        className='w-full h-9 bg-[#D8D9EA] text-primary text-sm rounded-md cursor-pointer'
+                        className='w-36 h-9 bg-[#D8D9EA] text-primary text-sm rounded-md cursor-pointer'
                     >
                         Loan applications
                     </button>
 
-                    <SelectInput
+                    {/* <SelectInput
                         label=""
                         name="filter"
                         className='w-full !h-9 text-sm m-0 px-2 cursor-pointer'
@@ -120,12 +120,12 @@ const Loans = () => {
                             { label: "This Year", value: "year" },
                         ]}
                         placeholder="This month"
-                    />
+                    /> */}
                 </div>
             </div>
 
             <div className='md:hidden flex items-center justify-between'>
-                <SelectInput
+                {/* <SelectInput
                     label=""
                     name="filter"
                     className='w-[127px] !h-9 text-sm m-0 px-2 cursor-pointer'
@@ -138,8 +138,9 @@ const Loans = () => {
                         { label: "This Year", value: "year" },
                     ]}
                     placeholder="This month"
-                />
+                /> */}
 
+                <h2 className="text-xl md:text-2xl font-semibold">Loans</h2>
                 <button
                     onClick={() => navigate('/loans/applications')}
                     className='w-full flex items-center justify-end gap-1 text-sm'
@@ -148,6 +149,8 @@ const Loans = () => {
                     <BsArrowRight className='w-4 h-4 text-secondary' />
                 </button>
             </div>
+            
+            {/* <p className="text-sm text-gray-500 my-1 font-light">Track and manage your loans safely 💰</p> */}
 
             {/* Stat Cards */}
             <div className="relative">
