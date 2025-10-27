@@ -63,7 +63,7 @@ const Header = ({ isOpen, onClose }) => {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-white border-b border-gray-200 rounded-t-3xl">
+        <header className="sticky top-0 z-10 bg-white border-b border-gray-200 rounded-t-3xl">
             <NotificationPanel isOpen={notificationOpen} onClose={setNotificationOpen} />
 
             <div className='w-full h-[64px] px-5 flex items-center justify-between'>
