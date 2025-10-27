@@ -26,7 +26,7 @@ const Signup = () => {
     const [submitted, setSubmitted] = useState();
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
-        title: "",
+        title: "Mr",
         firstname: "",
         lastname: "",
         email: "",
