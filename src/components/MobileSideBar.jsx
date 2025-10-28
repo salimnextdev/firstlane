@@ -61,8 +61,9 @@ const MobileSideBar = ({ isOpen, onClose }) => {
                     <span className=''>Logout</span>
                 </div>
             </nav>
-
-            <div className="absolute bottom-4 left-4 w-11/12">
+        
+            {/* absolute bottom-45 md:bottom-4 left-4 */}
+            <div className="mt-5 pl-4 w-11/12">
                 <SyncInvestmentCard />
             </div>
         </div>
