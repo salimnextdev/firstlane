@@ -94,11 +94,6 @@ const Signup = () => {
                 });
                 setCookie('user', JSON.stringify({email: formData.email, userID: resultAction.payload.userID}))
                 navigate('/verify-account');
-            } else {
-                toast("", {
-                    description: resultAction.payload.message,
-                });
-                return;
             };
         } catch (error) {
             toast("An error occured", {

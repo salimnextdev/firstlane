@@ -49,6 +49,10 @@ api.interceptors.response.use(
         toast.error(message, {
           toastId: 'unauthorized-error',
         });
+      } else if (status === 406 && message.includes('duplicate')) {
+        toast.error('This email is already registered. Try logging in instead.', {
+          toastId: 'duplicate-error',
+        });
       } else {
         toast.error(message, {
           toastId: `api-error-${status}`,
