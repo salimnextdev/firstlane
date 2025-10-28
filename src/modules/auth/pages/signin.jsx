@@ -85,10 +85,7 @@ const Signin = () => {
             } else if (resultAction.payload?.message === 'Email not verified') {
                 setCookie('user', JSON.stringify({email: formData.email}))
                 navigate('/verify-account', { state: { from: '/signin' } })
-            } else {
-                toast(resultAction.payload?.message || 'An unexpected error occurred while loading the page.');
-                return;
-            };
+            }
         } catch (error) {
             toast("An error occured", {
                 description: resultAction.payload?.message || 'An unexpected error occurred while loading the page.',

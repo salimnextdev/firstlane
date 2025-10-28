@@ -46,7 +46,7 @@ api.interceptors.response.use(
       const message = error.response?.data?.message || 'An error occurred';
 
       if (status === 401) {
-        toast.error('Session expired. Please log in again.', {
+        toast.error(message, {
           toastId: 'unauthorized-error',
         });
       } else {
