@@ -191,7 +191,11 @@ const Dashboard = () => {
         <div className="relative space-y-4 md:space-y-6">
             <div className='flex flex-col lg:flex-row md:items-center justify-between'>
                 <div>
-                    <h2 className="text-xl md:text-[28px] font-bold">Welcome back, <span className='capitalize'>{userProfile?.firstname || 'Guest'}</span></h2>
+                    <h2 className="text-xl md:text-[28px] font-bold">
+                        Welcome back, <span className='capitalize'>
+                            {userProfile?.firstname || user?.fullname?.split(' ')?.[0] || 'Guest'}
+                        </span>
+                    </h2>
                     <p className="text-sm text-gray-500 my-1 font-light">Track, manage and invest your finances properly 💰</p>
                 </div>
                 <div className='hidden md:flex items-center gap-3 text-sm font-medium'>

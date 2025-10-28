@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile } from '@/modules/auth/state/authSlice';
+import { getCookie } from '@/utils/cookieUtils';
 
 import { ReactComponent as Dashboard } from '@/assets/icons/dashboard.svg';
 import { ReactComponent as Loan } from '@/assets/icons/loan.svg';
@@ -18,6 +19,7 @@ import LogoutModal from '@/components/LogoutModal';
 
 const Sidebar = () => {
     const dispatch = useDispatch();
+    const user = JSON.parse(getCookie('user') || null);
     const { userProfile: userProfile, loading: loading, error: error } = useSelector((state) => state.auth);
     useEffect(() => {
         if (!loading || !userProfile) {
@@ -104,8 +106,8 @@ const Sidebar = () => {
                             <span className='absolute bottom-1 right-0 w-2.5 h-2.5 bg-green-500 border border-gray-200 rounded-full'></span>
                         </div>
                         <div className="w-8/12 text-sm">
-                            <p className="font-medium">{userProfile?.fullname}</p>
-                            <p className="text-secondary font-light truncate">{userProfile?.email}</p>
+                            <p className="font-medium">{userProfile?.fullname || user?.fullname}</p>
+                            <p className="text-secondary font-light truncate">{userProfile?.email || user?.email}</p>
                         </div>
                     </div>
                     <p onClick={()=> setIsLogout(true)} className='w-2/12 cursor-pointer'>
