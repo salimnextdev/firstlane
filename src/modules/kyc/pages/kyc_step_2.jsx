@@ -56,9 +56,9 @@ const KYCStep2 = ({ prevStep, nextStep }) => {
         const errors = {};
         if (!formData.id_type) errors.id_type = "ID type is required";
         if (!formData.id_number) errors.id_number = "ID number is required";
-        if (!formData.issue_date) errors.issue_date = "Issue date is required";
+        // if (!formData.issue_date) errors.issue_date = "Issue date is required";
         // if (!formData.expiry_date) errors.expiry_date = "Expiry date is required"; 
-        // // Remove since not all ID might have expiring data e.g (NIN)
+        // // Remove since not all ID might have issuing date or expiring date e.g (NIN)
         if (!formData.bvn) errors.bvn = "BVN is required";
         if (!formData.document) errors.document = "Document is required";
         return errors;
