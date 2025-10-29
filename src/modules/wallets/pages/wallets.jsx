@@ -43,6 +43,7 @@ import { Loader } from 'lucide-react';
 import { formatDateTime } from '@/utils/datetimeFormats';
 import { filterTransactions } from '@/utils/filters';
 import { getTransactionType, verifyWalletTransaction } from '@/utils/genericFunc';
+import FundOptionsModal from '@/modules/investments/components/fundOptionsModal';
 
 const LIMIT = 10;
 
@@ -141,10 +142,15 @@ const Wallets = () => {
     return (
         <div className="relative space-y-3 md:space-y-6">
             {modal === "fund_wallet" &&
-                <FundAccountModal
-                    isOpen={isOpen}
-                    onClose={setIsOpen}
-                />
+                // <FundAccountModal
+                //     isOpen={isOpen}
+                //     onClose={setIsOpen}
+                // />
+                <FundOptionsModal
+                isOpen={isOpen}
+                onClose={setIsOpen}
+                option="bank_transfer"
+            />
             }
             {modal === "send_money" &&
                 <SendMoneyModal
