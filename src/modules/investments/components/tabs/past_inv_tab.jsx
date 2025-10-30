@@ -33,7 +33,7 @@ const PastInvestmentTab = ({ data }) => {
                         ) : data.map((item, index) => {
                             const investmentProfit = (item?.amount * (item?.investmentID?.interestRate || item?.interestRate)) / 100;
                             const investmentBalance = item?.amount + investmentProfit;
-                            const duration = parseInt(item?.duration || item?.investmentID?.duration[0].split(' ')[0]);
+                            const duration = parseInt(item?.duration?.split(' ')?.[0] || item?.investmentID?.duration[0]?.split(' ')?.[0]);
                             const lowDuration = (duration / 30) < 1;
                             const readableDuration = lowDuration
                                 ? 'less than 1 month'
@@ -46,7 +46,7 @@ const PastInvestmentTab = ({ data }) => {
                                 <div key={index} className='p-5 bg-light md:bg-white text-sm border border-gray rounded-xl'>
                                     <p className='text-xs md:text-sm text-secondary'>Investment Duration</p>
                                     <p className='text-lg font-medium space-x-1'>
-                                        <span>{item?.investmentID?.duration[0]}</span>
+                                        <span>{item?.duration || item?.investmentID?.duration[0]}</span>
                                         <span className='text-sm text-secondary font-light'>
                                             ({readableDuration})
                                         </span>
