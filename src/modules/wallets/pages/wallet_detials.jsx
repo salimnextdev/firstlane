@@ -43,9 +43,9 @@ const WalletDetails = () => {
                 <LoanSkeletonDetails /> :
                 <div className='p-5 border border-gray rounded-xl'>
                     <span className={`px-3 py-1 text-xs font-medium rounded-full capitalize
-                        ${transaction?.status === 'paid' ? 'bg-success' :
-                                    transaction?.status === 'pending' ? 'bg-warning' :
-                                        'bg-danger'}
+                        ${['completed', 'paid'].includes(transaction?.status?.toLowerCase()) ? 'bg-success' :
+                            transaction?.status === 'pending' ? 'bg-warning' :
+                                'bg-danger'}
                         `}>
                         {transaction?.status || '--'}
                     </span>
