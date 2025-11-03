@@ -140,6 +140,21 @@ const AccountFormModal = ({
 
     }, [formData.account_number, formData.bank_code, dispatch]);
 
+    useEffect(() => {
+        const selectedBank = bankOptions.find(
+            (option) => option.value === formData.bank_code
+        );
+        const newBankName = selectedBank ? selectedBank.label : ''; // Set to empty string if no match
+
+        // Only update if the bank_name has actually changed to avoid unnecessary re-renders
+        if (newBankName !== formData.bank_name) {
+            setFormData((prev) => ({
+                ...prev,
+                bank_name: newBankName,
+            }));
+        }
+    }, [formData.bank_code, bankOptions]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -250,7 +265,7 @@ const AccountFormModal = ({
                             data={bankOptions || []}
                             placeholder='Select bank'
                         />
-                        {!bankOptions &&
+                        {(!bankOptions || bankOptions?.length === 0) &&
                             <p
                                 onClick={refetch}
                                 className='mt-1 flex justify-end text-xs text-tertiary cursor-pointer'
