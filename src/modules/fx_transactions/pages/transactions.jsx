@@ -130,25 +130,40 @@ const FXTransactions = () => {
     }, [buyCurrency, sellCurrency, fx_rates]);
 
     const updateSell = (e) => {
-        const input = e.target.value;
-        const cleanValue = input.replace(/[^0-9.]/g, '');
-        const numericValue = parseFloat(cleanValue);
+        const { value, selectionStart } = e.target;
+        let cleanValue = value.replace(/[^0-9.]/g, '');
 
-        if (isNaN(numericValue)) {
-            setSell(0);
+        const dotCount = (cleanValue.match(/\./g) || []).length;
+        if (dotCount > 1) cleanValue = cleanValue.replace(/\.+$/, '');
+
+        const [intPart, decPart] = cleanValue.split('.');
+        if (decPart?.length > 2) cleanValue = `${intPart}.${decPart.slice(0, 2)}`;
+
+        if (cleanValue === '') {
+            setSell('');
             setBuy(0);
             return;
         }
 
-        setSell(numericValue);
-        const rateBuyValue = parseFloat(selectedRate?.baseCurrency?.value) || 0;
-        const rateSellValue = parseFloat(selectedRate?.targetCurrency?.value) || 0;
+        const numericValue = parseFloat(cleanValue);
+        if (!isNaN(numericValue)) {
+            const formatted = cleanValue.endsWith('.') ? cleanValue : numericValue.toFixed(2);
+            setSell(formatted);
 
-        if (option === 'Sell') {
-            setBuy((numericValue * rateSellValue).toFixed(2));
-        } else if (option === 'Buy') {
-            setBuy((numericValue / rateBuyValue).toFixed(2));
+            const rateBuyValue = parseFloat(selectedRate?.baseCurrency?.value) || 0;
+            const rateSellValue = parseFloat(selectedRate?.targetCurrency?.value) || 0;
+
+            if (option === 'Sell') {
+                setBuy((numericValue * rateSellValue).toFixed(2));
+            } else if (option === 'Buy') {
+                setBuy((numericValue / rateBuyValue).toFixed(2));
+            }
         }
+
+        // Restore cursor position to prevent jump
+        requestAnimationFrame(() => {
+            e.target.setSelectionRange(selectionStart, selectionStart);
+        });
     };
 
     const [filters, setFilters] = useState({
@@ -277,12 +292,15 @@ const FXTransactions = () => {
                                     </p>
                                     <input
                                         type="text"
-                                        name='sell'
-                                        className='w-full text-2xl md:text-[28px] font-semibold text-secondary focus:outline-none'
-                                        value={parseFloat(sell || 0).toFixed(2)}
-                                        onChange={(e) => updateSell(e)}
-                                    // disabled={buy == 0.00 || sell == 0.00}
+                                        name="sell"
+                                        className="w-full text-2xl md:text-[28px] font-semibold text-secondary focus:outline-none"
+                                        value={sell ?? ''}
+                                        onChange={updateSell}
+                                        placeholder="0.00"
+                                        inputMode="decimal"
+                                        // max="1000000"
                                     />
+
                                 </div>
                                 <CountrySelect
                                     currencies={currencies}
