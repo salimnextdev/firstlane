@@ -22,7 +22,8 @@ const SuccessModal = ({
 }) => {
     const navigate = useNavigate();
     const Goto = () => {
-        navigate('/fx-transactions');
+        const isMobile = window.innerWidth <= 768;
+        isMobile ? navigate('/fx-transactions/all') : navigate('/fx-transactions');
         onClose();
     }
     return (
