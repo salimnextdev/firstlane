@@ -159,7 +159,7 @@ const ConfirmModal = ({
 
                     {!activeAccount ?
                         <div className='flex flex-col md:flex-row md:items-center gap-1 md:gap-2 p-2 px-5 text-sm bg-danger rounded-md'>
-                            <span className='hidden md:inline w-8 h-8 flex-shrink-0 flex items-center justify-center border border-[var(--firstlane-danger)] rounded-full'>
+                            <span className='hidden w-8 h-8 flex-shrink-0 md:inline-flex items-center justify-center border border-[var(--firstlane-danger)] rounded-full'>
                                 <BiError className='w-5 h-5' />
                             </span>
                             <span className='leading-tight'>
