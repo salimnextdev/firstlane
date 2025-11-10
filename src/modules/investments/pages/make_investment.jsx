@@ -33,6 +33,38 @@ const MakeInvestment = () => {
     }, [dispatch]);
 
     const { options: intervalOptions, loading: intervalLoading } = useInvestmentIntervals();
+    
+    const raw = investment_plan?.duration?.[0]; // e.g. "1 day", "100 months"
+    const [num, unitRaw] = raw?.split(" ") ?? [];
+    const durationInDays = (() => {
+        if (!num || !unitRaw) return 0;
+        const n = parseFloat(num);
+        const unit = unitRaw.toLowerCase();
+        if (unit.includes("day")) return n;
+        if (unit.includes("week")) return n * 7;
+        if (unit.includes("month")) return n * 30;
+        if (unit.includes("year")) return n * 365;
+        return 0;
+    })();
+      
+    const filteredIntervals = intervalOptions.filter(option => {
+        const val = option.value.toLowerCase();
+        
+        if (durationInDays < 7) {
+            return ["daily"].includes(val);
+        } else if (durationInDays < 30) {
+            return ["daily", "weekly"].includes(val);
+        } else if (durationInDays < 365) {
+            return ["daily", "weekly", "monthly"].includes(val);
+        } else {
+            return ["daily", "weekly", "monthly", "yearly"].includes(val);
+        }
+    });
+
+    const order = ["daily", "weekly", "monthly", "yearly"];
+    const orderedIntervals = filteredIntervals.sort(
+        (a, b) => order.indexOf(a.value.toLowerCase()) - order.indexOf(b.value.toLowerCase())
+    );
 
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [customOpen, setCustomOpen] = useState(false);
@@ -253,7 +285,7 @@ const MakeInvestment = () => {
                     className='!mb-0 text-sm'
                     value={formData.interval}
                     onChange={handleChange}
-                    options={intervalOptions}
+                    options={orderedIntervals}
                     placeholder='Select repayment interval'
                 />
                 <p className="mt-2 mb-5 text-sm text-secondary font-light">
