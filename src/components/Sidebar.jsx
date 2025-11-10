@@ -28,6 +28,7 @@ const Sidebar = () => {
     }, [dispatch]);
 
     const [isLogout, setIsLogout] = useState(false);
+    const [imageError, setImageError] = useState(false);
 
     return (
         <div className="w-8 md:w-[272px] relative h-screen overflow-y-auto hidden md:block bg-white fixed left-0 top-0 z-10">
@@ -96,15 +97,25 @@ const Sidebar = () => {
 
                 <div className='flex items-center justify-between'>
                     <div className="w-10/12 flex items-center gap-3">
-                        <div className='relative w-[40px] h-[40px] bg-gray-300 rounded-full'>
-                            <img
-                                src={userProfile?.profileImage}
-                                alt=""
-                                className="w-full h-full rounded-full"
-                                crossOrigin='anonymous'
-                            />
-                            <span className='absolute bottom-1 right-0 w-2.5 h-2.5 bg-green-500 border border-gray-200 rounded-full'></span>
+                    <div className='relative w-[40px] h-[40px]'>
+                        <div className='w-full h-full flex items-center justify-center rounded-full bg-primary overflow-hidden'>
+                            {userProfile?.profileImage && !imageError ? (
+                                <img
+                                    src={userProfile?.profileImage}
+                                    alt="profile"
+                                    className="w-full h-full object-cover rounded-full"
+                                    crossOrigin="anonymous"
+                                    onError={() => setImageError(true)}
+                                />
+                                ) : (
+                                    <p className='text-white font-medium capitalize'>
+                                        {(userProfile?.fullname || user?.fullname)?.charAt(0) || '?'}
+                                    </p>
+                                )}
                         </div>
+                        <span className='absolute bottom-1 right-0 w-2.5 h-2.5 bg-green-500 border border-gray-200 rounded-full'></span>
+                    </div>
+
                         <div className="w-8/12 text-sm">
                             <p className="font-medium">{userProfile?.fullname || user?.fullname}</p>
                             <p className="text-secondary font-light truncate">{userProfile?.email || user?.email}</p>
