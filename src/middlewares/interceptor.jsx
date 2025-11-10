@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCookie } from '@/utils/cookieUtils';
+import { getCookie, removeCookie } from '@/utils/cookieUtils';
 import { toast } from 'sonner';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -49,6 +49,9 @@ api.interceptors.response.use(
         toast.error(message, {
           toastId: 'unauthorized-error',
         });
+      } else if (status === 401 && message.includes('jwt')) {
+        removeCookie('token');
+        removeCookie('user');
       } else if (status === 406 && message.includes('duplicate')) {
         toast.error('This email is already registered. Try logging in instead.', {
           toastId: 'duplicate-error',
