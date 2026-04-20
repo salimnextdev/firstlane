@@ -3,7 +3,12 @@ import CryptoJS from 'crypto-js';
 import { getCookie, removeCookie } from '@/utils/cookieUtils';
 import { toast } from 'sonner';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+// Single env-var toggle — set VITE_ENABLE_API_ENCRYPTION=false in .env to disable.
+// Defaults to true if the variable is missing so production stays encrypted.
+const IS_ENCRYPTION_ENABLED =
+  String(import.meta.env.VITE_ENABLE_API_ENCRYPTION ?? 'true').toLowerCase() !== 'false';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -72,9 +77,15 @@ api.interceptors.request.use(
     const methodsWithBody = ['post', 'put', 'patch', 'delete'];
     const isMultipart = typeof FormData !== 'undefined' && config.data instanceof FormData;
 
-    // Encrypt JSON request bodies by default.
-    // Opt out with { skipEncryption: true } (needed for endpoints expecting plain payloads).
-    if (methodsWithBody.includes(method) && config.data && !config.skipEncryption && !isMultipart) {
+    // Encrypt JSON request bodies when enabled globally.
+    // Opt out per-request with { skipEncryption: true } (e.g. login, file uploads).
+    if (
+      IS_ENCRYPTION_ENABLED &&
+      methodsWithBody.includes(method) &&
+      config.data &&
+      !config.skipEncryption &&
+      !isMultipart
+    ) {
       config.data = encryptJson(config.data);
     }
     return config;
@@ -89,18 +100,19 @@ const NETWORK_TOAST_COOLDOWN_MS = 10000; // 10 seconds
 
 api.interceptors.response.use(
   (response) => {
-    if (isEncryptedEnvelope(response.data)) {
+    // Decrypt response when enabled and the payload looks like an encrypted envelope.
+    if (IS_ENCRYPTION_ENABLED && isEncryptedEnvelope(response.data)) {
       try {
         response.data = decryptJson(response.data);
       } catch (decryptionError) {
-        // Keep response shape intact so callers can still handle backend errors gracefully.
         console.error('[api] Failed to decrypt success response', decryptionError);
       }
     }
     return response;
   },
   (error) => {
-    if (error?.response?.data && isEncryptedEnvelope(error.response.data)) {
+    // Also try to decrypt error response bodies so error messages surface correctly.
+    if (IS_ENCRYPTION_ENABLED && error?.response?.data && isEncryptedEnvelope(error.response.data)) {
       try {
         error.response.data = decryptJson(error.response.data);
       } catch (decryptionError) {
