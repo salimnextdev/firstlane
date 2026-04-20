@@ -6,7 +6,8 @@ export const fetchAdminSettings = createAsyncThunk(
   'admin_settings/fetchAdminSettings',
   async (_, { rejectWithValue }) => {
     try {
-        const response = await api.get(`${API_BASE_URL}/admin/settings`);
+        // Public settings endpoint now returns a single settings object in `data`.
+        const response = await api.get(`${API_BASE_URL}/settings`);
         return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -29,7 +30,9 @@ export const adminSettingsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAdminSettings.fulfilled, (state, action) => {
-        state.settings = action.payload.data?.[0] // Retrieve the all admin settings from the response
+        const payloadData = action.payload?.data;
+        // Backward-compatible with previous array shape and new object shape.
+        state.settings = Array.isArray(payloadData) ? payloadData[0] : payloadData;
         state.loading = false;
       })
       .addCase(fetchAdminSettings.rejected, (state, action) => {

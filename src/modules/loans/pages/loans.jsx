@@ -3,9 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLoanStats } from '@/modules/loans/state/loanStatsSlice';
+import { fetchAdminSettings } from '@/modules/settings/state/adminSettingsSlice';
 import { getCookie } from '@/utils/cookieUtils';
-import api from '@/middlewares/interceptor';
-import { API_BASE_URL } from '@/middlewares/api';
 
 import { BsArrowRight } from 'react-icons/bs';
 
@@ -45,47 +44,29 @@ const Loans = () => {
     const navigate = useNavigate();
     const user = JSON.parse(getCookie('user') || null);
     const { stats: stats, loading: loading } = useSelector((state) => state.loan_stats);
+    const { settings } = useSelector((state) => state.admin_settings);
     useEffect(() => {
         if (!loading) {
             dispatch(fetchLoanStats(user?._id));
         }
     }, [dispatch, loading, user?._id]);
 
-    const [loanVisibility, setLoanVisibility] = useState({
-        enablePersonalLoan: true,
-        enableEmployeeLoan: true,
-        enableAssetFinanceLoan: true,
-        enableBusinessLoan: true,
-    });
-
     useEffect(() => {
-        let cancelled = false;
+        dispatch(fetchAdminSettings());
+    }, [dispatch]);
 
-        (async () => {
-            try {
-                const response = await api.get(`${API_BASE_URL}/admin/settings`);
-                const settings = response?.data?.data?.loanSettings || response?.data?.loanSettings;
-
-                if (!settings || cancelled) return;
-
-                // Keep defaults as true unless backend explicitly sends booleans.
-                // This prevents accidental hiding when settings are partially configured.
-                setLoanVisibility((prev) => ({
-                    ...prev,
-                    ...(typeof settings.enablePersonalLoan === 'boolean' && { enablePersonalLoan: settings.enablePersonalLoan }),
-                    ...(typeof settings.enableEmployeeLoan === 'boolean' && { enableEmployeeLoan: settings.enableEmployeeLoan }),
-                    ...(typeof settings.enableAssetFinanceLoan === 'boolean' && { enableAssetFinanceLoan: settings.enableAssetFinanceLoan }),
-                    ...(typeof settings.enableBusinessLoan === 'boolean' && { enableBusinessLoan: settings.enableBusinessLoan }),
-                }));
-            } catch {
-                // Non-blocking: if settings endpoint fails, keep all cards visible.
-            }
-        })();
-
-        return () => {
-            cancelled = true;
-        };
-    }, []);
+    const loanSettings = settings?.loanSettings || {};
+    // Default each flag to true so loan cards remain visible if a flag is missing.
+    const visibleFlags = {
+        enablePersonalLoan:
+            typeof loanSettings.enablePersonalLoan === 'boolean' ? loanSettings.enablePersonalLoan : true,
+        enableEmployeeLoan:
+            typeof loanSettings.enableEmployeeLoan === 'boolean' ? loanSettings.enableEmployeeLoan : true,
+        enableAssetFinanceLoan:
+            typeof loanSettings.enableAssetFinanceLoan === 'boolean' ? loanSettings.enableAssetFinanceLoan : true,
+        enableBusinessLoan:
+            typeof loanSettings.enableBusinessLoan === 'boolean' ? loanSettings.enableBusinessLoan : true,
+    };
 
     const loanData = [
         {
@@ -248,10 +229,10 @@ const Loans = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mt-2'>
                     {data
                         .filter((item) => {
-                            if (item.key === 'personal') return loanVisibility.enablePersonalLoan;
-                            if (item.key === 'employee') return loanVisibility.enableEmployeeLoan;
-                            if (item.key === 'assetFinance') return loanVisibility.enableAssetFinanceLoan;
-                            if (item.key === 'business') return loanVisibility.enableBusinessLoan;
+                            if (item.key === 'personal') return visibleFlags.enablePersonalLoan;
+                            if (item.key === 'employee') return visibleFlags.enableEmployeeLoan;
+                            if (item.key === 'assetFinance') return visibleFlags.enableAssetFinanceLoan;
+                            if (item.key === 'business') return visibleFlags.enableBusinessLoan;
                             return true;
                         })
                         .map((item, index) => (
