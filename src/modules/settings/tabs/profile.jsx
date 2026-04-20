@@ -232,7 +232,7 @@ const Profile = () => {
                                 value={formData.title}
                                 onChange={handleChange}
                                 options={titleOptions}
-                                placeholder="Mr"
+                                placeholder={formData.title || "Mr"}
                             />
                         </div>
                         <TextInput
@@ -241,7 +241,7 @@ const Profile = () => {
                             className='w-full text-sm'
                             value={formData.firstname}
                             onChange={handleChange}
-                            placeholder="Adam"
+                            placeholder={formData.firstname || "Adam"}
                         />
                     </div>
                     <TextInput
@@ -250,7 +250,7 @@ const Profile = () => {
                         className='text-sm'
                         value={formData.lastname}
                         onChange={handleChange}
-                        placeholder="Jude"
+                        placeholder={formData.lastname || "Jude"}
                     />
                 </div>
 
@@ -262,7 +262,7 @@ const Profile = () => {
                         className='text-sm bg-currency'
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="adam.jude@mail.com"
+                        placeholder={formData.email || "adam.jude@mail.com"}
                         disabled
                     />
                     <TextInput
@@ -271,7 +271,7 @@ const Profile = () => {
                         className='text-sm'
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="08000000000"
+                        placeholder={formData.phone || "08000000000"}
                     />
                 </div>
 
@@ -282,7 +282,7 @@ const Profile = () => {
                             name="date_of_birth"
                             value={formData.date_of_birth}
                             onChange={handleDateOfBirthChange}
-                            placeholder='DD / MM / YY'
+                            placeholder={formData.date_of_birth || 'DD / MM / YY'}
                         />
                         <SelectInput
                             label="Gender"
@@ -291,7 +291,7 @@ const Profile = () => {
                             value={formData.gender}
                             onChange={handleChange}
                             options={genderOptions}
-                            placeholder="Select Gender"
+                            placeholder={formData.gender || "Select Gender"}
                         />
                     </div>
 
@@ -302,7 +302,7 @@ const Profile = () => {
                         value={formData.marital_status}
                         onChange={handleChange}
                         options={maritalStatusOptions}
-                        placeholder="Select Marital Status"
+                        placeholder={formData.marital_status || "Select Marital Status"}
                     />
                 </div>
 
@@ -323,7 +323,7 @@ const Profile = () => {
                     className='text-sm'
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder="No 8 Amadu Bello Way, Wuse"
+                    placeholder={formData.address || "No 8 Amadu Bello Way, Wuse"}
                 />
 
                 <div className='w-full flex flex-col md:flex-row items-center gap-3'>
@@ -334,7 +334,7 @@ const Profile = () => {
                         value={formData.nationality}
                         onChange={handleChange}
                         data={countriesList || []}
-                        placeholder="Select Nationality"
+                        placeholder={formData.nationality || "Select Nationality"}
                     />
 
                     <div className='w-full flex items-center gap-3'>
