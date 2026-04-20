@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
@@ -9,32 +9,46 @@ import logo from '@/assets/images/logo.png';
 
 import OTPInput from '@/components/FormInputs/OTPInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
-<<<<<<< HEAD
 import { API_BASE_URL } from '@/middlewares/api';
-=======
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
-<<<<<<< HEAD
-=======
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 const VerifyAccount = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const prevPage = location?.state?.from;
-<<<<<<< HEAD
-    const locationUser = location?.state?.email
-        ? { email: location.state.email, userID: location?.state?.userID }
-        : null;
-    const cookieUser = JSON.parse(getCookie('user') || null);
-    const pendingVerificationUser = JSON.parse(getCookie('pendingVerificationUser') || null);
-    
+    const locationUser = useMemo(() => (
+        location?.state?.email
+            ? { email: location.state.email, userID: location?.state?.userID }
+            : null
+    ), [location?.state?.email, location?.state?.userID]);
+    const cookieUser = useMemo(() => {
+        try {
+            return JSON.parse(getCookie('user') || 'null');
+        } catch {
+            return null;
+        }
+    }, []);
+    const pendingVerificationUser = useMemo(() => {
+        try {
+            return JSON.parse(getCookie('pendingVerificationUser') || 'null');
+        } catch {
+            return null;
+        }
+    }, []);
+
     const user = cookieUser || pendingVerificationUser || locationUser;
+    const token = getCookie('token') || null;
+
+    // Hooks must always run in the same order; declare them before conditional returns.
+    const [userID, setUserID] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+    const [OTP, setOTP] = useState();
+    const [countdown, setCountdown] = useState(50);
+    const [resend, setResend] = useState(false);
 
     useEffect(() => {
         if (locationUser) {
@@ -46,23 +60,6 @@ const VerifyAccount = () => {
         }
     }, [cookieUser, locationUser]);
 
-    if (!user?.email) {
-=======
-
-    const user = JSON.parse(getCookie('user') || null);
-    if (!user) {
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
-        return <Navigate to="/signup" />
-    };
-
-    // Redirect to dashboard, when user is loggedIn
-    const token = getCookie('token') || null;
-    if (token) {
-        return <Navigate to="/dashboard" />
-    };
-
-    // Manually refetch the userID because it is needed to resendOTP code to customer.
-    const [userID, setUserID] = useState('');
     useEffect(() => {
         if (prevPage) {
           (async () => {
@@ -71,20 +68,18 @@ const VerifyAccount = () => {
               const { data } = await res.json();
               data?.[0]?._id && setUserID(data[0]._id);
             } catch (err) {
-              toast.error('Failed to fetch users ID:', err);
+              toast.error('Failed to fetch user ID', {
+                description: err?.message || 'Please try again.',
+              });
             }
           })();
         }
-      }, [prevPage]);
+      }, [prevPage, user?.email]);
 
-    const [submitted, setSubmitted] = useState(false);
-    const [OTP, setOTP] = useState();
     const handleChange = (e) => {
         setOTP(e.target.value);
     };
 
-    const [countdown, setCountdown] = useState(50);
-    const [resend, setResend] = useState(false);
     useEffect(() => {
         if (countdown === 0) {
             setResend(true);
@@ -97,6 +92,15 @@ const VerifyAccount = () => {
 
         return () => clearTimeout(timer);
     }, [countdown]);
+
+    if (!user?.email) {
+        return <Navigate to="/signup" />
+    };
+
+    // Redirect to dashboard, when user is loggedIn
+    if (token) {
+        return <Navigate to="/dashboard" />
+    };
 
     const handleResend = async () => {
         if (!resend && !prevPage) return;
@@ -111,11 +115,7 @@ const VerifyAccount = () => {
 
         const data = {
             "userID": user?.userID ?? userID ?? '',
-<<<<<<< HEAD
             "code": (OTP || '').replace('-', ''),
-=======
-            "code": OTP.replace('-', ''),
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
             "type": "EmailVerification"
         };
 
@@ -123,10 +123,7 @@ const VerifyAccount = () => {
             const resultAction = await dispatch(verifyAuthentication(data));
             if (verifyAuthentication.fulfilled.match(resultAction)) {
                 removeCookie('user');
-<<<<<<< HEAD
                 removeCookie('pendingVerificationUser');
-=======
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
                 setCookie('token', resultAction.payload?.access_token);
                 setCookie('user', JSON.stringify(resultAction.payload?.data));
                 navigate('/account-success');

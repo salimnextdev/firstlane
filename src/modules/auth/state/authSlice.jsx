@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import api from '@/middlewares/interceptor';
 import { setCookie, getCookie, removeCookie } from '@/utils/cookieUtils';
-<<<<<<< HEAD
 import { API_BASE_URL } from '@/middlewares/api';
 
 /**
@@ -22,10 +20,6 @@ function normalizeProfileResponse(body) {
   }
   return body;
 }
-=======
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -43,7 +37,11 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${API_BASE_URL}/auth/login`, credentials);
+      // Login endpoint expects plain credentials request on some deployments.
+      // Keep request body unencrypted while still allowing encrypted responses.
+      const response = await api.post(`${API_BASE_URL}/auth/login`, credentials, {
+        skipEncryption: true,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -176,11 +174,7 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get(`${API_BASE_URL}/auth/profile`);
-<<<<<<< HEAD
       return normalizeProfileResponse(response.data);
-=======
-      return response.data;
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -192,11 +186,7 @@ export const updateUserProfile = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.patch(`${API_BASE_URL}/auth/profile`, credentials);
-<<<<<<< HEAD
       return normalizeProfileResponse(response.data);
-=======
-      return response.data;
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -267,7 +257,6 @@ export const authSlice = createSlice({
         state.error = action.payload;
       })
 
-<<<<<<< HEAD
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         const next = action.payload;
         if (next && typeof next === 'object') {
@@ -277,8 +266,6 @@ export const authSlice = createSlice({
         }
       })
 
-=======
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
       .addCase(addBankAccount.pending, (state) => {
         state.loading = true;
         state.error = null;

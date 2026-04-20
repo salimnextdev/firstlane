@@ -92,7 +92,6 @@ const Signup = () => {
                 toast("Account created successfully", {
                     description: resultAction.payload.message,
                 });
-<<<<<<< HEAD
                 const pendingVerificationUser = {
                     email: formData.email,
                     userID: resultAction.payload?.userID,
@@ -115,14 +114,6 @@ const Signup = () => {
         } catch (error) {
             toast("An error occured", {
                 description: error?.message || 'An unexpected error occurred while creating your account.',
-=======
-                setCookie('user', JSON.stringify({email: formData.email, userID: resultAction.payload.userID}))
-                navigate('/verify-account');
-            };
-        } catch (error) {
-            toast("An error occured", {
-                description: resultAction.payload.message,
->>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
             });
         } finally {
             setSubmitted(false);
