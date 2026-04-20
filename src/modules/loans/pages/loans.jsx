@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLoanStats } from '@/modules/loans/state/loanStatsSlice';
 import { getCookie } from '@/utils/cookieUtils';
+import api from '@/middlewares/interceptor';
+import { API_BASE_URL } from '@/middlewares/api';
 
-import SelectInput from '@/components/FormInputs/SelectInput';
 import { BsArrowRight } from 'react-icons/bs';
 
 import { ReactComponent as EyeOpen } from '@/assets/icons/eye-open.svg';
@@ -13,21 +14,25 @@ import { ReactComponent as EyeClose } from '@/assets/icons/eye-close.svg';
 
 const data = [
     {
+        key: 'personal',
         title: "Personal Loans",
         description: "This is a perfect loan for individuals who have a need or two to meet and would want to take a loan to meet those needs.",
         link: "/loans/personal-loans"
     },
     {
+        key: 'business',
         title: "Business Loans",
         description: "This is a perfect loan for businesses, SMEs who need loans to boost capital and strengthen productivity.",
         link: "/loans/business-loans"
     },
     {
+        key: 'employee',
         title: "Employee Loans",
         description: "This is a perfect loan for employees of organization who would need loans to take care of needs around them.",
         link: "/loans/employee-loans"
     },
     {
+        key: 'assetFinance',
         title: "Asset Finance Loans",
         description: "This is a perfect loan for individuals or business looking to get a loan for a particular asset that would be profit-generating.",
         link: "/loans/finance-loans"
@@ -35,15 +40,52 @@ const data = [
 ]
 
 const Loans = () => {
+    const { useState, useEffect, useRef } = React;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = JSON.parse(getCookie('user') || null);
-    const { stats: stats, loading: loading, error: error } = useSelector((state) => state.loan_stats);
+    const { stats: stats, loading: loading } = useSelector((state) => state.loan_stats);
     useEffect(() => {
         if (!loading) {
             dispatch(fetchLoanStats(user?._id));
         }
     }, [dispatch, loading, user?._id]);
+
+    const [loanVisibility, setLoanVisibility] = useState({
+        enablePersonalLoan: true,
+        enableEmployeeLoan: true,
+        enableAssetFinanceLoan: true,
+        enableBusinessLoan: true,
+    });
+
+    useEffect(() => {
+        let cancelled = false;
+
+        (async () => {
+            try {
+                const response = await api.get(`${API_BASE_URL}/admin/settings`);
+                const settings = response?.data?.data?.loanSettings || response?.data?.loanSettings;
+
+                if (!settings || cancelled) return;
+
+                // Keep defaults as true unless backend explicitly sends booleans.
+                // This prevents accidental hiding when settings are partially configured.
+                setLoanVisibility((prev) => ({
+                    ...prev,
+                    ...(typeof settings.enablePersonalLoan === 'boolean' && { enablePersonalLoan: settings.enablePersonalLoan }),
+                    ...(typeof settings.enableEmployeeLoan === 'boolean' && { enableEmployeeLoan: settings.enableEmployeeLoan }),
+                    ...(typeof settings.enableAssetFinanceLoan === 'boolean' && { enableAssetFinanceLoan: settings.enableAssetFinanceLoan }),
+                    ...(typeof settings.enableBusinessLoan === 'boolean' && { enableBusinessLoan: settings.enableBusinessLoan }),
+                }));
+            } catch {
+                // Non-blocking: if settings endpoint fails, keep all cards visible.
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const loanData = [
         {
@@ -62,8 +104,6 @@ const Loans = () => {
             amount: stats?.totalLoanDue || 0.00,
         },
     ];
-
-    const [filter, setFilter] = useState('');
 
     const [statsView, setStatsView] = useState({
         collected: true,
@@ -160,7 +200,7 @@ const Loans = () => {
                     onScroll={handleScroll}
                     className="flex md:grid md:grid-cols-3 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth hide-scrollbar px-2 md:px-0"
                 >
-                    {loanData.map((item, index) => (
+                    {loanData.map((item) => (
                         <div
                             key={item.key}
                             className="min-w-[85%] md:min-w-0 snap-start bg-light p-5 space-y-3 border border-gray rounded-xl"
@@ -206,7 +246,15 @@ const Loans = () => {
             <div>
                 <h2 className="text-base md:text-lg md:text-tertiary">Loan Types</h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mt-2'>
-                    {data.map((item, index) => (
+                    {data
+                        .filter((item) => {
+                            if (item.key === 'personal') return loanVisibility.enablePersonalLoan;
+                            if (item.key === 'employee') return loanVisibility.enableEmployeeLoan;
+                            if (item.key === 'assetFinance') return loanVisibility.enableAssetFinanceLoan;
+                            if (item.key === 'business') return loanVisibility.enableBusinessLoan;
+                            return true;
+                        })
+                        .map((item, index) => (
                         <div key={index} className='px-3 md:px-5 py-3 space-y-3 bg-light text-sm border border-gray rounded-xl'>
                             <p className='text-base md:text-2xl font-medium'>{item.title}</p>
                             <p className='text-sm md:text-base text-secondary font-light'>
