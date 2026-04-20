@@ -1,0 +1,42 @@
+#root {
+  margin: 0;
+	padding: 0;
+}
+
+/* For Chrome, Safari, and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge, and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Hide arrows for Chrome, Safari, Edge, Opera */
+input[type='number'].no-spinner::-webkit-outer-spin-button,
+input[type='number'].no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows for Firefox */
+input[type='number'].no-spinner {
+  -moz-appearance: textfield;
+}
+
+
+/* 
+  Altering Shadcn toast UI library.
+  This make the rest of the UI clickable even when a toast is active
+*/
+/* Allow clicks through the toast container */
+[data-sonner-toaster] {
+  pointer-events: none !important;
+}
+
+/* But still allow clicking inside each toast */
+[data-sonner-toast] {
+  pointer-events: auto !important;
+}
