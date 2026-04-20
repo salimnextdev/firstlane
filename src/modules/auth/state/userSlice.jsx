@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import api from '@/middlewares/interceptor';
+<<<<<<< HEAD
 import { API_BASE_URL } from '@/middlewares/api';
+=======
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 export const fetchNotifications = createAsyncThunk(
     'user/fetchNotifications',

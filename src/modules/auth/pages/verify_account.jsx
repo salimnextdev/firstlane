@@ -9,17 +9,25 @@ import logo from '@/assets/images/logo.png';
 
 import OTPInput from '@/components/FormInputs/OTPInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
+<<<<<<< HEAD
 import { API_BASE_URL } from '@/middlewares/api';
+=======
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
 
+<<<<<<< HEAD
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
 
 const VerifyAccount = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const prevPage = location?.state?.from;
+<<<<<<< HEAD
     const locationUser = location?.state?.email
         ? { email: location.state.email, userID: location?.state?.userID }
         : null;
@@ -39,6 +47,11 @@ const VerifyAccount = () => {
     }, [cookieUser, locationUser]);
 
     if (!user?.email) {
+=======
+
+    const user = JSON.parse(getCookie('user') || null);
+    if (!user) {
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
         return <Navigate to="/signup" />
     };
 
@@ -98,7 +111,11 @@ const VerifyAccount = () => {
 
         const data = {
             "userID": user?.userID ?? userID ?? '',
+<<<<<<< HEAD
             "code": (OTP || '').replace('-', ''),
+=======
+            "code": OTP.replace('-', ''),
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
             "type": "EmailVerification"
         };
 
@@ -106,7 +123,10 @@ const VerifyAccount = () => {
             const resultAction = await dispatch(verifyAuthentication(data));
             if (verifyAuthentication.fulfilled.match(resultAction)) {
                 removeCookie('user');
+<<<<<<< HEAD
                 removeCookie('pendingVerificationUser');
+=======
+>>>>>>> c3475d0ff9d7decab88c0ba8afac106ed1b4f1f4
                 setCookie('token', resultAction.payload?.access_token);
                 setCookie('user', JSON.stringify(resultAction.payload?.data));
                 navigate('/account-success');
