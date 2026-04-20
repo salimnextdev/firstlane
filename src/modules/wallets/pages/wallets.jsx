@@ -20,7 +20,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from '@/components/ui/checkbox';
 
 import { IoIosRefresh, IoIosSearch } from 'react-icons/io';
 import { BsArrowRight } from 'react-icons/bs';
@@ -337,9 +336,6 @@ const Wallets = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-light border-b border-gray">
-                                        <TableHead className="w-12 p-4">
-                                            <Checkbox className="!accent-[var(--firstlane-primary)]" />
-                                        </TableHead>
                                         <TableHead className="font-medium text-xs">Amount</TableHead>
                                         <TableHead className="font-medium text-xs">Payment type</TableHead>
                                         <TableHead className="font-medium text-xs">Date & time</TableHead>
@@ -354,9 +350,6 @@ const Wallets = () => {
                                         ))
                                     ) : transactions.map((transaction, index) => (
                                         <TableRow key={index} className="text-sm border-b border-gray">
-                                            <TableCell className="p-4">
-                                                <Checkbox />
-                                            </TableCell>
                                             <TableCell className="font-light">
                                                 ₦{transaction?.amount?.toLocaleString(undefined, {
                                                     minimumFractionDigits: 2,

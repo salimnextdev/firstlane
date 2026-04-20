@@ -5,10 +5,6 @@ import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 const LoanSkeletonTable = () => {
   return (
     <TableRow className="text-sm font-light border-b border-gray-200 last:border-b-0 animate-pulse">
-      {/* Checkbox column */}
-      <TableCell className="px-6 py-4">
-        <Skeleton className="h-4 w-4 bg-gray-200 rounded-sm" />
-      </TableCell>
       {/* Amount Requested column */}
       <TableCell className="px-6 py-4">
         <Skeleton className="h-5 w-24 bg-gray-200 rounded-md" />

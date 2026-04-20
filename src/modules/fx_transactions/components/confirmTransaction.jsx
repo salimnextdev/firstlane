@@ -196,9 +196,9 @@ const ConfirmModal = ({
                                     <div className='w-full md:w-1/2 flex items-center justify-between'>
                                         <div className='space-y-1 text-xs'>
                                             <p>ACH routing</p>
-                                            <p className='text-base font-medium'>{activeAccount?.ACHRouting || 'N/A'}</p>
+                                            <p className='text-base font-medium'>{activeAccount?.ACHrouting || 'N/A'}</p>
                                         </div>
-                                        <Copy onClick={() => copyToClipboard(activeAccount?.ACHRouting || 'N/A')} className="cursor-pointer" />
+                                        <Copy onClick={() => copyToClipboard(activeAccount?.ACHrouting || 'N/A')} className="cursor-pointer" />
                                     </div>
                                 </div>
                                 <div className='w-full flex flex-col md:flex-row md:items-center gap-3 md:gap-8'>

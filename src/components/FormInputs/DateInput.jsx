@@ -20,6 +20,19 @@ const DateInput = ({
 }) => {
   const [open, setOpen] = useState(false); // control popover open state
 
+  // Value can come from APIs as an ISO string or from the picker as Date.
+  // Normalize once so display/selection/default month all stay in sync.
+  const normalizedValue =
+    value instanceof Date
+      ? value
+      : typeof value === "string" && value
+        ? new Date(value)
+        : undefined;
+  const safeValue =
+    normalizedValue && !Number.isNaN(normalizedValue.getTime())
+      ? normalizedValue
+      : undefined;
+
   const handleSelect = (selectedDate) => {
     onChange && onChange(selectedDate);
     setOpen(false);
@@ -56,18 +69,21 @@ const DateInput = ({
             className={`w-full h-12 mt-1 px-5 flex items-center justify-between text-left border border-gray-200 rounded text-sm font-light cursor-pointer focus:outline-none ${!value ? 'text-gray-400' : ''} ${className}`}
             {...rest}
           >
-            {value ? format(value, "PPP") : placeholder}
+            {safeValue ? format(safeValue, "PPP") : placeholder}
             <SlArrowDown className="ml-2 text-[10px] font-medium" />
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 bg-white border border-gray-200" align="start">
           <Calendar
             mode="single"
-            selected={value}
+            selected={safeValue}
             onSelect={handleSelect}
             className={"w-full font-light"}
             captionLayout="dropdown-buttons"
             initialFocus
+            // Open calendar on the selected date's month when already set.
+            // Falls back to today's month when no date has been chosen yet.
+            defaultMonth={safeValue || new Date()}
             fromDate={minDate}
             toDate={maxDate} 
             classNames={{

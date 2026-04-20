@@ -5,10 +5,6 @@ import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 const WalletSkeletonTable = () => {
     return (
         <TableRow className="text-sm border-b border-gray-200 last:border-b-0 animate-pulse">
-            {/* Checkbox column */}
-            <TableCell className="w-12 flex-shrink-0 p-4">
-                <Skeleton className="h-4 w-4 bg-gray-200 rounded-sm" />
-            </TableCell>
             {/* Amount column */}
             <TableCell className="flex-1">
                 <Skeleton className="h-5 w-24 bg-gray-200 rounded-md" />
