@@ -40,9 +40,6 @@ const LoanApplications = () => {
     const { searchTerm } = useSelector((state) => state.search);
     const { loans: loans, metaData: metaData, loading: loading, error: error } = useSelector((state) => state.loan);
 
-    const [showDropdown, setShowDropdown] = useState(null);
-    const [selectedInvestments, setSelectedInvestments] = useState([]);
-
     // const [fLoans, setFilteredLoans] = useState([]);
     // useEffect(()=> {
     //     setFilteredLoans(
@@ -60,24 +57,6 @@ const LoanApplications = () => {
         loan.purpose?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
         loan.status?.toLowerCase()?.includes(searchTerm.toLowerCase())
     ));
-
-    const handleSelectAll = (checked) => {
-        if (checked) {
-            setSelectedInvestments(loans.map(loan => loan?._id));
-        } else {
-            setSelectedInvestments([]);
-        }
-    };
-
-    const handleSelectInvestment = (loanId, checked) => {
-        if (checked) {
-            setSelectedInvestments([...selectedInvestments, loanId]);
-        } else {
-            setSelectedInvestments(selectedInvestments.filter(id => id !== loanId));
-        }
-    };
-
-    const isAllSelected = loans.length > 0 && selectedInvestments.length === loans.length;
 
     const [filters, setFilters] = useState({
         types: '',
@@ -216,14 +195,6 @@ const LoanApplications = () => {
                         <TableHeader className="bg-light">
                             <TableRow className="border-b border-gray">
                                 <TableHead className="text-left px-6 py-3 text-xs font-normal">
-                                    <input
-                                        type="checkbox"
-                                        checked={isAllSelected}
-                                        onChange={e => handleSelectAll(e.target.checked)}
-                                        className="h-4 w-4 accent-[#3E4095] rounded border border-gray-300 cursor-pointer"
-                                    />
-                                </TableHead>
-                                <TableHead className="text-left px-6 py-3 text-xs font-normal">
                                     Amount
                                 </TableHead>
                                 <TableHead className="text-left px-6 py-3 text-xs font-normal">
@@ -249,14 +220,6 @@ const LoanApplications = () => {
                                 ))
                             ) : fLoans.map(loan => (
                                 <TableRow key={loan._id} className="text-sm font-light border-b border-gray-200 last:border-b-0">
-                                    <TableCell className="px-6 py-4">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedInvestments.includes(loan._id)}
-                                            onChange={e => handleSelectInvestment(loan._id, e.target.checked)}
-                                            className="h-4 w-4 accent-[#3E4095] rounded border-gray-300 cursor-pointer"
-                                        />
-                                    </TableCell>
                                     <TableCell className="px-6 py-4">
                                         ₦{loan?.amountRequested?.toLocaleString(undefined, {
                                             minimumFractionDigits: 2,

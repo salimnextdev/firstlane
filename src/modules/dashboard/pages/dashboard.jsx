@@ -14,7 +14,6 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
 
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { IoIosArrowRoundForward, IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
@@ -322,9 +321,6 @@ const Dashboard = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-light border-b border-gray-200">
-                                        <TableHead className="w-12 p-4">
-                                            <Checkbox />
-                                        </TableHead>
                                         <TableHead className="w-[25%] font-medium text-xs">Name</TableHead>
                                         <TableHead className="font-medium text-xs">Amount</TableHead>
                                         <TableHead className="font-medium text-xs">Payment type</TableHead>
@@ -340,9 +336,6 @@ const Dashboard = () => {
                                         ))
                                     ) : transactions?.slice(0, 10)?.map((transaction) => (
                                         <TableRow key={transaction?._id} className="border-b border-gray">
-                                            <TableCell className="p-4">
-                                                <Checkbox />
-                                            </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">

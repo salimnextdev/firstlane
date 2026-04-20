@@ -18,7 +18,6 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
 
 import ConfirmModal from '@/modules/fx_transactions/components/confirmTransaction';
 import CountrySelect from '@/components/FormInputs/CountrySelect';
@@ -436,9 +435,6 @@ const FXTransactions = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-light border-b border-gray">
-                                        <TableHead className="w-12 p-4">
-                                            <Checkbox className="!accent-[var(--firstlane-primary)]" />
-                                        </TableHead>
                                         <TableHead className="font-medium text-xs">Sell amount</TableHead>
                                         <TableHead className="font-medium text-xs">Buy amount</TableHead>
                                         <TableHead className="font-medium text-xs">Currency pair</TableHead>
@@ -454,9 +450,6 @@ const FXTransactions = () => {
                                         ))
                                     ) : transactions.map((transaction) => (
                                         <TableRow key={transaction?._id} className="text-sm border-b border-gray-200">
-                                            <TableCell className="p-4">
-                                                <Checkbox />
-                                            </TableCell>
                                             <TableCell className="font-light">
                                                 {transaction?.fromCurrency.currencyID?.symbol}
                                                 {transaction?.fromCurrency?.value?.toLocaleString(undefined, {
