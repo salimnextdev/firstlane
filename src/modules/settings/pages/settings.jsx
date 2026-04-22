@@ -15,7 +15,7 @@ import { ReactComponent as Trash } from '@/assets/icons/trash.svg';
 
 import Profile from '../tabs/profile';
 import ChangePassword from '../tabs/change_password';
-import Notifications from '../tabs/notifications';
+// import Notifications from '../tabs/notifications';
 import BankDetails from '../tabs/bank_details';
 import Terms from '../tabs/terms';
 
@@ -59,11 +59,11 @@ const Settings = () => {
 
     const [selected, setSelected] = useState(false);
     const [currentTab, setCurrentTab] = useState("profile");
-    const tabs = ["profile", "password", "notifications", "bank_details", "terms", "actions"];
+    const tabs = ["profile", "password", "bank_details", "terms", "actions"];
     const mapper = {
         "profile": "Profile",
         "password": "Change password",
-        "notifications": "Notifications",
+        // "notifications": "Notifications",
         "bank_details": "Bank details",
         "terms": "Terms and privacy policy",
         "actions": "Delete account",
@@ -183,15 +183,15 @@ const Settings = () => {
                             {/* Notifications Tab */}
                             <div
                                 onClick={() => setSelected(true)}
-                                className={`w-full flex items-center ${currentTab === 'notifications' && 'md:bg-currency'} md:px-2 rounded-md`}
+                                className={`hidden w-full md:flex items-center ${currentTab === 'notifications' && 'md:bg-currency'} md:px-2 rounded-md`}
                             >
-                                <Bell />
+                                {/* <Bell />
                                 <TabsTrigger
                                     value="notifications"
                                     className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
                                 >
                                     <p>Notifications</p>
-                                </TabsTrigger>
+                                </TabsTrigger> */}
                             </div>
 
                             {/* Bank Details Tab */}
@@ -247,9 +247,9 @@ const Settings = () => {
                         <TabsContent value="password">
                             <ChangePassword />
                         </TabsContent>
-                        <TabsContent value="notifications">
+                        {/* <TabsContent value="notifications">
                             <Notifications />
-                        </TabsContent>
+                        </TabsContent> */}
                         <TabsContent value="bank_details">
                             <BankDetails />
                         </TabsContent>
