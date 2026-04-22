@@ -15,7 +15,6 @@ import { ReactComponent as Trash } from '@/assets/icons/trash.svg';
 
 import Profile from '../tabs/profile';
 import ChangePassword from '../tabs/change_password';
-// import Notifications from '../tabs/notifications';
 import BankDetails from '../tabs/bank_details';
 import Terms from '../tabs/terms';
 
@@ -63,7 +62,6 @@ const Settings = () => {
     const mapper = {
         "profile": "Profile",
         "password": "Change password",
-        // "notifications": "Notifications",
         "bank_details": "Bank details",
         "terms": "Terms and privacy policy",
         "actions": "Delete account",
@@ -180,19 +178,7 @@ const Settings = () => {
                                 </TabsTrigger>
                             </div>
 
-                            {/* Notifications Tab */}
-                            <div
-                                onClick={() => setSelected(true)}
-                                className={`hidden w-full md:flex items-center ${currentTab === 'notifications' && 'md:bg-currency'} md:px-2 rounded-md`}
-                            >
-                                {/* <Bell />
-                                <TabsTrigger
-                                    value="notifications"
-                                    className="flex-grow flex items-center justify-start p-3 text-sm !font-normal cursor-pointer !shadow-none text-left"
-                                >
-                                    <p>Notifications</p>
-                                </TabsTrigger> */}
-                            </div>
+                            
 
                             {/* Bank Details Tab */}
                             <div
@@ -247,9 +233,7 @@ const Settings = () => {
                         <TabsContent value="password">
                             <ChangePassword />
                         </TabsContent>
-                        {/* <TabsContent value="notifications">
-                            <Notifications />
-                        </TabsContent> */}
+                        
                         <TabsContent value="bank_details">
                             <BankDetails />
                         </TabsContent>
