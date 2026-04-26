@@ -37,10 +37,10 @@ const Sidebar = () => {
                 onClose={setIsLogout}
             />
 
-            <div className="flex items-center gap-3 px-6 h-20">
+            <NavLink to="/dashboard" className="flex items-center gap-3 px-6 h-20">
                 <img className="w-8" alt="logo" src={logo} />
                 <h1 className="text-2xl font-medium text-primary">FirstLane</h1>
-            </div>
+            </NavLink>
             <nav className="px-4 space-y-2 text-sm">
                 <NavLink to="/dashboard" className={({ isActive, isPending }) =>
                     `flex items-center gap-3 p-2 font-normal ${isActive ? 'text-primary' : ''}`}
@@ -98,7 +98,7 @@ const Sidebar = () => {
                 <div className='flex items-center justify-between'>
                     <div className="w-10/12 flex items-center gap-3">
                     <div className='relative w-[40px] h-[40px]'>
-                        <div className='w-full h-full flex items-center justify-center rounded-full bg-primary overflow-hidden'>
+                        <NavLink to="/settings" className='w-full h-full flex items-center justify-center rounded-full bg-primary overflow-hidden'>
                             {userProfile?.profileImage && !imageError ? (
                                 <img
                                     src={userProfile?.profileImage}
@@ -112,7 +112,7 @@ const Sidebar = () => {
                                         {(userProfile?.fullname || user?.fullname)?.charAt(0) || '?'}
                                     </p>
                                 )}
-                        </div>
+                        </NavLink>
                         <span className='absolute bottom-1 right-0 w-2.5 h-2.5 bg-green-500 border border-gray-200 rounded-full'></span>
                     </div>
 

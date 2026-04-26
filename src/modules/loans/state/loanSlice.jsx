@@ -69,8 +69,20 @@ export const fetchLoanByID = createAsyncThunk(
 
 export const addLoan = createAsyncThunk(
   'loan/addLoan',
-  async (credentials, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue, getState }) => {
     try {
+      const state = getState();
+      const userProfile = state?.auth?.userProfile;
+      const isKycComplete = userProfile?.verifications?.isKycComplete === true;
+
+      // every loan request must pass KYC complete check from auth.userProfile.
+      if (!isKycComplete) {
+        return rejectWithValue({
+          status: false,
+          message: 'KYC is not complete. Please complete your verification before applying for a loan.',
+        });
+      }
+
       const response = await api.post(`${API_BASE_URL}/loan`, credentials);
       return response.data;
     } catch (error) {

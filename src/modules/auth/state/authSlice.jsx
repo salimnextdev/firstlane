@@ -37,8 +37,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      // Login endpoint expects plain credentials request on some deployments.
-      // Keep request body unencrypted while still allowing encrypted responses.
+      
       const response = await api.post(`${API_BASE_URL}/auth/login`, credentials, {
         skipEncryption: true,
       });
