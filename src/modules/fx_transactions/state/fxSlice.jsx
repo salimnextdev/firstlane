@@ -183,6 +183,24 @@ export const FXSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(addFXTransaction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addFXTransaction.fulfilled, (state, action) => {
+        const createdTransaction = action.payload?.data;
+        if (createdTransaction && typeof createdTransaction === 'object') {
+          const existing = Array.isArray(state.fx_transactions) ? state.fx_transactions : [];
+          // Insert newest transaction at the top so "Recent FX Transactions" updates instantly.
+          state.fx_transactions = [createdTransaction, ...existing.filter((tx) => tx?._id !== createdTransaction?._id)];
+        }
+        state.loading = false;
+      })
+      .addCase(addFXTransaction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(fetchFXRates.pending, (state) => {
         state.rates_loading = true;
         state.rates_error = null;
