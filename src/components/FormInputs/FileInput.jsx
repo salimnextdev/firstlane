@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import PropTypes from 'prop-types';
 
 const FileInput = ({
     label,
@@ -8,7 +9,69 @@ const FileInput = ({
     value,
     ...rest
 }) => {
-    const fileName = value?.file ? value?.file?.name : value; // Derive filename from the passed 'value' (File object)
+    const { useEffect, useMemo, useState } = React;
+    // `value` can be:
+    // - { file: File } (our form state shape)
+    // - a string URL (pre-existing upload)
+    // - null/undefined
+    // Never render raw objects in JSX (React will throw).
+    const fileName =
+        value?.file instanceof File
+            ? value.file.name
+            : typeof value === 'string'
+                ? value
+                : '';
+
+    const previewMeta = useMemo(() => {
+        // Preview images + PDFs. For other docs we just show the filename.
+        if (value?.file instanceof File) {
+            const type = value.file.type || '';
+            if (type.startsWith('image/')) {
+                return { url: URL.createObjectURL(value.file), kind: 'image' };
+            }
+            if (type === 'application/pdf') {
+                return { url: URL.createObjectURL(value.file), kind: 'pdf' };
+            }
+            return { url: '', kind: '' };
+        }
+
+        if (typeof value === 'string' && value) {
+            const lower = value.toLowerCase();
+            const isImageUrl =
+                lower.startsWith('http') &&
+                (lower.endsWith('.png') ||
+                    lower.endsWith('.jpg') ||
+                    lower.endsWith('.jpeg') ||
+                    lower.endsWith('.gif') ||
+                    lower.endsWith('.webp') ||
+                    lower.includes('cloudinary') ||
+                    lower.includes('s3'));
+            if (isImageUrl) return { url: value, kind: 'image' };
+
+            const isPdfUrl =
+                lower.startsWith('http') &&
+                (lower.endsWith('.pdf') || lower.includes('.pdf?') || lower.includes('cloudinary'));
+            if (isPdfUrl) return { url: value, kind: 'pdf' };
+
+            return { url: '', kind: '' };
+        }
+
+        return { url: '', kind: '' };
+    }, [value]);
+
+    const [showDocPreview, setShowDocPreview] = useState(false);
+
+    useEffect(() => {
+        // Cleanup object URLs to avoid memory leaks when user re-selects files.
+        if (previewMeta.url && value?.file instanceof File) {
+            return () => URL.revokeObjectURL(previewMeta.url);
+        }
+    }, [previewMeta.url, value]);
+
+    // If the user changes the selected file/url, collapse the preview panel.
+    useEffect(() => {
+        setShowDocPreview(false);
+    }, [previewMeta.url]);
     return (
         <div className="w-full">
             {label && (
@@ -51,8 +114,74 @@ const FileInput = ({
                     <span className='w-10/12 font-light truncate'>{fileName || 'Upload document'}</span>
                 </div>
             </div>
+
+            {previewMeta.url && previewMeta.kind === 'image' && (
+                <a
+                    href={previewMeta.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-flex items-center gap-3"
+                >
+                    <div className="w-14 h-14 border border-gray-200 rounded-md overflow-hidden bg-currency">
+                        <img
+                            src={previewMeta.url}
+                            alt="Selected image preview"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                    <span className="text-xs text-secondary font-light">
+                        Preview selected image
+                    </span>
+                </a>
+            )}
+
+            {previewMeta.url && previewMeta.kind === 'pdf' && (
+                <div className="mt-2 space-y-2">
+                    <div className="flex items-center gap-3">
+                        <a
+                            href={previewMeta.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs text-primary font-medium underline"
+                        >
+                            Open PDF in new tab
+                        </a>
+                        <button
+                            type="button"
+                            onClick={() => setShowDocPreview((v) => !v)}
+                            className="text-xs text-secondary font-light underline"
+                        >
+                            {showDocPreview ? 'Hide preview' : 'Preview PDF here'}
+                        </button>
+                    </div>
+
+                    {showDocPreview && (
+                        <div className="w-full h-64 border border-gray-200 rounded-md overflow-hidden bg-white">
+                            <iframe
+                                title="PDF preview"
+                                src={previewMeta.url}
+                                className="w-full h-full"
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
 
 export default FileInput;
+
+FileInput.propTypes = {
+    label: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    onChange: PropTypes.func,
+    // Either a pre-existing URL string, or our { file: File } wrapper.
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            file: PropTypes.instanceOf(File),
+        }),
+    ]),
+};

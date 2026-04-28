@@ -71,6 +71,7 @@ export const addLoan = createAsyncThunk(
   'loan/addLoan',
   async (credentials, { rejectWithValue, getState }) => {
     try {
+      console.log('loan credentials before submission', credentials);
       const state = getState();
       const userProfile = state?.auth?.userProfile;
       const isKycComplete = userProfile?.verifications?.isKycComplete === true;
@@ -84,6 +85,7 @@ export const addLoan = createAsyncThunk(
       }
 
       const response = await api.post(`${API_BASE_URL}/loan`, credentials);
+      console.log('loan response after submission', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

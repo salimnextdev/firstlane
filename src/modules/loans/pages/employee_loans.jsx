@@ -49,7 +49,7 @@ const EmployeeLoans = () => {
         others: "",
         employer_name: "",
         employer_phone: "",
-        employer_grade: "",
+        employer_position: "",
         employer_income: "",
         address: "",
         nationality: "",
@@ -148,7 +148,7 @@ const EmployeeLoans = () => {
 
                 employerName: formData.employer_name,
                 employerPhoneNumber: formData.employer_phone,
-                employerGrade: formData.employer_grade,
+                employerposition: formData.employer_position,
                 monthlyIncome: formData.employer_income,
                 employerAddress: formData.address?.display_name || formData.address,
                 state: formData.state,
@@ -267,10 +267,10 @@ const EmployeeLoans = () => {
 
                 <div className='w-full flex flex-col md:flex-row items-center gap-3'>
                     <TextInput
-                        label='Employer"s grade (optional)'
-                        name='employer_grade'
+                        label='Employer"s position (optional)'
+                        name='employer_position'
                         className='text-sm'
-                        value={formData.employer_grade}
+                        value={formData.employer_position}
                         onChange={handleChange}
                         placeholder="15"
                     />
