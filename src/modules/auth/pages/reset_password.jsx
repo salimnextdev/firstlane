@@ -56,24 +56,19 @@ const ResetPassword = () => {
         };
 
         try {
-            const resultAction = await dispatch(forgotPassword(data));
-            if (forgotPassword.fulfilled.match(resultAction)) {
-                // Remove all cookies used for the reset password flow
-                removeCookie('email');
-                removeCookie('userID');
-                removeCookie('OTP');
+            await dispatch(forgotPassword(data)).unwrap();
+            // Remove all cookies used for the reset password flow
+            removeCookie('email');
+            removeCookie('userID');
+            removeCookie('OTP');
 
-                toast("Password successfully reset!", {
-                    description: "Your password has been successfully reset. You can now log in with your new password.",
-                });
-                navigate('/signin');
-            } else {
-                toast(resultAction.payload.message);
-                return;
-            };
+            toast("Password successfully reset!", {
+                description: "Your password has been successfully reset. You can now log in with your new password.",
+            });
+            navigate('/signin');
         } catch (error) {
             toast("An error occured", {
-                description: error.message,
+                description: error?.message || 'Unable to reset password right now. Please try again.',
             });
         } finally {
             setSubmitted(false);

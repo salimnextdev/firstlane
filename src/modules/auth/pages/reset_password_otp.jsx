@@ -86,18 +86,13 @@ const ResetPasswordOTP = () => {
         };
 
         try {
-            const resultAction = await dispatch(verifyCode(data));
-            if (verifyCode.fulfilled.match(resultAction)) {
-                setCookie('OTP', OTP);
-                navigate('/reset-password');
-            } else {
-                setCountdown(0);
-                toast(resultAction.payload.message);
-                return;
-            };
+            await dispatch(verifyCode(data)).unwrap();
+            setCookie('OTP', OTP);
+            navigate('/reset-password');
         } catch (error) {
+            setCountdown(0);
             toast("An error occured", {
-                description: error.message,
+                description: error?.message || 'Code not found or expired. Please request a new code.',
             });
         } finally {
             setSubmitted(false);
@@ -112,18 +107,13 @@ const ResetPasswordOTP = () => {
         };
 
         try {
-            const resultAction = await dispatch(sendCodeToEmail(data));
-            if (sendCodeToEmail.fulfilled.match(resultAction)) {
-                toast("OTP sent successfully!", {
-                    description: resultAction.payload.message,
-                });
-            } else {
-                toast(resultAction.payload.message);
-                return;
-            };
+            const payload = await dispatch(sendCodeToEmail(data)).unwrap();
+            toast("OTP sent successfully!", {
+                description: payload?.message || 'Enter the code to continue with password reset.',
+            });
         } catch (error) {
             toast("An error occured", {
-                description: error.message,
+                description: error?.message || 'Unable to resend code right now. Please try again.',
             });
         } finally {
             setSubmitted(false);

@@ -55,17 +55,15 @@ const ForgotPassword = () => {
         };
 
         try {
-            const resultAction = await dispatch(sendCodeToEmail(data));
-            if (sendCodeToEmail.fulfilled.match(resultAction)) {
-                // Needed for the reset otp screen.
-                setCookie('email', email);
-                setCookie('userID', resultAction.payload.data.userID);
+            const payload = await dispatch(sendCodeToEmail(data)).unwrap();
+            // Needed for the reset otp screen.
+            setCookie('email', email);
+            setCookie('userID', payload?.data?.userID);
 
-                toast("OTP sent successfully!", {
-                    description: resultAction.payload.message,
-                });
-                navigate('/reset-password/otp', { state: { email } });
-            }
+            toast("OTP sent successfully!", {
+                description: payload?.message || 'Enter the code to continue with password reset.',
+            });
+            navigate('/reset-password/otp', { state: { email } });
         } catch (error) {
             toast("An error occured", {
                 description: error?.message || 'Something happened while making this request!',
