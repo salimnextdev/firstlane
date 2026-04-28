@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
+import { fetchUserByEmail, sendCodeToEmail, verifyAuthentication } from '@/modules/auth/state/authSlice';
 import { getCookie, removeCookie, setCookie } from '@/utils/cookieUtils';
 
 import logo from '@/assets/images/logo.png';
 
 import OTPInput from '@/components/FormInputs/OTPInput';
 import AuthImageContainer from '@/components/AuthImageContainer';
-import { API_BASE_URL } from '@/middlewares/api';
 
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
@@ -20,19 +19,19 @@ const VerifyAccount = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const prevPage = location?.state?.from;
-    const locationUser = useMemo(() => (
+    const locationUser = React.useMemo(() => (
         location?.state?.email
             ? { email: location.state.email, userID: location?.state?.userID }
             : null
     ), [location?.state?.email, location?.state?.userID]);
-    const cookieUser = useMemo(() => {
+    const cookieUser = React.useMemo(() => {
         try {
             return JSON.parse(getCookie('user') || 'null');
         } catch {
             return null;
         }
     }, []);
-    const pendingVerificationUser = useMemo(() => {
+    const pendingVerificationUser = React.useMemo(() => {
         try {
             return JSON.parse(getCookie('pendingVerificationUser') || 'null');
         } catch {
@@ -64,9 +63,9 @@ const VerifyAccount = () => {
         if (prevPage) {
           (async () => {
             try {
-              const res = await fetch(`${API_BASE_URL}/users/by-any/email/${user?.email}`);
-              const { data } = await res.json();
-              data?.[0]?._id && setUserID(data[0]._id);
+              const response = await dispatch(fetchUserByEmail(user?.email)).unwrap();
+              const profile = response?.data?.[0] || response?.data || response;
+              profile?._id && setUserID(profile._id);
             } catch (err) {
               toast.error('Failed to fetch user ID', {
                 description: err?.message || 'Please try again.',
@@ -74,7 +73,7 @@ const VerifyAccount = () => {
             }
           })();
         }
-      }, [prevPage, user?.email]);
+      }, [dispatch, prevPage, user?.email]);
 
     const handleChange = (e) => {
         setOTP(e.target.value);
@@ -120,21 +119,16 @@ const VerifyAccount = () => {
         };
 
         try {
-            const resultAction = await dispatch(verifyAuthentication(data));
-            if (verifyAuthentication.fulfilled.match(resultAction)) {
-                removeCookie('user');
-                removeCookie('pendingVerificationUser');
-                setCookie('token', resultAction.payload?.access_token);
-                setCookie('user', JSON.stringify(resultAction.payload?.data));
-                navigate('/account-success');
-            } else {
-                setCountdown(0);
-                toast(resultAction.payload.message);
-                return;
-            };
+            const payload = await dispatch(verifyAuthentication(data)).unwrap();
+            removeCookie('user');
+            removeCookie('pendingVerificationUser');
+            setCookie('token', payload?.access_token);
+            setCookie('user', JSON.stringify(payload?.data));
+            navigate('/account-success');
         } catch (error) {
-            toast("An error occured", {
-                description: error.message,
+            setCountdown(0);
+            toast.error("An error occured", {
+                description: error?.message || 'Code not found or expired. Please request a new code.',
             });
         } finally {
             setSubmitted(false);
@@ -149,18 +143,13 @@ const VerifyAccount = () => {
         };
 
         try {
-            const resultAction = await dispatch(sendCodeToEmail(data));
-            if (sendCodeToEmail.fulfilled.match(resultAction)) {
-                toast("OTP sent successfully!", {
-                    description: 'Enter the code to continue with verification.',
-                });
-            } else {
-                toast(resultAction.payload.message);
-                return;
-            };
+            await dispatch(sendCodeToEmail(data)).unwrap();
+            toast("OTP sent successfully!", {
+                description: 'Enter the code to continue with verification.',
+            });
         } catch (error) {
-            toast("An error occured", {
-                description: error.message,
+            toast.error("An error occured", {
+                description: error?.message || 'Unable to resend code right now. Please try again.',
             });
         } finally {
             setSubmitted(false);

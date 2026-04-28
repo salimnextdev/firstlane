@@ -180,6 +180,18 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+export const fetchUserByEmail = createAsyncThunk(
+  'auth/fetchUserByEmail',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/users/by-any/email/${email}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const updateUserProfile = createAsyncThunk(
   'auth/updateUserProfile',
   async (credentials, { rejectWithValue }) => {
