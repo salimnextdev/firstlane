@@ -34,12 +34,17 @@ jobs:
         run: docker build --no-cache -f infra/Dockerfile . -t firstlane-frontend:latest
 
       - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
       - name: Tag and Push Docker Image
+        env:
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          IMAGE=ghcr.io/${{ github.repository }}:$SHORT_SHA
+          IMAGE=ghcr.io/$GHCR_USERNAME/firstlane-frontend:$SHORT_SHA
           docker tag firstlane-frontend:latest $IMAGE
           docker push $IMAGE
           echo "IMAGE_TAG=$SHORT_SHA" >> $GITHUB_ENV
