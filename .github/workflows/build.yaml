@@ -35,7 +35,7 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         run: |
           if [ -z "$GHCR_TOKEN" ]; then
-            echo "::error::GHCR_TOKEN secret is required to publish to ghcr.io/jamforte-salim."
+            echo "::error::GHCR_TOKEN secret (salimnextdev PAT) is required to publish to ghcr.io/salimnextdev."
             exit 1
           fi
           echo "$GHCR_TOKEN" | docker login ghcr.io -u salimnextdev --password-stdin
@@ -43,7 +43,7 @@ jobs:
       - name: Tag and Push Docker Image
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          IMAGE=ghcr.io/jamforte-salim/firstlane-api
+          IMAGE=ghcr.io/salimnextdev/firstlane-api
           docker tag firstlane-frontend:latest "$IMAGE:$SHORT_SHA"
           docker tag firstlane-frontend:latest "$IMAGE:latest"
           docker push "$IMAGE:$SHORT_SHA"
