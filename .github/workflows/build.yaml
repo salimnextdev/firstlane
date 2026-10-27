@@ -1,29 +1,47 @@
-name: Firstlane-Admin Build (Waiting for tests)
-
+name: Firstlane-Api Deployment
 on:
   push:
     branches:
       - main
 
 jobs:
-  build_and_push:
+  gitleaks:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    needs: gitleaks
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: | 
-          docker build -f infra/Dockerfile . \
-            --build-arg VITE_API_BASE_URL="https://api.firstlanemultinvestment.com/v1" \
-            --build-arg VITE_BASE_URL="https://app.firstlanemultinvestment.com" \
-            --build-arg VITE_COOKIE_SECRET="firstlane" \
-            -t firstlane-user:latest
+        run: docker build --no-cache -f infra/Dockerfile . -t firstlane-api:latest
 
-      - name: Run health check test
+      - name: Login to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u jamforte-ebenezer --password-stdin
+
+      - name: Tag and Push Docker Image
         run: |
-          docker run -d --name test-container firstlane-user
-          sleep 20
-          docker inspect --format='{{json .State.Health}}' test-container
-          docker rm -f test-container
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          IMAGE=ghcr.io/jamforte-ebenezer/firstlane-api:$SHORT_SHA
+          docker tag firstlane-api:latest $IMAGE
+          docker push $IMAGE
+          echo "IMAGE_TAG=$SHORT_SHA" >> $GITHUB_ENV
+
+      - name: Trigger Dokploy Deployment
+        run: |
+          curl -X POST "${{ secrets.DOKPLOY_URL }}/api/application.deploy" \
+            -H "Authorization: Bearer ${{ secrets.DOKPLOY_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"applicationId": "${{ vars.DOKPLOY_APP_ID }}"}'
