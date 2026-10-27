@@ -1,10 +1,9 @@
 name: Firstlane-Admin Build (Waiting for tests)
 
 on:
-  pull_request:
+  push:
     branches:
-      - production
-    types: [opened, synchronize, reopened]
+      - main
 
 jobs:
   build_and_push:
