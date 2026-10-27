@@ -38,7 +38,7 @@ jobs:
             echo "::error::GHCR_TOKEN secret is required to publish to ghcr.io/jamforte-salim."
             exit 1
           fi
-          echo "$GHCR_TOKEN" | docker login ghcr.io -u jamforte-salim --password-stdin
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u salimnextdev --password-stdin
 
       - name: Tag and Push Docker Image
         run: |
